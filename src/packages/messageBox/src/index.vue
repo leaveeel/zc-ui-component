@@ -1,0 +1,141 @@
+<script lang="ts" setup>
+import zcDialog from '@/packages/dialog/src/index.vue'
+import zcButton from '@/packages/button/src/index.vue'
+import zcButtonGroup from '@/packages/buttonGroup/src/index.vue'
+import { zcUIProps } from '@/types/zcUI'
+import { defineProps, onMounted, reactive, ref } from 'vue'
+
+// 类型定义和默认值
+interface MessageBoxProps extends zcUIProps.MessageBox {
+  container: HTMLElement;
+  resolve: (value: string) => void;
+  reject: (reason: string) => void;
+}
+
+const props = withDefaults(defineProps<MessageBoxProps>(), {
+  showConfirm: true,
+  confirmText: 'Confirm',
+  showCancel: true,
+  cancelText: 'Cancel',
+  callback: () => {}
+})
+
+// 状态管理
+const state = reactive({
+  loading: false
+})
+
+const visible = ref(false)
+const dialog = ref()
+
+// 生命周期钩子
+onMounted(() => {
+  visible.value = true
+})
+
+// 方法定义
+const dialogClose = () => {
+  props.container.remove()
+}
+
+const cancel = () => {
+  close('cancel')
+}
+
+const confirm = () => {
+  close('confirm')
+}
+
+const callback = (action: string) => {
+  if (action === 'confirm') {
+    props.resolve('confirm')
+  } else if (action === 'cancel') {
+    props.reject('cancel')
+  }
+  
+  props.callback(state)
+  props.container.remove()
+}
+
+const close = (action: string) => {
+  if (props.beforeClose) {
+    props.beforeClose(action, state, () => callback(action))
+  } else {
+    callback(action)
+  }
+}
+</script>
+
+<template>
+  <zc-dialog
+    class="zc-messageBox zc-ui-component"
+    @cancel="dialogClose"
+    width="min-content"
+    :min-width="300"
+    :closeOnClickModal="!state.loading"
+    close-icon
+    v-model="visible"
+    ref="dialog"
+    :loading="state.loading"
+  >
+    <template #header>
+      <div class="title">{{ title }}</div>
+    </template>
+    
+    <slot v-if="$slots.default"></slot>
+    <div v-else class="content">{{ props.message }}</div>
+    
+    <template #footer>
+      <zc-buttonGroup class="btns">
+        <zc-button
+          v-if="props.showCancel"
+          :class="props.cancelClass"
+          plain
+          color="var(--main-font-color)"
+          border-color="var(--main-font-color)"
+          width="min-content"
+          :height="34"
+          :size="14"
+          @click="cancel"
+        >
+          {{ props.cancelText }}
+        </zc-button>
+        <zc-button
+          v-if="props.showConfirm"
+          :class="props.confirmClass"
+          width="min-content"
+          :height="34"
+          :size="14"
+          @click="confirm"
+        >
+          {{ props.confirmText }}
+        </zc-button>
+      </zc-buttonGroup>
+    </template>
+  </zc-dialog>
+</template>
+
+<style scoped lang="scss">
+.zc-messageBox {
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--main-font-color);
+    margin-bottom: 20px;
+  }
+  
+  .content {
+    font-size: 14px;
+    color: #999;
+  }
+  
+  .btns {
+    justify-content: flex-end;
+    margin-top: 20px;
+    
+    .zcButton {
+      padding: 0 5px;
+    }
+  }
+}
+</style>
