@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<zcUIProps.Button>(), {
   htmlType: 'button',
 })
 
-const propsDisabled = inject('fieldDisabled', props.disabled || false)
+const propsDisabled = inject('fieldDisabled', computed(() => props.disabled))
 
 const emit = defineEmits<{
   click: [e?: MouseEvent]
@@ -31,7 +31,7 @@ const isFocused = ref(false)
 
 // 处理点击事件
 const handleClick = (e: MouseEvent) => {
-  if (!propsDisabled && !props.loading) {
+  if (!propsDisabled.value && !props.loading) {
     handleBlur()
     emit('click', e)
   } else {
@@ -42,7 +42,7 @@ const handleClick = (e: MouseEvent) => {
 
 // 处理键盘事件，增强可访问性
 const handleKeyDown = (e: KeyboardEvent) => {
-  if ((e.key === 'Enter' || e.key === ' ') && !propsDisabled && !props.loading) {
+  if ((e.key === 'Enter' || e.key === ' ') && !propsDisabled.value && !props.loading) {
     e.preventDefault()
     handleBlur()
     emit('click')
@@ -86,7 +86,7 @@ const buttonClasses = computed(() => {
   return {
     plain: props.plain,
     text: props.text,
-    disabled: propsDisabled || props.loading,
+    disabled: propsDisabled.value || props.loading,
     focused: isFocused.value
   }
 })

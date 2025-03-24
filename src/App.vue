@@ -37,7 +37,7 @@ const dialogCancel = () => {
 const form = ref({
   item1: ''
 })
-
+const formdis = ref(false)
 const loadingFun = () => {
   const loading = useLoading({
     text: 'Loading...',
@@ -256,9 +256,10 @@ const dd = () => {
       </zc-dialog>
     </div>
     <div>
-      <zc-form :model="form">
+      <zc-form :model="form" :disabled="formdis">
         <zc-form-item label="formitem1" prop="item1">
           <zc-input v-model="form.item1" :maxLength="10" clearable @change="change"></zc-input>
+          <zc-button @click="formdis=true">set</zc-button>
         </zc-form-item>
         {{ form.item1 }}
       </zc-form>

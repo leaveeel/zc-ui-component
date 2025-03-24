@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<zcUIProps.Input>(), {
   autocomplete: 'off',
   height: '40px'
 })
-const propsDisabled = inject('fieldDisabled', props.disabled || false)
+const propsDisabled = inject('fieldDisabled', computed(() => props.disabled))
 
 // 定义事件
 const emit = defineEmits<{
@@ -55,7 +55,7 @@ const isPasswordVisible = ref(false)
 const isTextarea = computed(() => props.type === 'textarea')
 const showClear = computed(() => 
   props.clearable && 
-  !propsDisabled && 
+  !propsDisabled.value && 
   props.modelValue && 
   props.modelValue.length > 0
 )

@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<zcUIProps.Checkbox>(), {
   modelValue: false,
   value: undefined
 })
-const propsDisabled = inject('fieldDisabled', props.disabled || false)
+const propsDisabled = inject('fieldDisabled', computed(() => props.disabled))
 
 const emits = defineEmits<{
   'update:modelValue': [value: boolean | (string | number)[]],
@@ -51,7 +51,7 @@ const isChecked = computed(() => {
 })
 
 const toggle = () => {
-  if (propsDisabled) return
+  if (propsDisabled.value) return
   if (isGroup.value) {
     const list = model.value as (string | number)[]
     const value = (props.value || props.value === 0) ? props.value : props.label
