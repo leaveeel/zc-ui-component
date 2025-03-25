@@ -14,7 +14,6 @@ import { debounce } from 'lodash-es'
 const props = withDefaults(defineProps<zcUIProps.Scroll>(), {
   width: '100%',
   height: '100%',
-  maxHeight: '100%',
 })
 
 const emit = defineEmits(['scroll'])
@@ -91,10 +90,10 @@ const syncScroll = () => {
   if (!scrollBody.value || !rightBlock.value || !bottomBlock.value) return
   
   // 绑定滚动事件
-  scrollBody.value.addEventListener('scroll', handleScroll)
+  scrollBody.value.addEventListener('scroll', handleScroll, { passive: false })
   
   // 监听窗口大小变化
-  window.addEventListener('resize', handleResize)
+  window.addEventListener('resize', handleResize, { passive: false })
 
   let isDragging = false
   let startY = 0
@@ -153,10 +152,10 @@ const syncScroll = () => {
   }
 
   // 绑定事件监听器
-  rightBlock.value.addEventListener('mousedown', handleRightMouseDown)
-  bottomBlock.value.addEventListener('mousedown', handleBottomMouseDown)
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mouseup', handleMouseUp)
+  rightBlock.value.addEventListener('mousedown', handleRightMouseDown, { passive: false })
+  bottomBlock.value.addEventListener('mousedown', handleBottomMouseDown, { passive: false })
+  document.addEventListener('mousemove', handleMouseMove, { passive: false })
+  document.addEventListener('mouseup', handleMouseUp, { passive: false })
 
   // 返回清理函数
   return () => {
@@ -186,12 +185,10 @@ const setupResizeObserver = () => {
 
 let cleanupScrollEvents: (() => void) | null = null
 
-const scrollBodyHeight = ref<number | string>('100%')
 onMounted(() => {
   nextTick(() => {
     rightBlockHeight()
     bottomBlockWidth()
-    scrollBodyHeight.value = zcScroll.value.offsetHeight
     const cleanup = syncScroll()
     if (cleanup) {
       cleanupScrollEvents = cleanup
@@ -241,7 +238,7 @@ defineExpose({
   <div
     class="zc-scroll zc-ui-component"
     ref="zcScroll"
-    :style="{ height: setUnit(props.height), width: setUnit(props.width), maxHeight: setUnit(props.maxHeight) }"
+    :style="{ height: setUnit(props.height), width: setUnit(props.width) }"
   >
     <div class="rightScroll" ref="rightScroll">
       <div class="block" ref="rightBlock"></div>
@@ -252,7 +249,7 @@ defineExpose({
     <div
       class="scrollBody"
       ref="scrollBody"
-      :style="{ height: setUnit(scrollBodyHeight) }"
+      :style="{ height: setUnit(props.height) }"
     >
       <slot></slot>
     </div>

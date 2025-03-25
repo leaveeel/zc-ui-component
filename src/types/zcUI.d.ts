@@ -232,7 +232,6 @@ export namespace zcUIProps {
   export interface Scroll {
     width?: number | string
     height?: number | string
-    maxHeight?: number | string
   }
 
   /**
