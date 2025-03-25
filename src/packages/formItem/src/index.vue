@@ -10,17 +10,25 @@ import { setUnit } from '@/utils/common'
 import AsyncValidator, { RuleItem, Rules } from 'async-validator'
 import { debounce } from 'lodash-es'
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, ref, provide, reactive, toRefs, inject, computed, onMounted, onBeforeUnmount, StyleValue, nextTick, watch } from 'vue'
+import { defineProps, ref, provide, reactive, toRefs, inject, computed, onMounted, onBeforeUnmount, StyleValue, nextTick, watch,watchEffect } from 'vue'
 
 const props = withDefaults(defineProps<zcUIProps.FormItem>(), {
-  showMessage: true
+  showMessage: true,
+  disabled: undefined
 })
 
 const formContext = inject('formContext') as zcUI.Form
 
 const errorMsg = ref('')
 provide('errorMsg', errorMsg)
-const isFieldDisabled = ref(!!formContext.disabled)
+
+const isFieldDisabled = props.disabled === undefined ? ref(formContext.disabled) : computed({
+  get: () => props.disabled,
+  set: (n) => {
+    isFieldDisabled.value = n
+  }
+})
+
 
 const propRule = props.rules || (formContext.rules && formContext.rules[props.prop])
 
@@ -101,10 +109,6 @@ const clearValidate = () => {
   errorMsg.value = ''
 }
 
-const updateDisabled = (disabled: boolean) => {
-  isFieldDisabled.value = disabled
-}
-
 provide('fieldDisabled', isFieldDisabled)
 
 const context = reactive({
@@ -112,7 +116,6 @@ const context = reactive({
   validate,
   resetField,
   clearValidate,
-  updateDisabled
 })
 
 // 监听form-disabled属性变化

@@ -18,6 +18,7 @@ export namespace zcUIProps {
    * @property {boolean} disabled - 是否禁用按钮
    * @property {string} type - 按钮类型：默认、主要、成功、警告、危险、信息
    * @property {string} htmlType - 原生button类型：button、submit、reset
+   * @property {boolean | undefined} disabled - 是否禁用按钮
    */
   export interface Button {
     plain?: boolean
@@ -35,6 +36,7 @@ export namespace zcUIProps {
     disabled?: boolean
     // type?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info'
     htmlType?: 'button' | 'submit' | 'reset'
+    disabled?: boolean | undefined
   }
 
   /**
@@ -86,13 +88,13 @@ export namespace zcUIProps {
    * @property {boolean} modelValue - 复选框绑定值
    * @property {string} label - 复选框标签文本
    * @property {string|number} value - 复选框值，用于在复选框组中使用
-   * @property {boolean} disabled - 是否禁用复选框
+   * @property {boolean | undefined} disabled - 是否禁用复选框
    */
   export interface Checkbox {
     modelValue?: boolean
     label: string
     value?: string | number
-    disabled?: boolean
+    disabled?: boolean | undefined
   }
 
   /**
@@ -161,6 +163,7 @@ export namespace zcUIProps {
    * @property {string} labelPosition - 表单项标签位置：左对齐、右对齐、顶部对齐
    * @property {boolean} error - 表单域验证错误信息
    * @property {boolean} showMessage - 是否显示校验错误信息
+   * @property {boolean | undefined} disabled - 是否禁用
    */
   export interface FormItem {
       label?: string
@@ -171,6 +174,7 @@ export namespace zcUIProps {
       labelPosition?: 'left' | 'right' | 'top'
       error?: string
       showMessage?: boolean
+      disabled?: boolean | undefined
   }
 
   /**
@@ -370,13 +374,11 @@ export namespace zcUI {
    * @property {Function} resetField - 重置表单项方法
    * @property {Function} validate - 验证表单项方法
    * @property {Function} clearValidate - 清除表单项验证结果方法
-   * @property {Function} updateDisabled - 更新表单项禁用状态方法
    */
   export interface FormItem extends zcUIProps.FormItem {
     resetField: () => void
     validate: (type?: 'change' | 'blur', value?: any) => Promise<{status: 'fulfilled' | 'rejected', reason?: string}>
     clearValidate?: () => void
-    updateDisabled?: (disabled: boolean) => void
   }
 
   /**

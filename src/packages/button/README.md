@@ -28,7 +28,7 @@
 | borderColor | string | - | 按钮边框颜色 |
 | border | string/number | 1 | 按钮边框宽度 |
 | loading | boolean | false | 是否显示加载状态 |
-| disabled | boolean | false | 是否禁用按钮 |
+| disabled | boolean | - | 是否禁用按钮 |
 | htmlType | 'button'/'submit'/'reset' | 'button' | 原生button类型 |
 
 ## 事件

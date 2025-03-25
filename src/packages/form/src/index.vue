@@ -119,15 +119,6 @@ defineExpose({
   clearValidate
 })
 
-// 监听disabled属性变化，更新所有表单项的禁用状态
-watchEffect(() => {
-  const formDisabled = props.disabled
-  fields.forEach(field => {
-    if (field.updateDisabled) {
-      field.updateDisabled(formDisabled)
-    }
-  })
-})
 </script>
 
 <template>

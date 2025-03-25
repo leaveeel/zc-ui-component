@@ -22,9 +22,10 @@ const props = withDefaults(defineProps<zcUIProps.Input>(), {
   size: 'default',
   resize: false,
   autocomplete: 'off',
-  height: '40px'
+  height: '40px',
+  disabled: undefined
 })
-const propsDisabled = inject('fieldDisabled', computed(() => props.disabled))
+const propsDisabled = props.disabled === undefined ? inject('fieldDisabled', ref(false)) : computed(() => props.disabled)
 
 // 定义事件
 const emit = defineEmits<{

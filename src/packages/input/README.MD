@@ -27,7 +27,7 @@
 | type | 'text'/'password'/'textarea'/'number'/'email'/'tel'/'url' | 'text' | 输入框类型 |
 | clearable | boolean | false | 是否可清空 |
 | showPassword | boolean | false | 是否显示密码切换按钮 |
-| disabled | boolean | false | 是否禁用 |
+| disabled | boolean | - | 是否禁用 |
 | placeholder | string | '' | 输入框占位文本 |
 | maxLength | number | - | 最大输入长度 |
 | size | 'default'/'small'/'large' | 'default' | 输入框大小 |

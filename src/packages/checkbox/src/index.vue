@@ -13,9 +13,10 @@ import zcIcon from '@/packages/icon/index.vue'
 
 const props = withDefaults(defineProps<zcUIProps.Checkbox>(), {
   modelValue: false,
-  value: undefined
+  value: undefined,
+  disabled: undefined
 })
-const propsDisabled = inject('fieldDisabled', computed(() => props.disabled))
+const propsDisabled = props.disabled === undefined ? inject('fieldDisabled', ref(false)) : computed(() => props.disabled)
 
 const emits = defineEmits<{
   'update:modelValue': [value: boolean | (string | number)[]],

@@ -8,7 +8,7 @@ export default defineComponent({
 <script lang="ts" setup>
 import { zcUIProps } from '@/types/zcUI'
 import { setUnit } from '@/utils/common'
-import { defineProps, ref, onMounted, onUnmounted } from 'vue'
+import { defineProps, ref, onMounted, onUnmounted, watch } from 'vue'
 import IconClose from '@/packages/icon/src/IconClose.vue'
 import zcIcon from '@/packages/icon/index.vue'
 
@@ -51,6 +51,22 @@ const handleKeydown = (e: KeyboardEvent) => {
   }
 }
 
+const visible = ref(false)
+const contentVisible = ref(false)
+watch(()=>props.modelValue, (newVal) => {
+  if(newVal) {
+    visible.value = newVal
+    setTimeout(() => {
+      contentVisible.value = newVal
+    }, 10)
+  } else {
+    contentVisible.value = newVal
+    setTimeout(() => {
+      visible.value = newVal
+    }, 100)
+  }
+})
+
 // 监听键盘事件
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown)
@@ -64,11 +80,11 @@ onUnmounted(() => {
 <template>
   <Transition
     @after-leave="afterLeave"
-    :duration="200"
-    name="dialog-fade"
+    :duration="100"
+    name="dialog"
   >
     <div
-      v-if="modelValue"
+      v-if="visible"
       class="zc-dialog zc-ui-component"
       @mousedown="outStart = true"
       @mouseup="handleClick"
@@ -76,54 +92,75 @@ onUnmounted(() => {
       :aria-modal="true"
       :aria-labelledby="'dialog-title-' + dialogId"
     >
-      <div
-        class="content"
-        :style="{
-          width: setUnit(width),
-          padding: setUnit(padding),
-          minWidth: setUnit(minWidth)
-        }"
-        @mousedown.stop="outStart = false"
-        @mouseup.stop
-        v-loading="loading"
+      <Transition
+        :duration="100"
+        name="dialog-content"
       >
-        <zc-icon
-          v-if="closeIcon"
-          class="closeIcon"
-          @click="onCancel"
-          role="button"
-          aria-label="Close Dialog"
+        <div
+          v-if="contentVisible"
+          class="content"
+          :style="{
+            width: setUnit(width),
+            padding: setUnit(padding),
+            minWidth: setUnit(minWidth)
+          }"
+          @mousedown.stop="outStart = false"
+          @mouseup.stop
+          v-loading="loading"
         >
-          <IconClose></IconClose>
-        </zc-icon>
-        <div class="dialog-header" v-if="$slots.header">
-          <slot name="header"></slot>
+          <zc-icon
+            v-if="closeIcon"
+            class="closeIcon"
+            @click="onCancel"
+            role="button"
+            aria-label="Close Dialog"
+          >
+            <IconClose></IconClose>
+          </zc-icon>
+          <div class="dialog-header" v-if="$slots.header">
+            <slot name="header"></slot>
+          </div>
+          <div class="dialog-body">
+            <slot></slot>
+          </div>
+          <div class="dialog-footer" v-if="$slots.footer">
+            <slot name="footer"></slot>
+          </div>
         </div>
-        <div class="dialog-body">
-          <slot></slot>
-        </div>
-        <div class="dialog-footer" v-if="$slots.footer">
-          <slot name="footer"></slot>
-        </div>
-      </div>
+      </Transition>
     </div>
   </Transition>
 </template>
 
 <style scoped lang="scss">
-.dialog-fade-enter-active,
-.dialog-fade-leave-active {
-  transition: all 0.2s ease-in-out;
+.dialog-enter-active,
+.dialog-leave-active {
+  transition: all 0.1s ease-in-out;
 }
 
-.dialog-fade-enter-from,
-.dialog-fade-leave-to {
+.dialog-enter-from,
+.dialog-leave-to {
+  opacity: 0;
+}
+
+.dialog-enter-to,
+.dialog-leave-from {
+  opacity: 1;
+}
+
+.dialog-content-enter-active,
+.dialog-content-leave-active {
+  transition: all 0.1s ease-in-out;
+}
+
+.dialog-content-enter-from,
+.dialog-content-leave-to {
   opacity: 0;
   transform: scale(0.95);
 }
 
-.dialog-fade-enter-to,
-.dialog-fade-leave-from {
+.dialog-content-enter-to,
+.dialog-content-leave-from {
   opacity: 1;
   transform: scale(1);
 }

@@ -258,11 +258,9 @@ watch(
 )
 
 // 监听滚动事件
-watchEffect(() => {
-  if (scrollHeight.value && scroll.value) {
-    thead.value.scrollLeft = scroll.value.getScrollLeft
-  }
-})
+const handleScroll = (e: any) => {
+  thead.value.scrollLeft = e.scrollLeft
+}
 
 // 组件挂载和卸载
 onMounted(() => {
@@ -350,6 +348,7 @@ onBeforeUnmount(() => {
       :height="scrollHeight" 
       :key="scrollHeight"
       ref="scroll" 
+      @scroll="handleScroll"
     >
       <div class="tbody" ref="tbody" v-if="props.data && props.data.length">
           <div

@@ -17,7 +17,7 @@
 | modelValue | boolean | false | 复选框绑定值 |
 | label | string | - | 复选框标签文本 |
 | value | string/number | undefined | 复选框值，用于在复选框组中使用 |
-| disabled | boolean | false | 是否禁用复选框 |
+| disabled | boolean | - | 是否禁用复选框 |
 
 ## 事件
 

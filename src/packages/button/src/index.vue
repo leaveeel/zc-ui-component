@@ -19,9 +19,10 @@ const props = withDefaults(defineProps<zcUIProps.Button>(), {
   radius: 6,
   border: 1,
   htmlType: 'button',
+  disabled: undefined
 })
 
-const propsDisabled = inject('fieldDisabled', computed(() => props.disabled))
+const propsDisabled = props.disabled === undefined ? inject('fieldDisabled', ref(false)) : computed(() => props.disabled)
 
 const emit = defineEmits<{
   click: [e?: MouseEvent]
