@@ -1,6 +1,6 @@
 {
   "name": "zc-ui-component",
-  "version": "1.4.19",
+  "version": "1.5.0",
   "scripts": {
     "dev": "vite",
     "tsc": "vue-tsc --noEmit",

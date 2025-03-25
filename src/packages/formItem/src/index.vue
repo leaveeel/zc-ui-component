@@ -7,7 +7,7 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { setUnit } from '@/utils/common'
-import AsyncValidator, { Rules } from 'async-validator'
+import AsyncValidator, { RuleItem, Rules } from 'async-validator'
 import { debounce } from 'lodash-es'
 import { zcUI, zcUIProps } from '@/types/zcUI'
 import { defineProps, ref, provide, reactive, toRefs, inject, computed, onMounted, onBeforeUnmount, StyleValue, nextTick, watch } from 'vue'
@@ -22,16 +22,15 @@ const errorMsg = ref('')
 provide('errorMsg', errorMsg)
 const isFieldDisabled = ref(!!formContext.disabled)
 
-const rules = props.rules || (formContext.rules && formContext.rules[props.prop]) || undefined
+const propRule = props.rules || (formContext.rules && formContext.rules[props.prop])
+
+const rules: (RuleItem & { trigger: 'change' | 'blur' }) | (RuleItem & { trigger: 'change' | 'blur' })[] | undefined = propRule instanceof Array ? propRule : propRule instanceof Object ? [propRule] : undefined
+
 
 const itemRequired = computed(() => {
   if (props.required) return true
   if (rules) {
-    if (rules instanceof Array) {
-      return !!rules.find(i => i.required)
-    } else {
-      return !!rules.required
-    }
+    return rules.find(i => i.required)
   }
   return false
 })
@@ -39,26 +38,22 @@ const itemRequired = computed(() => {
 const itemTrigger = computed(() => {
   let trigger: string[] = []
   if (rules) {
-    if (rules instanceof Array) {
-      rules
-        .filter(i => i.trigger)
-        .forEach(i => {
-          if (i.trigger.indexOf('blur') >= 0) trigger.push('blur')
-          if (i.trigger.indexOf('change') >= 0) trigger.push('change')
-        })
-      if (!trigger.length) trigger = ['change']
-    } else {
-      trigger.push(rules.trigger || 'change')
-    }
+    rules
+      .filter(i => i.trigger)
+      .forEach(i => {
+        if (i.trigger.indexOf('blur') >= 0) trigger.push('blur')
+        if (i.trigger.indexOf('change') >= 0) trigger.push('change')
+      })
+    if (!trigger.length) trigger = ['change']
   }
-  return trigger
+  return [...new Set(trigger)]
 })
 
 const validate = async (t = 'change', v = formContext.model[props.prop]) => {
   if (!rules) {
     return { status: 'fulfilled' as const }
   }
-  
+
   const validator = new AsyncValidator({ [props.prop]: rules } as Rules)
   const model = { [props.prop]: v }
   
