@@ -11,7 +11,7 @@
 ## 组件列表
 
 ### 基础组件
-- [Button 按钮](src/packages/button/README.MD)
+- [Button 按钮](src/packages/button)
 - [ButtonGroup 按钮组](src/packages/buttonGroup/README.MD)
 - [Card 卡片](src/packages/card/README.MD)
 - [Icon 图标](src/packages/icon/README.MD)
