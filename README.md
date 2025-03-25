@@ -12,28 +12,28 @@
 
 ### 基础组件
 - [Button 按钮](src/packages/button)
-- [ButtonGroup 按钮组](src/packages/buttonGroup/README.MD)
-- [Card 卡片](src/packages/card/README.MD)
-- [Icon 图标](src/packages/icon/README.MD)
+- [ButtonGroup 按钮组](src/packages/buttonGroup)
+- [Card 卡片](src/packages/card)
+- [Icon 图标](src/packages/icon)
 
 ### 表单组件
-- [Checkbox 复选框](src/packages/checkbox/README.MD)
-- [CheckboxGroup 复选框组](src/packages/checkboxGroup/README.MD)
-- [Form 表单](src/packages/form/README.MD)
-- [FormItem 表单项](src/packages/formItem/README.MD)
-- [Input 输入框](src/packages/input/README.MD)
+- [Checkbox 复选框](src/packages/checkbox)
+- [CheckboxGroup 复选框组](src/packages/checkboxGroup)
+- [Form 表单](src/packages/form)
+- [FormItem 表单项](src/packages/formItem)
+- [Input 输入框](src/packages/input)
 
 ### 数据展示
-- [Table 表格](src/packages/table/README.MD)
-- [Pagination 分页](src/packages/pagination/README.MD)
-- [Scroll 滚动容器](src/packages/scroll/README.MD)
+- [Table 表格](src/packages/table)
+- [Pagination 分页](src/packages/pagination)
+- [Scroll 滚动容器](src/packages/scroll)
 
 ### 反馈组件
-- [Dialog 对话框](src/packages/dialog/README.MD)
-- [Loading 加载](src/packages/loading/README.MD)
-- [MessageBox 消息框](src/packages/messageBox/README.MD)
-- [Toast 轻提示](src/packages/toast/README.MD)
-- [Tooltip 文字提示](src/packages/tooltip/README.MD)
+- [Dialog 对话框](src/packages/dialog)
+- [Loading 加载](src/packages/loading)
+- [MessageBox 消息框](src/packages/messageBox)
+- [Toast 轻提示](src/packages/toast)
+- [Tooltip 文字提示](src/packages/tooltip)
 
 ## 安装
 
