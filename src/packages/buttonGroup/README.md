@@ -1,71 +1,78 @@
-# `zc-buttonGroup`按钮组
+# ZC Button Group 按钮组组件
 
-## 基础用法
+按钮组组件用于将多个按钮组合在一起，提供统一的布局和间距控制。
 
-```vue
-<template>
-  <zc-button-group>
-    <zc-button>上一页</zc-button>
-    <zc-button>下一页</zc-button>
-  </zc-button-group>
-</template>
-```
-
-## 不同尺寸
-
-按钮组支持不同的尺寸设置，包括大、中、小三种尺寸。
+## 基本用法
 
 ```vue
-<template>
-  <div>
-    <zc-button-group size="large">
-      <zc-button>大尺寸</zc-button>
-      <zc-button>大尺寸</zc-button>
-    </zc-button-group>
-    
-    <zc-button-group>
-      <zc-button>默认尺寸</zc-button>
-      <zc-button>默认尺寸</zc-button>
-    </zc-button-group>
-    
-    <zc-button-group size="small">
-      <zc-button>小尺寸</zc-button>
-      <zc-button>小尺寸</zc-button>
-    </zc-button-group>
-  </div>
-</template>
-```
-
-## 垂直排列
-
-设置 `direction` 属性为 `vertical` 可以使按钮垂直排列。
-
-```vue
-<template>
-  <zc-button-group direction="vertical">
-    <zc-button>按钮1</zc-button>
-    <zc-button>按钮2</zc-button>
-    <zc-button>按钮3</zc-button>
-  </zc-button-group>
-</template>
+<zc-button-group>
+  <zc-button>按钮1</zc-button>
+  <zc-button>按钮2</zc-button>
+  <zc-button>按钮3</zc-button>
+</zc-button-group>
 ```
 
 ## 属性
 
-| 属性名 | 说明 | 类型 | 可选值 | 默认值 |
-|--------|------|------|--------|--------|
-| size | 按钮组尺寸 | string | large / default / small | default |
-| direction | 按钮排列方向 | string | horizontal / vertical | horizontal |
-| disabled | 是否禁用所有按钮 | boolean | true / false | false |
+| 属性名 | 类型 | 默认值 | 说明 |
+|-------|------|-------|------|
+| align | 'left'/'center'/'right' | 'left' | 按钮组对齐方式 |
+| inline | boolean | false | 是否为行内按钮组 |
+| vertical | boolean | false | 是否垂直排列 |
+| gap | string/number | 10 | 按钮之间的间距 |
 
 ## 插槽
 
 | 插槽名 | 说明 |
-|--------|------|
-| default | 按钮组的内容，通常是多个按钮 |
+|-------|------|
+| default | 按钮组内容，通常是多个按钮 |
+
+## 样式定制
+
+按钮组组件支持多种布局方式，可以通过属性设置按钮的排列方向和对齐方式。
+
+### 对齐方式
+
+```vue
+<zc-button-group align="left">
+  <!-- 左对齐按钮 -->
+</zc-button-group>
+
+<zc-button-group align="center">
+  <!-- 居中对齐按钮 -->
+</zc-button-group>
+
+<zc-button-group align="right">
+  <!-- 右对齐按钮 -->
+</zc-button-group>
+```
+
+### 垂直排列
+
+```vue
+<zc-button-group vertical>
+  <!-- 垂直排列的按钮 -->
+</zc-button-group>
+```
+
+### 行内显示
+
+```vue
+<zc-button-group inline>
+  <!-- 行内显示的按钮组 -->
+</zc-button-group>
+```
+
+### 自定义间距
+
+```vue
+<zc-button-group :gap="20">
+  <!-- 间距为20px的按钮组 -->
+</zc-button-group>
+```
 
 ## 注意事项
 
-- 按钮组内部应当只放置 `zc-button` 组件
-- 按钮组会统一设置内部按钮的尺寸和禁用状态
-- 当使用垂直排列时，建议设置适当的宽度
+- 按钮组内部应该放置 `zc-button` 组件
+- 垂直排列时，对齐方式会影响按钮的水平位置
+- 行内显示时，按钮组会使用 `inline-flex` 布局

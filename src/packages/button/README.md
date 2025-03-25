@@ -1,6 +1,8 @@
-# `zc-button`按钮组件
+# ZC Button 按钮组件
 
-## 基础用法
+按钮组件是一个常用的交互元素，用于触发操作。
+
+## 基本用法
 
 ```vue
 <zc-button>默认按钮</zc-button>
@@ -10,115 +12,85 @@
 <zc-button disabled>禁用按钮</zc-button>
 ```
 
-## 事件处理
-
-```vue
-<zc-button @click="handleClick">点击事件</zc-button>
-<zc-button @click.stop="handleClickWithStop">阻止冒泡</zc-button>
-```
-
-## 自定义图标
-
-```vue
-<zc-button>
-  <template #icon>
-    <zc-icon name="search"></zc-icon>
-  </template>
-  带图标的按钮
-</zc-button>
-```
-
-## 自定义样式
-
-```vue
-<zc-button 
-  color="#ff5500" 
-  background="#f5f5f5" 
-  border-color="#ff5500"
-  :radius="10"
-  :size="18"
->
-  自定义样式按钮
-</zc-button>
-```
-
-## 属性列表
+## 属性
 
 | 属性名 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| width | string \| number | 'auto' | 按钮宽度 |
-| height | string \| number | '40' | 按钮高度 |
-| size | number | 16 | 字体大小 |
-| radius | number | 6 | 圆角大小 |
-| border | number | 1 | 边框宽度 |
-| htmlType | string | 'button' | 原生 button 的 type 属性 |
-| disabled | boolean | false | 是否禁用 |
-| loading | boolean | - | 是否显示加载状态 |
-| plain | boolean | - | 是否为朴素按钮 |
-| text | boolean | - | 是否为文本按钮 |
-| color | string | - | 文字颜色 |
-| background | string | - | 背景颜色 |
-| borderColor | string | - | 边框颜色 |
-| inline | boolean | - | 是否为内联按钮 |
-
-## 插槽
-
-| 插槽名 | 说明 |
-| --- | --- |
-| default | 按钮内容 |
-| icon | 按钮图标，loading 状态下不显示 |
+|-------|------|-------|------|
+| plain | boolean | false | 是否为朴素按钮（仅显示边框） |
+| text | boolean | false | 是否为文本按钮（无边框和背景） |
+| inline | boolean | false | 是否为行内按钮 |
+| width | string/number | 'auto' | 按钮宽度 |
+| height | string/number | '40' | 按钮高度 |
+| size | string/number | 16 | 按钮字体大小 |
+| radius | string/number | 6 | 按钮圆角大小 |
+| color | string | - | 按钮文字颜色 |
+| background | string | - | 按钮背景颜色 |
+| borderColor | string | - | 按钮边框颜色 |
+| border | string/number | 1 | 按钮边框宽度 |
+| loading | boolean | false | 是否显示加载状态 |
+| disabled | boolean | false | 是否禁用按钮 |
+| htmlType | 'button'/'submit'/'reset' | 'button' | 原生button类型 |
 
 ## 事件
 
 | 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+|-------|------|------|
 | click | 点击按钮时触发 | MouseEvent |
+
+## 插槽
+
+| 插槽名 | 说明 |
+|-------|------|
+| default | 按钮内容 |
+| icon | 按钮图标，loading状态下不显示 |
+
+## 样式定制
+
+按钮组件支持多种样式定制，可以通过属性设置按钮的宽高、颜色、边框等样式。
+
+### 朴素按钮
+
+```vue
+<zc-button plain>朴素按钮</zc-button>
+```
+
+### 文本按钮
+
+```vue
+<zc-button text>文本按钮</zc-button>
+```
+
+### 自定义颜色
+
+```vue
+<zc-button color="#ff0000">红色文字</zc-button>
+<zc-button background="#ff0000">红色背景</zc-button>
+<zc-button borderColor="#ff0000">红色边框</zc-button>
+```
+
+### 加载状态
+
+```vue
+<zc-button loading>加载中</zc-button>
+```
+
+### 禁用状态
+
+```vue
+<zc-button disabled>禁用按钮</zc-button>
+```
+
+## 无障碍访问
+
+按钮组件支持键盘导航和焦点管理，增强了可访问性：
+
+- 可以使用Tab键聚焦到按钮
+- 可以使用Enter或空格键触发按钮点击
+- 禁用状态和加载状态下会阻止点击事件
+- 支持aria-disabled和aria-busy属性
 
 ## 注意事项
 
-1. 当按钮处于 `disabled` 或 `loading` 状态时，点击事件不会触发
-2. 使用 `@click.stop` 可以阻止事件冒泡
-3. 按钮支持键盘导航，按下 Enter 或空格键可触发点击事件
-
-## 示例
-
-```vue
-<template>
-  <div class="button-demo">
-    <h3>基础按钮</h3>
-    <div class="demo-row">
-      <zc-button @click="handleClick">默认按钮</zc-button>
-      <zc-button plain>朴素按钮</zc-button>
-      <zc-button text>文本按钮</zc-button>
-    </div>
-    
-    <h3>状态按钮</h3>
-    <div class="demo-row">
-      <zc-button loading>加载中</zc-button>
-      <zc-button disabled>禁用按钮</zc-button>
-    </div>
-    
-    <h3>自定义样式</h3>
-    <div class="demo-row">
-      <zc-button color="#fff" background="#67c23a">成功按钮</zc-button>
-      <zc-button color="#fff" background="#f56c6c">危险按钮</zc-button>
-      <zc-button color="#fff" background="#e6a23c">警告按钮</zc-button>
-      <zc-button color="#fff" background="#909399">信息按钮</zc-button>
-    </div>
-  </div>
-</template>
-
-<script setup>
-const handleClick = () => {
-  alert('按钮被点击了！')
-}
-</script>
-
-<style scoped>
-.demo-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-</style>
-```
+- 在表单中使用时，可以设置htmlType为"submit"或"reset"
+- 按钮在禁用或加载状态下不会触发点击事件
+- 文本按钮没有背景色和边框
