@@ -77,7 +77,7 @@ import zcUIComponent, {
 } from 'zc-ui-component'
 import 'zc-ui-component/dist/zc-ui-component.css'
 
-const app = createApp(App).use(createPinia()).use(router).use(zcUIComponent)
+const app = createApp(App).use(zcUIComponent)
 
 app.config.globalProperties.$toast = zcToast
 app.config.globalProperties.$message = zcMessage
@@ -98,7 +98,7 @@ import zcUIComponent, {
 } from 'zc-ui-component'
 import 'zc-ui-component/dist/zc-ui-component.css'
 
-const app = createApp(App).use(createPinia()).use(router).use(zcUIComponent)
+const app = createApp(App).use(zcUIComponent)
 
 app.directive('loading', loadingDirective)
 app.mount('#app')
