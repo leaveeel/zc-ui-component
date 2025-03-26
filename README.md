@@ -7,10 +7,8 @@
 
 ## 最近更新
 
-- 1.5.3 
-  - 对1.5.0版本trigger不触发change校验的问题补充修复
-  - 添加Form组件enterSubmit属性，实现按下Enter键提交表单
-
+- 1.5.4
+  - 修复Form组件submit事件不触发的问题
 
 
 ## 组件列表
@@ -129,6 +127,13 @@ app.mount('#app')
 
 
 ## 更新日志
+
+- 1.5.4
+  - 修复Form组件submit事件不触发的问题
+
+- 1.5.3 
+  - 对1.5.0版本trigger不触发change校验的问题补充修复
+  - 添加Form组件enterSubmit属性，实现按下Enter键提交表单
 
 - 1.5.2
   - 修复Table表头滚动问题

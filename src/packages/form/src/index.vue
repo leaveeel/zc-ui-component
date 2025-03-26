@@ -103,13 +103,17 @@ const clearValidate = (props?: string | string[]) => {
   })
 }
 
-const handleEnterSubmit = async (e: KeyboardEvent) => {
+const handleEnterSubmit = (e: KeyboardEvent) => {
   if (props.enterSubmit && e.key === 'Enter') {
     e.preventDefault()
-    const isValid = await validate()
-    if (isValid) {
-      emit('submit')
-    }
+    submit()
+  }
+}
+
+const submit = async () => {
+  const isValid = await validate()
+  if (isValid) {
+    emit('submit')
   }
 }
 
@@ -136,7 +140,7 @@ defineExpose({
 <template>
   <form 
     class="zc-ui-component zc-form" 
-    @submit.prevent
+    @submit.prevent="submit"
     @keydown="handleEnterSubmit"
     :class="{ 'zc-form-disabled': disabled }"
   >
