@@ -7,18 +7,20 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, provide, reactive, toRefs, ref, watchEffect, computed } from 'vue'
+import { defineProps, provide, reactive, toRefs, ref } from 'vue'
 
 const props = withDefaults(defineProps<zcUIProps.Form>(), {
   labelPosition: 'left',
   scrollToError: false,
   hideRequiredAsterisk: false,
   validateOnRuleChange: true,
-  disabled: false
+  disabled: false,
+  enterSubmit: false
 })
 
 const emit = defineEmits<{
   validate: [value: boolean, invalidFields?: Record<string, string>]
+  submit: []
 }>()
 
 const fields: zcUI.FormItem[] = []
@@ -101,6 +103,16 @@ const clearValidate = (props?: string | string[]) => {
   })
 }
 
+const handleEnterSubmit = async (e: KeyboardEvent) => {
+  if (props.enterSubmit && e.key === 'Enter') {
+    e.preventDefault()
+    const isValid = await validate()
+    if (isValid) {
+      emit('submit')
+    }
+  }
+}
+
 provide(
   'formContext',
   reactive({
@@ -125,6 +137,7 @@ defineExpose({
   <form 
     class="zc-ui-component zc-form" 
     @submit.prevent
+    @keydown="handleEnterSubmit"
     :class="{ 'zc-form-disabled': disabled }"
   >
     <slot></slot>

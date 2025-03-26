@@ -1,7 +1,3 @@
-
-
-
-
 # ZC Form 表单组件
 
 表单组件用于收集、验证和提交数据，提供了灵活的布局和验证功能。
@@ -16,8 +12,6 @@
 </zc-form>
 ```
 
-
-
 ## 属性
 
 | 属性名 | 类型 | 默认值 | 说明 |
@@ -30,12 +24,14 @@
 | hideRequiredAsterisk | boolean | false | 是否隐藏必填字段的标签旁边的红色星号 |
 | validateOnRuleChange | boolean | true | 是否在rules属性改变后立即触发一次验证 |
 | disabled | boolean | false | 是否禁用该表单内的所有组件 |
+| enterSubmit | boolean | false | 是否在按下Enter键时提交表单 |
 
 ## 事件
 
 | 事件名 | 说明 | 参数 |
 |-------|------|------|
 | validate | 表单验证完成时触发 | (isValid: boolean, invalidFields?: Record<string, string>) |
+| submit | 表单提交时触发（当enterSubmit为true且按下Enter键时） | - |
 
 ## 方法
 
@@ -79,8 +75,6 @@ const rules = {
 </script>
 ```
 
-
-
 ### 自定义验证
 
 ```vue
@@ -109,8 +103,6 @@ const rules = {
 </script>
 ```
 
-
-
 ## 表单布局
 
 表单组件支持多种布局方式，可以通过属性设置标签的位置和宽度。
@@ -131,8 +123,6 @@ const rules = {
 </zc-form>
 ```
 
-
-
 ### 标签宽度
 
 ```vue
@@ -140,8 +130,6 @@ const rules = {
   <!-- 标签宽度为120px的表单 -->
 </zc-form>
 ```
-
-
 
 ## 禁用状态
 
@@ -151,7 +139,20 @@ const rules = {
 </zc-form>
 ```
 
+## 回车提交表单
 
+```vue
+<zc-form :model="form" :rules="rules" enterSubmit @submit="handleSubmit">
+  <!-- 按下Enter键时会触发表单验证，验证通过后触发submit事件 -->
+</zc-form>
+
+<script setup>
+const handleSubmit = () => {
+  // 处理表单提交
+  console.log('表单提交成功')
+}
+</script>
+```
 
 ## 注意事项
 
@@ -159,3 +160,4 @@ const rules = {
 - 表单数据对象model必须是响应式的
 - 验证规则中的trigger可以是'blur'或'change'
 - 禁用表单会禁用所有表单项
+- 使用enterSubmit属性可以实现按下Enter键提交表单的功能

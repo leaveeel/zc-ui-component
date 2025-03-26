@@ -141,6 +141,7 @@ export namespace zcUIProps {
    * @property {boolean} hideRequiredAsterisk - 是否隐藏必填字段的标签旁边的红色星号
    * @property {boolean} validateOnRuleChange - 是否在rules属性改变后立即触发一次验证
    * @property {boolean} disabled - 是否禁用该表单内的所有组件
+   * @property {boolean} enterSubmit - 是否在按下Enter键时提交表单
    */
   export interface Form {
     rules?: Record<string, (RuleItem & { trigger: 'change' | 'blur' }) | (RuleItem & { trigger: 'change' | 'blur' })[]>
@@ -151,6 +152,7 @@ export namespace zcUIProps {
     hideRequiredAsterisk?: boolean
     validateOnRuleChange?: boolean
     disabled?: boolean
+    enterSubmit?: boolean
   }
 
   /**
