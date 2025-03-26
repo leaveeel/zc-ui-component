@@ -47,6 +47,7 @@ const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const id = inject('id', undefined)
 const errorMsg = ref(inject('errorMsg', ''))
 const blur = inject<(() => void) | undefined>('blur', undefined)
+const change = inject<(() => void) | undefined>('change', undefined)
 
 // 响应式状态
 const inputType = ref(props.type)
@@ -99,6 +100,7 @@ const handleInput = (e: Event) => {
   const value = target.value
   emit('update:modelValue', value)
   emit('input', value)
+  change?.()
 }
 
 const handleBlur = (e: FocusEvent) => {

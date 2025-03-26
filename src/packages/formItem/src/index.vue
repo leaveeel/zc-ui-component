@@ -196,6 +196,9 @@ defineExpose({
   display: flex;
   margin-bottom: 20px;
   transition: all 0.3s;
+  &:last-child {
+    margin-bottom: 0;
+  }
   
   &.column {
     flex-direction: column;
