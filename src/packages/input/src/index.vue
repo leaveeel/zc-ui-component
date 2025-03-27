@@ -233,6 +233,7 @@ const handleClick = (e: MouseEvent) => {
     overflow: hidden;
     display: flex;
     cursor: text;
+    height: 100%;
     &:hover:not(:disabled) {
       border-color: var(--main-color);
     }
