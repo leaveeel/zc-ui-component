@@ -68,9 +68,9 @@ const handleScroll = () => {
   if (!scrollBody.value || !rightScroll.value || !rightBlock.value || !bottomScroll.value || !bottomBlock.value) return
   
   const scrollTop = scrollBody.value.scrollTop
-  const scrollHeight = rightScroll.value.offsetHeight + 16
+  const scrollHeight = rightScroll.value.offsetHeight + 8
   const scrollLeft = scrollBody.value.scrollLeft
-  const scrollWidth = bottomScroll.value.offsetWidth + 24
+  const scrollWidth = bottomScroll.value.offsetWidth + 8
 
   rightBlock.value.style.transform = `translateY(${(scrollTop / scrollHeight) * 100}%)`
   bottomBlock.value.style.transform = `translateX(${(scrollLeft / scrollWidth) * 100}%)`

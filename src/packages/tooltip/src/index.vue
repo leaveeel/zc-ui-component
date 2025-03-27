@@ -167,7 +167,6 @@ onBeforeUnmount(() => {
     padding: 8px 12px;
     border-radius: 4px;
     font-size: 14px;
-    word-break: break-all;
     box-sizing: border-box;
     z-index: 1000;
     

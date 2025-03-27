@@ -6,12 +6,13 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { zcUIProps } from '@/types/zcUI'
-import { defineProps, ref, inject, computed, watch, nextTick, useAttrs } from 'vue'
-import IconClose from '@/packages/icon/src/IconClose.vue'
 import zcIcon from '@/packages/icon/index.vue'
+import IconClose from '@/packages/icon/src/IconClose.vue'
+import IconHide from '@/packages/icon/src/IconHide.vue'
+import IconShow from '@/packages/icon/src/IconShow.vue'
+import { zcUIProps } from '@/types/zcUI'
 import { setUnit } from '@/utils/common'
-import { debounce } from 'lodash-es'
+import { computed, defineProps, inject, nextTick, ref, useAttrs, watch } from 'vue'
 
 // 定义props
 const props = withDefaults(defineProps<zcUIProps.Input>(), {
@@ -70,8 +71,7 @@ const showTogglePassword = computed(() =>
 // 方法
 const clearInput = (e?: MouseEvent) => {
   e?.preventDefault()
-  e?.stopPropagation()
-  
+
   emit('update:modelValue', '')
   emit('input', '')
   emit('clear')
@@ -84,14 +84,9 @@ const clearInput = (e?: MouseEvent) => {
 
 const togglePasswordVisibility = (e?: MouseEvent) => {
   e?.preventDefault()
-  e?.stopPropagation()
-  
+
   isPasswordVisible.value = !isPasswordVisible.value
   inputType.value = isPasswordVisible.value ? 'text' : 'password'
-  
-  nextTick(() => {
-    inputRef.value?.focus()
-  })
 }
 
 const handleInput = (e: Event) => {
@@ -103,24 +98,27 @@ const handleInput = (e: Event) => {
   change?.()
 }
 
+const focus = ref(false)
 const handleBlur = (e: FocusEvent) => {
+  focus.value = false
   blur?.()
   const target = e.target as HTMLInputElement | HTMLTextAreaElement
   emit('blur', target.value)
 }
 
 const handleFocus = (e: FocusEvent) => {
+  focus.value = true
   emit('focus', e)
 }
 
 const adjustTextareaHeight = () => {
   if (!isTextarea.value || !textareaRef.value || !props.resize) return
-  
+
   textareaRef.value.style.height = '100%'
-  textareaRef.value.style.height = `${textareaRef.value.scrollHeight}px`
+  textareaRef.value.style.height = `${ textareaRef.value.scrollHeight }px`
 }
 
-if(isTextarea.value) {
+if (isTextarea.value) {
   nextTick(() => {
     textareaRef.value!.style.height = '100%'
   })
@@ -132,6 +130,14 @@ watch(() => props.modelValue, () => {
     nextTick(adjustTextareaHeight)
   }
 })
+
+const handleClick = (e: MouseEvent) => {
+  e?.preventDefault()
+  nextTick(() => {
+    const target = isTextarea.value ? textareaRef.value : inputRef.value
+    target?.focus()
+  })
+}
 </script>
 
 <template>
@@ -145,11 +151,11 @@ watch(() => props.modelValue, () => {
       }
     ]"
   >
-    <template v-if="isTextarea">
+    <div class="input-container" :class="{ error: errorMsg, focus: focus }">
       <textarea
+        v-if="isTextarea"
         ref="textareaRef"
         :id="id"
-        :class="{ error: errorMsg }"
         v-bind="attrs"
         :value="modelValue"
         :placeholder="placeholder"
@@ -161,45 +167,53 @@ watch(() => props.modelValue, () => {
         @blur="handleBlur"
         @focus="handleFocus"
       ></textarea>
-    </template>
-    <template v-else>
-      <div class="input-container">
-        <input
-          ref="inputRef"
-          :id="id"
-          :class="{ error: errorMsg }"
-          v-bind="attrs"
-          :type="inputType"
-          :value="modelValue"
-          :placeholder="placeholder"
-          :disabled="propsDisabled"
-          :maxlength="maxLength"
-          :autocomplete="autocomplete"
-          :style="{ height: setUnit(height) }"
-          @input="handleInput"
-          @blur="handleBlur"
-          @focus="handleFocus"
-        />
-        <div class="input-buttons" v-if="showClear || showTogglePassword">
-          <zc-icon 
-            v-if="showClear" 
-            class="clear-icon" 
-            :size="16" 
-            color="#999" 
-            @mousedown.stop="clearInput"
+
+      <input
+        v-else
+        ref="inputRef"
+        :id="id"
+        v-bind="attrs"
+        :type="inputType"
+        :value="modelValue"
+        :placeholder="placeholder"
+        :disabled="propsDisabled"
+        :maxlength="maxLength"
+        :autocomplete="autocomplete"
+        :style="{ height: setUnit(height) }"
+        @input="handleInput"
+        @blur="handleBlur"
+        @focus="handleFocus"
+      />
+      <div
+        v-if="showClear || showTogglePassword"
+        class="input-buttons"
+        @mousedown.stop="handleClick"
+      >
+        <zc-icon
+          v-if="showClear"
+          :size="16"
+          @mousedown.stop="clearInput"
+        >
+          <IconClose />
+        </zc-icon>
+        <template v-if="showTogglePassword">
+          <zc-icon
+            v-if="isPasswordVisible"
+            :size="16"
+            @mousedown="togglePasswordVisibility"
           >
-            <IconClose />
+            <IconShow />
           </zc-icon>
-          <div 
-            v-if="showTogglePassword" 
-            class="password-toggle" 
+          <zc-icon
+            v-else
+            :size="16"
             @mousedown.stop="togglePasswordVisibility"
           >
-            {{ isPasswordVisible ? 'Hide' : 'Show' }}
-          </div>
-        </div>
+            <IconHide />
+          </zc-icon>
+        </template>
       </div>
-    </template>
+    </div>
     <p class="tip" :class="{ error: errorMsg }" v-if="tip">
       {{ tip }}
     </p>
@@ -213,74 +227,17 @@ watch(() => props.modelValue, () => {
   position: relative;
   .input-container {
     position: relative;
-  }
-  .input-buttons {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    
-    .clear-icon {
-      cursor: pointer;
-      opacity: 0.6;
-      transition: opacity 0.2s ease;
-      
-      &:hover {
-        opacity: 1;
-      }
-    }
-    
-    .password-toggle {
-      cursor: pointer;
-      font-size: 12px;
-      color: #999;
-      transition: color 0.2s ease;
-      
-      &:hover {
-        color: var(--main-color);
-      }
-    }
-  }
-  
-  &.is-textarea {
-    .input-buttons {
-      top: 12px;
-      transform: none;
-    }
-  }
-  
-  .tip {
-    font-size: 12px;
-    font-family: var(--main-font-family);
-    color: #999999;
-    line-height: 10px;
-    margin-top: 8px;
-    transition: color 0.2s ease;
-    
-    &.error {
-      color: var(--main-danger-color);
-    }
-  }
-
-  input, textarea {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 12px;
-    border-radius: 4px;
-    outline: none;
     background: #ffffff;
     border: 1px solid #e4e4e4;
-    color: var(--main-font-color);
-    transition: all 0.2s ease;
-    
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    cursor: text;
     &:hover:not(:disabled) {
-      border-color: #c0c4cc;
+      border-color: var(--main-color);
     }
     
-    &:focus {
+    &.focus {
       border-color: var(--main-color);
       box-shadow: 0 0 0 2px rgba(var(--main-color-rgb, 0, 120, 212), 0.1);
     }
@@ -288,6 +245,49 @@ watch(() => props.modelValue, () => {
     &.error {
       border-color: var(--main-danger-color);
     }
+  }
+
+  &.has-error {
+    .input-container {
+      border-color: var(--main-danger-color);
+    }
+  }
+
+  .input-buttons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding-right: 10px;
+
+    .zc-icon {
+      cursor: pointer;
+      transition: color 0.2s ease;
+      &:hover {
+        color: var(--main-color);
+      }
+    }
+  }
+
+  .tip {
+    font-size: 12px;
+    font-family: var(--main-font-family);
+    color: #999999;
+    line-height: 10px;
+    margin-top: 8px;
+    transition: color 0.2s ease;
+
+    &.error {
+      color: var(--main-danger-color);
+    }
+  }
+
+  input, textarea {
+    width: 100%;
+    padding: 10px;
+    outline: none;
+    color: var(--main-font-color);
+    transition: all 0.2s ease;
+    border:none;
     
     &:disabled {
       background-color: #f5f7fa;
@@ -309,10 +309,5 @@ watch(() => props.modelValue, () => {
     opacity: 0.7;
   }
   
-  &.has-error {
-    input, textarea {
-      border-color: var(--main-danger-color);
-    }
-  }
 }
 </style>

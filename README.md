@@ -1,25 +1,24 @@
-
-
 # ZC UI
 
-基于 Vue 3 + TypeScript 
-
+基于 Vue 3 + TypeScript
 
 ## 最近更新
 
-- 1.5.4
-  - 修复Form组件submit事件不触发的问题
-
+- 1.5.5
+  - 调整dialog组件关闭按钮位置
+  - input优化，替换可见图标
 
 ## 组件列表
 
 ### 基础组件
+
 - [Button 按钮](src/packages/button)
 - [ButtonGroup 按钮组](src/packages/buttonGroup)
 - [Card 卡片](src/packages/card)
 - [Icon 图标](src/packages/icon)
 
 ### 表单组件
+
 - [Checkbox 复选框](src/packages/checkbox)
 - [CheckboxGroup 复选框组](src/packages/checkboxGroup)
 - [Form 表单](src/packages/form)
@@ -27,11 +26,13 @@
 - [Input 输入框](src/packages/input)
 
 ### 数据展示
+
 - [Table 表格](src/packages/table)
 - [Pagination 分页](src/packages/pagination)
 - [Scroll 滚动容器](src/packages/scroll)
 
 ### 反馈组件
+
 - [Dialog 对话框](src/packages/dialog)
 - [Loading 加载](src/packages/loading)
 - [MessageBox 消息框](src/packages/messageBox)
@@ -125,13 +126,16 @@ app.mount('#app')
 }
 ```
 
-
 ## 更新日志
+
+- 1.5.5
+  - 调整dialog组件关闭按钮位置
+  - input优化，替换可见图标
 
 - 1.5.4
   - 修复Form组件submit事件不触发的问题
 
-- 1.5.3 
+- 1.5.3
   - 对1.5.0版本trigger不触发change校验的问题补充修复
   - 添加Form组件enterSubmit属性，实现按下Enter键提交表单
 

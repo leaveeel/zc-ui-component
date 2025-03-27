@@ -1,6 +1,6 @@
 {
   "name": "zc-ui-component",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "scripts": {
     "dev": "vite",
     "tsc": "vue-tsc --noEmit",
@@ -20,7 +20,7 @@
     "typescript": "~5.7.2",
     "vite": "^6.2.0"
   },
-  "description": "This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.",
+  "description": "zc-ui-component",
   "main": "dist/zc-ui-component.umd.js",
   "module": "dist/zc-ui-component.es.js",
   "types": "src/types/index.d.ts",

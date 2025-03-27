@@ -11,6 +11,7 @@ import { setUnit } from '@/utils/common'
 import { defineProps, ref, onMounted, onUnmounted, watch } from 'vue'
 import IconClose from '@/packages/icon/src/IconClose.vue'
 import zcIcon from '@/packages/icon/index.vue'
+import zcScroll from '@/packages/scroll/src/index.vue'
 
 const dialogId = `dialog-${Math.random()}`
 
@@ -205,8 +206,8 @@ onUnmounted(() => {
 
     .closeIcon {
       position: absolute;
-      right: 20px;
-      top: 20px;
+      right: 10px;
+      top: 10px;
       z-index: 1;
       cursor: pointer;
       transition: transform 0.2s ease;
@@ -226,6 +227,7 @@ onUnmounted(() => {
     color: #606266;
     font-size: 16px;
     line-height: 1.5;
+    overflow: hidden;
   }
 
   .dialog-footer {
