@@ -23,9 +23,11 @@ import IconClose from '@/packages/icon/src/IconClose.vue'
 import IconLoading from '@/packages/icon/src/IconLoading.vue'
 import { zcUI } from '@/types/zcUI'
 
+const value = ref('')
 </script>
 
 <template>
+  <zc-input v-model="value" type="password" />
 </template>
 
 <style scoped>

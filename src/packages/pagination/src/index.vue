@@ -13,6 +13,7 @@ import zcButtonGroup from '@/packages/buttonGroup/src/index.vue'
 import IconRightArrow from '@/packages/icon/src/IconRightArrow.vue'
 import zcIcon from '@/packages/icon/index.vue'
 import zcInput from '@/packages/input/src/index.vue'
+import { useDocument } from '@/utils/common'
 
 const props = withDefaults(defineProps<zcUIProps.Pagination>(), {
   pageSize: 10,
@@ -126,9 +127,11 @@ const handleInputConfirm = () => {
 const showJumper = () => {
   inputVisible.value = true
   setTimeout(() => {
-    const input = document.querySelector('.zc-pagination-jumper input') as HTMLInputElement
-    if (input) {
-      input.focus()
+    if(useDocument()) {
+      const input = document.querySelector('.zc-pagination-jumper input') as HTMLInputElement
+      if (input) {
+        input.focus()
+      }
     }
   }, 10)
 }

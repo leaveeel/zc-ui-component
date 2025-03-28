@@ -14,3 +14,10 @@ export const splitString = (n: string) => {
   const unit = n.replace(num.toString(), '')
   return { num, unit: unit || 'px' }
 }
+
+export const useDocument = () => {
+  if (typeof window !== 'undefined') {
+    return document
+  }
+  return null
+}

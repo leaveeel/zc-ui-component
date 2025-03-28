@@ -70,8 +70,6 @@ const showTogglePassword = computed(() =>
 
 // 方法
 const clearInput = (e?: MouseEvent) => {
-  e?.preventDefault()
-
   emit('update:modelValue', '')
   emit('input', '')
   emit('clear')
@@ -83,8 +81,6 @@ const clearInput = (e?: MouseEvent) => {
 }
 
 const togglePasswordVisibility = (e?: MouseEvent) => {
-  e?.preventDefault()
-
   isPasswordVisible.value = !isPasswordVisible.value
   inputType.value = isPasswordVisible.value ? 'text' : 'password'
 }
@@ -100,6 +96,7 @@ const handleInput = (e: Event) => {
 
 const focus = ref(false)
 const handleBlur = (e: FocusEvent) => {
+  console.log(1)
   focus.value = false
   blur?.()
   const target = e.target as HTMLInputElement | HTMLTextAreaElement
@@ -107,6 +104,7 @@ const handleBlur = (e: FocusEvent) => {
 }
 
 const handleFocus = (e: FocusEvent) => {
+  console.log(2)
   focus.value = true
   emit('focus', e)
 }
@@ -132,6 +130,7 @@ watch(() => props.modelValue, () => {
 })
 
 const handleClick = (e: MouseEvent) => {
+  console.log(3)
   e?.preventDefault()
   nextTick(() => {
     const target = isTextarea.value ? textareaRef.value : inputRef.value
@@ -187,12 +186,12 @@ const handleClick = (e: MouseEvent) => {
       <div
         v-if="showClear || showTogglePassword"
         class="input-buttons"
-        @mousedown.stop="handleClick"
+        @mousedown.stop.prevent="handleClick"
       >
         <zc-icon
           v-if="showClear"
           :size="16"
-          @mousedown.stop="clearInput"
+          @mousedown.stop.prevent="clearInput"
         >
           <IconClose />
         </zc-icon>
@@ -200,14 +199,14 @@ const handleClick = (e: MouseEvent) => {
           <zc-icon
             v-if="isPasswordVisible"
             :size="16"
-            @mousedown="togglePasswordVisibility"
+            @mousedown.stop.prevent="togglePasswordVisibility"
           >
             <IconShow />
           </zc-icon>
           <zc-icon
             v-else
             :size="16"
-            @mousedown.stop="togglePasswordVisibility"
+            @mousedown.stop.prevent="togglePasswordVisibility"
           >
             <IconHide />
           </zc-icon>

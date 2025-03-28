@@ -10,6 +10,7 @@ import { setUnit } from '@/utils/common'
 import { zcUIProps } from '@/types/zcUI'
 import { defineProps, ref, nextTick, onMounted, onBeforeUnmount, computed } from 'vue'
 import { debounce } from 'lodash-es'
+import { useDocument } from '@/utils/common'
 
 const props = withDefaults(defineProps<zcUIProps.Scroll>(), {
   width: '100%',
@@ -103,7 +104,9 @@ const syncScroll = () => {
     isDragging = true
     startY = e.clientY
     startScrollTop = scrollBody.value.scrollTop
-    document.body.style.userSelect = 'none'
+    if(useDocument()) {
+      document.body.style.userSelect = 'none'
+    }
     e.preventDefault()
   }
 
@@ -115,7 +118,9 @@ const syncScroll = () => {
     isDraggingBottom = true
     startX = e.clientX
     startScrollLeft = scrollBody.value.scrollLeft
-    document.body.style.userSelect = 'none'
+    if(useDocument()) {
+      document.body.style.userSelect = 'none'
+    }
     e.preventDefault()
   }
 
@@ -148,23 +153,29 @@ const syncScroll = () => {
   const handleMouseUp = () => {
     isDragging = false
     isDraggingBottom = false
-    document.body.style.userSelect = ''
+    if(useDocument()) {
+      document.body.style.userSelect = ''
+    }
   }
 
   // 绑定事件监听器
   rightBlock.value.addEventListener('mousedown', handleRightMouseDown, { passive: false })
   bottomBlock.value.addEventListener('mousedown', handleBottomMouseDown, { passive: false })
-  document.addEventListener('mousemove', handleMouseMove, { passive: false })
-  document.addEventListener('mouseup', handleMouseUp, { passive: false })
+  if(useDocument()) {
+    document.addEventListener('mousemove', handleMouseMove, { passive: false })
+    document.addEventListener('mouseup', handleMouseUp, { passive: false })
+  }
 
   // 返回清理函数
   return () => {
     scrollBody.value?.removeEventListener('scroll', handleScroll)
     window.removeEventListener('resize', handleResize)
-    rightBlock.value?.removeEventListener('mousedown', handleRightMouseDown)
-    bottomBlock.value?.removeEventListener('mousedown', handleBottomMouseDown)
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('mouseup', handleMouseUp)
+    rightBlock.value?.removeEventListener('mousedown', handleRightMouseDown, { passive: false })
+    bottomBlock.value?.removeEventListener('mousedown', handleBottomMouseDown, { passive: false })
+    if(useDocument()) {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
   }
 }
 

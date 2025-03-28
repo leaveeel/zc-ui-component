@@ -2,6 +2,7 @@ import { loadingDirective } from '@/packages/loading/zc-loading.ts'
 import { zcUIProps } from '@/types/index'
 import MessageBox from '@/packages/messageBox/src/index.vue'
 import { createApp, type App, createVNode, render } from 'vue'
+import { useDocument } from '@/utils/common'
 
 /**
  * 创建消息框实例并显示
@@ -35,6 +36,6 @@ const useMessage = () => {
   }
 }
 
-const zcMessage = useMessage()
+const zcMessage = useDocument() ? useMessage() : null
 
 export { zcMessage }

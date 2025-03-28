@@ -1,12 +1,11 @@
 # ZC UI
 
-基于 Vue 3 + TypeScript
+[Github](https://github.com/leaveeel/zc-ui-component)
 
 ## 最近更新
 
-- 1.5.5
-  - 调整dialog组件关闭按钮位置
-  - input优化，替换可见图标
+- 1.5.6
+  - 尝试处理ssg时报错
 
 ## 组件列表
 
@@ -128,6 +127,9 @@ app.mount('#app')
 
 ## 更新日志
 
+- 1.5.6
+  - 尝试处理ssg时报错
+  
 - 1.5.5
   - 调整dialog组件关闭按钮位置
   - input优化，替换可见图标

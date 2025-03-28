@@ -1,5 +1,6 @@
-import { createApp, createVNode, render, DirectiveBinding, Directive } from 'vue'
+import { createApp, DirectiveBinding, Directive } from 'vue'
 import Loading from '@/packages/loading/src/index.vue'
+import { useDocument } from '@/utils/common'
 
 interface LoadingElement extends HTMLElement {
   instance: any;
@@ -38,6 +39,8 @@ const handleAppend = (el: LoadingElement) => {
 
 const loadingDirective: Directive = {
   mounted(el: LoadingElement, binding: DirectiveBinding) {
+    if(!useDocument()) return
+
     let loading = false
     let options: LoadingOptions = {}
     
@@ -73,6 +76,8 @@ const loadingDirective: Directive = {
   },
   
   updated(el: LoadingElement, binding: DirectiveBinding) {
+    if(!useDocument()) return
+
     let loading = false
     let options: LoadingOptions = {}
     
@@ -181,6 +186,6 @@ const useLoading = (options: LoadingOptions = {}) => {
 }
 
 // 全局loading服务
-const zcLoading = useLoading()
+const zcLoading = useDocument() ? useLoading() : null
 
 export { loadingDirective, zcLoading, useLoading }

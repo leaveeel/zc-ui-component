@@ -13,6 +13,7 @@ import { setUnit } from '@/utils/common'
 import { zcUIProps } from '@/types/zcUI'
 import { defineProps, ref, nextTick, onMounted, onBeforeUnmount, computed } from 'vue'
 import zcScroll from '@/packages/scroll/src/index.vue'
+import { useDocument } from '@/utils/common'
 
 const props = withDefaults(defineProps<zcUIProps.Tooltip>(), {
   width: '100%',
@@ -109,12 +110,16 @@ const handleClickOutside = (event: MouseEvent) => {
 }
 
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
+  if(useDocument()) { 
+    document.addEventListener('click', handleClickOutside)
+  }
 })
 
 onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-  clearTimers()
+  if(useDocument()) { 
+    document.removeEventListener('click', handleClickOutside)
+    clearTimers()
+  }
 })
 </script>
 

@@ -11,7 +11,7 @@ import { setUnit } from '@/utils/common'
 import { defineProps, ref, onMounted, onUnmounted, watch } from 'vue'
 import IconClose from '@/packages/icon/src/IconClose.vue'
 import zcIcon from '@/packages/icon/index.vue'
-import zcScroll from '@/packages/scroll/src/index.vue'
+import { useDocument } from '@/utils/common'
 
 const dialogId = `dialog-${Math.random()}`
 
@@ -68,13 +68,19 @@ watch(()=>props.modelValue, (newVal) => {
   }
 })
 
+
+
 // 监听键盘事件
 onMounted(() => {
-  document.addEventListener('keydown', handleKeydown)
+  if (useDocument()) {
+    document.addEventListener('keydown', handleKeydown)
+  }
 })
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeydown)
+  if (useDocument()) {
+    document.removeEventListener('keydown', handleKeydown)
+  }
 })
 </script>
 
@@ -87,8 +93,8 @@ onUnmounted(() => {
     <div
       v-if="visible"
       class="zc-dialog zc-ui-component"
-      @mousedown="outStart = true"
-      @mouseup="handleClick"
+      @mousedown.stop.prevent="outStart = true"
+      @mouseup.stop.prevent="handleClick"
       role="dialog"
       :aria-modal="true"
       :aria-labelledby="'dialog-title-' + dialogId"
@@ -105,8 +111,8 @@ onUnmounted(() => {
             padding: setUnit(padding),
             minWidth: setUnit(minWidth)
           }"
-          @mousedown.stop="outStart = false"
-          @mouseup.stop
+          @mousedown.stop.prevent="outStart = false"
+          @mouseup.stop.prevent
           v-loading="loading"
         >
           <zc-icon

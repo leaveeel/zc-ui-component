@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 # ZC Loading 加载组件
 
 加载组件用于在页面或元素上显示加载状态，支持全屏加载和局部加载。
@@ -18,10 +10,6 @@
 <div v-loading="true">加载中的内容</div>
 ```
 
-
-
-
-
 ### 服务方式
 
 ```js
@@ -33,10 +21,6 @@ zcLoading.show()
 // 隐藏加载
 zcLoading.hide()
 ```
-
-
-
-
 
 ## 属性
 
@@ -51,7 +35,7 @@ zcLoading.hide()
 
 ## 方法
 
-### 指令方式
+### 指令方法
 
 | 用法 | 说明 |
 |------|------|
@@ -59,7 +43,7 @@ zcLoading.hide()
 | v-loading="false" | 隐藏加载状态 |
 | v-loading="{ loading: true, text: '加载中...' }" | 带配置的加载状态 |
 
-### 服务方式
+### 服务方法
 
 | 方法 | 说明 | 参数 |
 |------|------|------|
@@ -92,10 +76,6 @@ loading.updateOptions({
 })
 ```
 
-
-
-
-
 ## 全局配置
 
 ```js
@@ -110,10 +90,6 @@ setLoadingDefaultOptions({
 })
 ```
 
-
-
-
-
 ## 样式定制
 
 加载组件支持多种样式定制，可以通过属性设置加载图标的大小、颜色和背景等样式。
@@ -126,10 +102,6 @@ setLoadingDefaultOptions({
 </div>
 ```
 
-
-
-
-
 ### 自定义颜色和大小
 
 ```vue
@@ -137,10 +109,6 @@ setLoadingDefaultOptions({
   加载中的内容
 </div>
 ```
-
-
-
-
 
 ### 自定义背景
 
@@ -150,10 +118,6 @@ setLoadingDefaultOptions({
 </div>
 ```
 
-
-
-
-
 ### 自动关闭
 
 ```vue
@@ -161,10 +125,6 @@ setLoadingDefaultOptions({
   3秒后自动关闭的加载
 </div>
 ```
-
-
-
-
 
 ## 与其他组件配合使用
 
@@ -183,10 +143,6 @@ setLoadingDefaultOptions({
   <!-- 对话框内容 -->
 </zc-dialog>
 ```
-
-
-
-
 
 ## 注意事项
 

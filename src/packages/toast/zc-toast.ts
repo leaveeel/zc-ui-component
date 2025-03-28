@@ -1,6 +1,7 @@
 import { zcUIProps } from '@/types/zcUI'
 import Toast from '@/packages/toast/src/index.vue'
 import { createVNode, render } from 'vue'
+import { useDocument } from '@/utils/common'
 
 // 创建Toast容器
 const createToastContainer = (): HTMLDivElement => {
@@ -24,7 +25,9 @@ let toastGroup: HTMLDivElement | null = null
 const getToastGroup = (): HTMLDivElement => {
   if (!toastGroup) {
     toastGroup = createToastContainer()
-    document.body.appendChild(toastGroup)
+    if(useDocument()) {
+      document.body.appendChild(toastGroup)
+    }
   }
   return toastGroup
 }
@@ -95,12 +98,12 @@ interface ToastFunction {
 const createToast = (): ToastFunction => {
   const toast = (content: string, options?: Partial<zcUIProps.Toast>): number => {
     const toastGroup = getToastGroup()
-    
+  
     // 管理Toast数量，超过最大数量则移除最早的
     if (activeToasts.length >= MAX_TOASTS) {
       removeToast(activeToasts[0].id);
     }
-    
+  
     // 创建新的容器
     const container = document.createElement('div')
     container.style.display = 'flex'
@@ -169,6 +172,6 @@ const createToast = (): ToastFunction => {
   return toast as ToastFunction
 }
 
-const zcToast = createToast()
+const zcToast = useDocument() ? createToast() : null
 
 export { zcToast }
