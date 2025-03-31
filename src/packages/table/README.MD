@@ -1,23 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ZC Table 表格组件
 
 表格组件用于展示多条结构类似的数据，支持排序、筛选、固定列、自定义样式等功能。
@@ -28,17 +9,6 @@
 <zc-table :data="tableData" :option="tableOption">
 </zc-table>
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 ## 属性
 
@@ -96,34 +66,12 @@
 </zc-table>
 ```
 
-
-
-
-
-
-
-
-
-
-
-
 ### 斑马纹表格
 
 ```vue
 <zc-table :data="tableData" :option="tableOption" stripe>
 </zc-table>
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 ### 固定列
 
@@ -143,17 +91,6 @@ const tableOption = [
 ]
 </script>
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 ### 自定义行样式
 
@@ -176,17 +113,6 @@ const rowClassName = (row, index) => {
 }
 </script>
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 ## 排序
 
@@ -213,17 +139,6 @@ const handleSortChange = ({ prop, order }) => {
 }
 </script>
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 ## 选择功能
 
@@ -256,17 +171,6 @@ const handleSelectAll = (selection) => {
 </script>
 ```
 
-
-
-
-
-
-
-
-
-
-
-
 ## 操作列
 
 表格支持添加操作按钮列。
@@ -290,17 +194,6 @@ const tableOption = [
 </script>
 ```
 
-
-
-
-
-
-
-
-
-
-
-
 ## 空数据提示
 
 当没有数据时，表格会显示空数据提示。
@@ -314,17 +207,6 @@ const tableOption = [
 </zc-table>
 ```
 
-
-
-
-
-
-
-
-
-
-
-
 ## 加载状态
 
 表格支持显示加载状态。
@@ -337,17 +219,6 @@ const tableOption = [
 >
 </zc-table>
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 ## 注意事项
 

@@ -1,7 +1,3 @@
-
-
-
-
 # ZC Form Item 表单项组件
 
 表单项组件用于在表单中创建单个表单字段，提供标签、验证和错误提示功能。
@@ -13,8 +9,6 @@
   <zc-input v-model="form.username"></zc-input>
 </zc-form-item>
 ```
-
-
 
 ## 属性
 
@@ -63,8 +57,6 @@
 </zc-form-item>
 ```
 
-
-
 ### 必填项
 
 ```vue
@@ -72,8 +64,6 @@
   <zc-input v-model="form.username"></zc-input>
 </zc-form-item>
 ```
-
-
 
 ## 表单布局
 
@@ -95,8 +85,6 @@
 </zc-form-item>
 ```
 
-
-
 ### 标签宽度
 
 ```vue
@@ -105,8 +93,6 @@
 </zc-form-item>
 ```
 
-
-
 ## 错误提示
 
 ```vue
@@ -114,8 +100,6 @@
   <zc-input v-model="form.username"></zc-input>
 </zc-form-item>
 ```
-
-
 
 ## 与表单组件配合使用
 
@@ -131,8 +115,6 @@
   </zc-form-item>
 </zc-form>
 ```
-
-
 
 ## 注意事项
 

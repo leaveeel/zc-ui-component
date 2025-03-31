@@ -1,10 +1,10 @@
 {
   "name": "zc-ui-component",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "scripts": {
     "dev": "vite",
     "tsc": "vue-tsc --noEmit",
-    "package": "vite build"
+    "package": "vue-tsc --noEmit && vite build"
   },
   "dependencies": {
     "async-validator": "^4.2.5",
@@ -18,7 +18,8 @@
     "@vue/tsconfig": "^0.7.0",
     "sass": "^1.55.0",
     "typescript": "~5.7.2",
-    "vite": "^6.2.0"
+    "vite": "^6.2.0",
+    "vue-tsc": "^2.2.8"
   },
   "description": "zc-ui-component",
   "main": "dist/zc-ui-component.umd.js",

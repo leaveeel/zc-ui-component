@@ -92,11 +92,14 @@ const handleInput = (e: Event) => {
   emit('update:modelValue', value)
   emit('input', value)
   change?.()
+
+
 }
+const prevent = ref(false)
 
 const focus = ref(false)
 const handleBlur = (e: FocusEvent) => {
-  console.log(1)
+  if(prevent.value) return
   focus.value = false
   blur?.()
   const target = e.target as HTMLInputElement | HTMLTextAreaElement
@@ -104,7 +107,6 @@ const handleBlur = (e: FocusEvent) => {
 }
 
 const handleFocus = (e: FocusEvent) => {
-  console.log(2)
   focus.value = true
   emit('focus', e)
 }
@@ -130,12 +132,10 @@ watch(() => props.modelValue, () => {
 })
 
 const handleClick = (e: MouseEvent) => {
-  console.log(3)
-  e?.preventDefault()
-  nextTick(() => {
-    const target = isTextarea.value ? textareaRef.value : inputRef.value
-    target?.focus()
-  })
+  if(prevent.value) return prevent.value = false
+  prevent.value = true
+  const target = isTextarea.value ? textareaRef.value : inputRef.value
+  target?.focus()
 }
 </script>
 
@@ -186,12 +186,13 @@ const handleClick = (e: MouseEvent) => {
       <div
         v-if="showClear || showTogglePassword"
         class="input-buttons"
-        @mousedown.stop.prevent="handleClick"
+        @mousedown="handleClick"
+        @mouseup="handleClick"
       >
         <zc-icon
           v-if="showClear"
           :size="16"
-          @mousedown.stop.prevent="clearInput"
+          @click="clearInput"
         >
           <IconClose />
         </zc-icon>
@@ -199,14 +200,14 @@ const handleClick = (e: MouseEvent) => {
           <zc-icon
             v-if="isPasswordVisible"
             :size="16"
-            @mousedown.stop.prevent="togglePasswordVisibility"
+            @click="togglePasswordVisibility"
           >
             <IconShow />
           </zc-icon>
           <zc-icon
             v-else
             :size="16"
-            @mousedown.stop.prevent="togglePasswordVisibility"
+            @click="togglePasswordVisibility"
           >
             <IconHide />
           </zc-icon>

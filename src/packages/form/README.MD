@@ -37,8 +37,8 @@
 
 | 方法名 | 说明 | 参数 | 返回值 |
 |-------|------|------|-------|
-| validate | 对整个表单进行验证 | (callback?: (isValid: boolean, invalidFields?: Record<string, string>) => void) | Promise<boolean> |
-| validateField | 对表单指定字段进行验证 | (prop: string) | Promise<boolean> |
+| validate | 对整个表单进行验证 | (callback?: (isValid: boolean, invalidFields?: Record<string, string>) => void) | Promise< boolean > |
+| validateField | 对表单指定字段进行验证 | (prop: string) | Promise< boolean > |
 | resetFields | 重置表单 | - | - |
 | clearValidate | 清除表单验证信息 | (props?: string \| string[]) | - |
 

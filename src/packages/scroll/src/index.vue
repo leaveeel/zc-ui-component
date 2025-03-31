@@ -107,7 +107,6 @@ const syncScroll = () => {
     if(useDocument()) {
       document.body.style.userSelect = 'none'
     }
-    e.preventDefault()
   }
 
   let isDraggingBottom = false
@@ -121,7 +120,6 @@ const syncScroll = () => {
     if(useDocument()) {
       document.body.style.userSelect = 'none'
     }
-    e.preventDefault()
   }
 
   const handleMouseMove = (e: MouseEvent) => {

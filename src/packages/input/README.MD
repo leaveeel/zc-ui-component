@@ -1,9 +1,3 @@
-
-
-
-
-
-
 # ZC Input 输入框组件
 
 输入框组件用于接收用户的文本输入，支持普通输入框和文本域两种形式。
@@ -13,9 +7,6 @@
 ```vue
 <zc-input v-model="input" placeholder="请输入内容"></zc-input>
 ```
-
-
-
 
 ## 属性
 
@@ -54,17 +45,11 @@
 <zc-input v-model="input" placeholder="请输入内容"></zc-input>
 ```
 
-
-
-
 ### 文本域
 
 ```vue
 <zc-input v-model="textarea" type="textarea" placeholder="请输入多行文本"></zc-input>
 ```
-
-
-
 
 ### 可调整大小的文本域
 
@@ -72,17 +57,11 @@
 <zc-input v-model="textarea" type="textarea" :resize="true" placeholder="可调整大小的文本域"></zc-input>
 ```
 
-
-
-
 ### 密码输入框
 
 ```vue
 <zc-input v-model="password" type="password" placeholder="请输入密码"></zc-input>
 ```
-
-
-
 
 ### 可清空输入框
 
@@ -90,17 +69,11 @@
 <zc-input v-model="input" clearable placeholder="可清空的输入框"></zc-input>
 ```
 
-
-
-
 ### 带提示信息
 
 ```vue
 <zc-input v-model="input" tip="这是一条提示信息" placeholder="请输入内容"></zc-input>
 ```
-
-
-
 
 ### 禁用状态
 
@@ -108,17 +81,11 @@
 <zc-input v-model="input" disabled placeholder="禁用的输入框"></zc-input>
 ```
 
-
-
-
 ### 自定义高度
 
 ```vue
 <zc-input v-model="input" :height="60" placeholder="高度为60px的输入框"></zc-input>
 ```
-
-
-
 
 ## 与表单组件配合使用
 
@@ -134,9 +101,6 @@
   </zc-form-item>
 </zc-form>
 ```
-
-
-
 
 ## 注意事项
 

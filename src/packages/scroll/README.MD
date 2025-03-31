@@ -10,10 +10,6 @@
 </zc-scroll>
 ```
 
-
-
-
-
 ## 属性
 
 | 属性名 | 类型 | 默认值 | 说明 |
@@ -53,10 +49,6 @@
 </zc-scroll>
 ```
 
-
-
-
-
 ## 滚动控制
 
 滚动组件提供了多种方法来控制滚动位置。
@@ -86,11 +78,6 @@ const scrollToPosition = () => {
 </script>
 ```
 
-
-
-
-
-
 ### 滚动到顶部
 
 ```vue
@@ -111,16 +98,6 @@ const scrollToTop = () => {
 }
 </script>
 ```
-
-
-
-
-
-
-
-
-
-
 
 ### 滚动到底部
 
@@ -143,16 +120,6 @@ const scrollToBottom = () => {
 </script>
 ```
 
-
-
-
-
-
-
-
-
-
-
 ## 监听滚动事件
 
 ```vue
@@ -169,16 +136,6 @@ const handleScroll = ({ scrollLeft, scrollTop, scrollHeight, scrollWidth }) => {
 }
 </script>
 ```
-
-
-
-
-
-
-
-
-
-
 
 ## 注意事项
 

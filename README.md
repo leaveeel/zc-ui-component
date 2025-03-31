@@ -4,8 +4,8 @@
 
 ## 最近更新
 
-- 1.5.6
-  - 尝试处理ssg时报错
+- 1.5.7
+  - 处理`Unable to preventDefault`错误
 
 ## 组件列表
 
@@ -126,6 +126,9 @@ app.mount('#app')
 ```
 
 ## 更新日志
+
+- 1.5.7
+  - 处理`Unable to preventDefault`错误
 
 - 1.5.6
   - 尝试处理ssg时报错

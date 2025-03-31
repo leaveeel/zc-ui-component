@@ -93,8 +93,8 @@ onUnmounted(() => {
     <div
       v-if="visible"
       class="zc-dialog zc-ui-component"
-      @mousedown.stop.prevent="outStart = true"
-      @mouseup.stop.prevent="handleClick"
+      @mousedown.stop="outStart = true"
+      @mouseup.stop="handleClick"
       role="dialog"
       :aria-modal="true"
       :aria-labelledby="'dialog-title-' + dialogId"
@@ -111,8 +111,8 @@ onUnmounted(() => {
             padding: setUnit(padding),
             minWidth: setUnit(minWidth)
           }"
-          @mousedown.stop.prevent="outStart = false"
-          @mouseup.stop.prevent
+          @mousedown.stop="outStart = false"
+          @mouseup.stop
           v-loading="loading"
         >
           <zc-icon
