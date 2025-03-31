@@ -289,6 +289,31 @@ export namespace zcUIProps {
     duration?: number
   }
 
+
+  /**
+   * Loading 组件属性
+   * @property {number|string} size - 加载图标大小
+   * @property {string} color - 加载图标颜色
+   * @property {string} text - 加载文本
+   * @property {number} timeout - 加载持续时间
+   * @property {string} background - 加载背景颜色
+   * @property {boolean} fullscreen - 是否全屏显示
+   * @property {number|string} fontSize - 加载文本字体大小
+   * @property {boolean} loading - 是否显示加载状态
+   * @property {[key: string]: any} [key: string]: any - 允许使用字符串索引
+   */
+  export interface Loading {
+    size?: number | string
+    color?: string
+    text?: string
+    timeout?: number
+    background?: string
+    fullscreen?: boolean
+    fontSize?: number | string
+    loading?: boolean
+    [key: string]: any
+  }
+  
   /**
    * MessageBox 组件属性
    * @property {string} title - 消息框标题

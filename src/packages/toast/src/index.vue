@@ -97,9 +97,10 @@ onBeforeUnmount(() => {
   opacity: 0;
   transform: translateY(0);
   transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  opacity 0.2s ease,
+  transform 0.2s ease;
   position: relative;
+  z-index: 99999;
   
   &.mobile {
     max-width: 80%;

@@ -40,24 +40,9 @@ const components: Record<string, Component> = {
   zcTooltip
 }
 
-// 图标组件
-const icons = {
-  IconChecked,
-  IconClose,
-  IconLoading,
-  IconRightArrow
-}
-
 // 指令
 const directives = {
   loading: loadingDirective
-}
-
-// 服务
-const services = {
-  zcLoading,
-  zcMessage,
-  zcToast
 }
 
 /**

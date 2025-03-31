@@ -182,7 +182,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 99999;
+  z-index: 99997;
   backdrop-filter: blur(4px);
   
   .content {

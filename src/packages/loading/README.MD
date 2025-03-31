@@ -13,7 +13,7 @@
 ### 服务方式
 
 ```js
-import { zcLoading } from '@/packages/loading/zc-loading'
+import { zcLoading } from 'zc-ui-component'
 
 // 显示全屏加载
 zcLoading.show()
@@ -32,6 +32,7 @@ zcLoading.hide()
 | timeout | number | 0 | 自动关闭时间(毫秒)，0表示不自动关闭 |
 | background | string | 'rgba(255, 255, 255, 0.7)' | 加载遮罩背景色 |
 | fullscreen | boolean | false | 是否全屏显示 |
+| fontSize | string/number | 14 | 加载文本字体大小 |
 
 ## 方法
 
@@ -49,19 +50,13 @@ zcLoading.hide()
 |------|------|------|
 | zcLoading.show() | 显示全屏加载 | - |
 | zcLoading.hide() | 隐藏加载 | - |
-| useLoading(options) | 创建自定义加载实例 | LoadingOptions |
+| zcLoading.updateOptions(options) | 更新加载配置 | LoadingOptions |
 
 ## 自定义加载实例
 
 ```js
-import { useLoading } from '@/packages/loading/zc-loading'
+import { zcLoading } from 'zc-ui-component'
 
-// 创建加载实例
-const loading = useLoading({
-  text: '加载中...',
-  color: '#ff0000',
-  el: document.querySelector('.container') // 指定挂载元素
-})
 
 // 显示加载
 loading.show()
@@ -73,20 +68,6 @@ loading.hide()
 loading.updateOptions({
   text: '正在处理...',
   timeout: 3000
-})
-```
-
-## 全局配置
-
-```js
-import { setLoadingDefaultOptions } from '@/packages/loading/zc-loading'
-
-// 设置全局默认配置
-setLoadingDefaultOptions({
-  size: 40,
-  color: '#409EFF',
-  background: 'rgba(0, 0, 0, 0.5)',
-  text: '加载中'
 })
 ```
 

@@ -5,7 +5,7 @@
 ## 基本用法
 
 ```js
-import { zcMessage } from '@/packages/messageBox/zc-messageBox'
+import { zcMessage } from 'zc-ui-component'
 
 // 显示消息框
 zcMessage({

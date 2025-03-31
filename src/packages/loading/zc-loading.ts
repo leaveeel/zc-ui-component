@@ -1,36 +1,23 @@
 import { createApp, DirectiveBinding, Directive } from 'vue'
 import Loading from '@/packages/loading/src/index.vue'
 import { useDocument } from '@/utils/common'
+import { zcUIProps } from '@/types'
 
 interface LoadingElement extends HTMLElement {
   instance: any;
-  loadingOptions?: LoadingOptions;
-  loadingApp?: any;
-}
-
-interface LoadingOptions {
-  size?: number | string;
-  color?: string;
-  text?: string;
-  timeout?: number;
-  background?: string;
   el?: HTMLElement;
-  loading?: boolean;
-  [key: string]: any; // 允许使用字符串索引
+  loadingApp?: any;
+  loadingOptions?: zcUIProps.Loading;
 }
 
 // 全局默认配置
-const globalOptions: LoadingOptions = {
+const globalOptions: zcUIProps.Loading = {
   size: 50,
   color: 'var(--main-color)',
   text: '',
   timeout: 0,
-  background: 'rgba(255, 255, 255, 0.7)'
-}
-
-// 设置全局配置
-export const setLoadingDefaultOptions = (options: LoadingOptions) => {
-  Object.assign(globalOptions, options)
+  background: 'rgba(255, 255, 255, 0.7)',
+  fontSize: 14
 }
 
 const handleAppend = (el: LoadingElement) => {
@@ -42,13 +29,13 @@ const loadingDirective: Directive = {
     if(!useDocument()) return
 
     let loading = false
-    let options: LoadingOptions = {}
+    let options: zcUIProps.Loading = {}
     
     // 处理绑定值
     if (typeof binding.value === 'boolean') {
       loading = binding.value
     } else if (binding.value && typeof binding.value === 'object') {
-      const bindingValue = binding.value as LoadingOptions
+      const bindingValue = binding.value as zcUIProps.Loading
       options = { ...bindingValue }
       loading = !!options.loading
     }
@@ -79,13 +66,13 @@ const loadingDirective: Directive = {
     if(!useDocument()) return
 
     let loading = false
-    let options: LoadingOptions = {}
+    let options: zcUIProps.Loading = {}
     
     // 处理最新绑定值
     if (typeof binding.value === 'boolean') {
       loading = binding.value
     } else if (binding.value && typeof binding.value === 'object') {
-      const bindingValue = binding.value as LoadingOptions
+      const bindingValue = binding.value as zcUIProps.Loading
       options = { ...bindingValue }
       loading = !!options.loading
     }
@@ -132,9 +119,9 @@ const loadingDirective: Directive = {
   }
 }
 
-const useLoading = (options: LoadingOptions = {}) => {
+const useLoading = (options: zcUIProps.Loading = {}) => {
   // 合并全局配置和传入的选项
-  const mergedOptions: LoadingOptions = { fullscreen: !options.el, ...globalOptions, ...options}
+  const mergedOptions: zcUIProps.Loading = { fullscreen: !options.el, ...globalOptions, ...options}
   const container = document.createElement('div')
   let el = options.el || document.body
   let loadingApp: any = null
@@ -165,7 +152,7 @@ const useLoading = (options: LoadingOptions = {}) => {
       }
     },
     // 动态更新配置
-    updateOptions: (newOptions: LoadingOptions) => {
+    updateOptions: (newOptions: zcUIProps.Loading) => {
       Object.assign(mergedOptions, newOptions)
       
       // 如果实例已创建，重新创建实例以更新配置
@@ -188,4 +175,4 @@ const useLoading = (options: LoadingOptions = {}) => {
 // 全局loading服务
 const zcLoading = useDocument() ? useLoading() : null
 
-export { loadingDirective, zcLoading, useLoading }
+export { loadingDirective, zcLoading }

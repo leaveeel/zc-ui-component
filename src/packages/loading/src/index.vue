@@ -2,23 +2,17 @@
 import IconLoading from '@/packages/icon/src/IconLoading.vue'
 import { ref, computed, onMounted, watch, inject } from 'vue'
 import zcIcon from '@/packages/icon/index.vue'
+import { zcUIProps } from '@/types/zcUI'
+import { setUnit } from '@/utils/common'
 
-interface Props {
-  size?: number | string
-  color?: string
-  text?: string
-  timeout?: number
-  background?: string
-  fullscreen?: boolean
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<zcUIProps.Loading>(), {
   size: 50,
   color: 'var(--main-color)',
   text: '',
   timeout: 0,
   background: 'rgba(255, 255, 255, 0.7)',
-  fullscreen: false
+  fullscreen: false,
+  fontSize: 14
 })
 
 // 从指令中注入的配置
@@ -28,6 +22,7 @@ const injectText = inject('loading-text', undefined)
 const injectTimeout = inject('loading-timeout', undefined)
 const injectBackground = inject('loading-background', undefined)
 const injectFullscreen = inject('loading-fullscreen', undefined)
+const injectFontSize = inject('loading-fontSize', undefined)
 
 // 合并props和inject的配置
 const size = computed(() => injectSize ?? props.size)
@@ -36,6 +31,7 @@ const text = computed(() => injectText ?? props.text)
 const timeout = computed(() => injectTimeout ?? props.timeout)
 const background = computed(() => injectBackground ?? props.background)
 const fullscreen = computed(() => injectFullscreen ?? props.fullscreen)
+const fontSize = computed(() => injectFontSize ?? props.fontSize)
 
 const visible = ref<boolean>(false)
 const timer = ref<number | null>(null)
@@ -66,7 +62,7 @@ const hide = () => {
 }
 
 // 设置配置项方法
-const setOptions = (options: Partial<Props>) => {
+const setOptions = (options: Partial<zcUIProps.Loading>) => {
   // 特殊处理timeout
   if (options.timeout !== undefined && options.timeout !== timeout.value) {
     if (visible.value && options.timeout > 0) {
@@ -111,7 +107,7 @@ defineExpose({
       <zc-icon :size="size" :color="color">
         <IconLoading></IconLoading>
       </zc-icon>
-      <p v-if="text" class="zc-loading-text" :style="{ color }">{{ text }}</p>
+      <p v-if="text" class="zc-loading-text" :style="{ color, 'font-size': setUnit(fontSize) }">{{ text }}</p>
     </div>
   </div>
 </template>
@@ -125,7 +121,7 @@ defineExpose({
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999999;
+  z-index: 99998;
   transition: opacity 0.3s;
   
   .zc-loading-spinner {
@@ -137,7 +133,6 @@ defineExpose({
   
   .zc-loading-text {
     margin-top: 8px;
-    font-size: 14px;
   }
 }
 </style>

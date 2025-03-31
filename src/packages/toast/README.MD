@@ -5,7 +5,7 @@
 ## 基本用法
 
 ```js
-import { zcToast } from '@/packages/toast/zc-toast'
+import { zcToast } from 'zc-ui-component'
 
 // 显示普通提示
 zcToast('这是一条提示消息')
