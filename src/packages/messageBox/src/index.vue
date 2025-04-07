@@ -90,11 +90,9 @@ const close = (action: string) => {
           v-if="props.showCancel"
           :class="props.cancelClass"
           plain
-          color="var(--main-font-color)"
-          border-color="var(--main-font-color)"
           width="min-content"
           :height="34"
-          :size="14"
+          :fontSize="14"
           @click="cancel"
         >
           {{ props.cancelText }}
@@ -104,7 +102,8 @@ const close = (action: string) => {
           :class="props.confirmClass"
           width="min-content"
           :height="34"
-          :size="14"
+          type="primary"
+          :fontSize="14"
           @click="confirm"
         >
           {{ props.confirmText }}

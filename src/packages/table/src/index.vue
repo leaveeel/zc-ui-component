@@ -63,27 +63,37 @@ const calculateColWidths = () => {
   if (!tbody.value || !rows.value || rows.value.length === 0) return
   
   const bodywidth = ref(tbody.value.offsetWidth)
-  const dynamics = ref(0)
-  props.option.map(i => {
+  const dynamics = ref<number[]>([])
+  props.option.map((i, n) => {
     if (i.width) {
       bodywidth.value -= splitString(i.width.toString()).num
     } else {
-      dynamics.value += 1
+      dynamics.value.push(n)
     }
   })
+
   
   const widths = Array.from(rows.value[0].children).map((_, colIndex) => {
     const maxWidth = Math.max(
       ...Array.from(rows.value).map((row: any) => row.children[colIndex].offsetWidth)
     )
-    return (
-      props.option[colIndex].width && splitString(props.option[colIndex].width.toString()).num ||
-      (maxWidth > bodywidth.value / dynamics.value
-        ? maxWidth
-        : bodywidth.value / dynamics.value)
-    )
+
+    if (props.option[colIndex].width) {
+      return splitString(props.option[colIndex].width.toString()).num
+    } else {
+      bodywidth.value -= maxWidth
+
+      return maxWidth
+    }
   })
-  colWidths.value = widths
+  
+  colWidths.value = widths.map((i, n) => {
+    if (bodywidth.value > 0 && dynamics.value.includes(n)) {
+      return i + bodywidth.value / dynamics.value.length
+    } else {
+      return i
+    }
+  })
 }
 
 // 计算滚动区域高度
@@ -399,8 +409,8 @@ onBeforeUnmount(() => {
                   <zc-button
                     v-for="btn in column.btns"
                     :key="btn.name"
-                    :size="14"
-                    :text="true"
+                    :fontSize="14"
+                    text
                     :color="btn.color"
                     @click="btn.handle(rowIndex, row)"
                   >

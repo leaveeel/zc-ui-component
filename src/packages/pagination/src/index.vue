@@ -164,8 +164,7 @@ const showJumper = () => {
       width="24"
       height="24"
       radius="4"
-      background="#fff"
-      color="#999"
+      fontSize="14"
       @click="prevPage"
       :disabled="modelValue === 1"
     >
@@ -187,9 +186,8 @@ const showJumper = () => {
           height="24"
           width="24"
           radius="4"
-          size="12"
-          :background="modelValue === page ? 'var(--main-color)' : '#fff'"
-          :color="modelValue === page ? '#fff' : 'var(--main-font-color)'"
+          fontSize="14"
+          :plain="modelValue === page"
           @click="handlePage(page)"
         >
           {{ page }}
@@ -198,10 +196,9 @@ const showJumper = () => {
           v-else
           class="zc-pagination-ellipsis"
           height="24"
-          background="#fff"
-          color="#999"
           width="24"
           radius="4"
+          fontSize="14"
           @click="index < 3 ? handleQuickPrevClick() : handleQuickNextClick()"
         >
           ...
@@ -216,8 +213,7 @@ const showJumper = () => {
       width="24"
       height="24"
       radius="4"
-      background="#fff"
-      color="#999"
+      fontSize="14"
       @click="nextPage"
       :disabled="modelValue === totalPages"
     >
@@ -282,9 +278,6 @@ const showJumper = () => {
   
   .zc-pagination-pager {
     order: var(--order);
-    .zc-button {
-      font-size: 14px;
-    }
     
     .zc-pagination-ellipsis {
       line-height: 1;

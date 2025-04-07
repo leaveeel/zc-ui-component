@@ -28,17 +28,11 @@ const loadingDirective: Directive = {
   mounted(el: LoadingElement, binding: DirectiveBinding) {
     if(!useDocument()) return
 
-    let loading = false
+    let loading = binding.value
     let options: zcUIProps.Loading = {}
     
     // 处理绑定值
-    if (typeof binding.value === 'boolean') {
-      loading = binding.value
-    } else if (binding.value && typeof binding.value === 'object') {
-      const bindingValue = binding.value as zcUIProps.Loading
-      options = { ...bindingValue }
-      loading = !!options.loading
-    }
+      options = { ...el.dataset }
     
     // 创建loading实例
     const app = createApp(Loading)
@@ -65,17 +59,11 @@ const loadingDirective: Directive = {
   updated(el: LoadingElement, binding: DirectiveBinding) {
     if(!useDocument()) return
 
-    let loading = false
+    let loading = binding.value
     let options: zcUIProps.Loading = {}
     
     // 处理最新绑定值
-    if (typeof binding.value === 'boolean') {
-      loading = binding.value
-    } else if (binding.value && typeof binding.value === 'object') {
-      const bindingValue = binding.value as zcUIProps.Loading
-      options = { ...bindingValue }
-      loading = !!options.loading
-    }
+    options = { ...el.dataset }
     
     // 每次更新时动态创建新的实例以确保配置更新
     if (Object.keys(options).length > 0 && el.instance) {
@@ -172,7 +160,41 @@ const useLoading = (options: zcUIProps.Loading = {}) => {
   }
 }
 
+
+const createDefaultInstance = () => {
+  const defaultOptions: zcUIProps.Loading = { ...globalOptions, fullscreen: true }
+  return useLoading(defaultOptions)
+}
+
+// 创建一个既是函数又是对象的 zcLoading
+interface LoadingService {
+  (options?: zcUIProps.Loading): ReturnType<typeof useLoading>;
+  show: () => void;
+  hide: () => void;
+  updateOptions: (options: zcUIProps.Loading) => void;
+}
+
+// 创建 zcLoading 服务
+const createLoadingService = (): LoadingService | any => {
+  if (!useDocument()) return null
+  
+  // 创建默认实例
+  const defaultInstance = createDefaultInstance()
+  
+  // 创建基础函数
+  const loadingService = ((options?: zcUIProps.Loading) => {
+    return useLoading(options)
+  }) as LoadingService
+  
+  // 添加对象方法
+  loadingService.show = () => defaultInstance.show()
+  loadingService.hide = () => defaultInstance.hide()
+  loadingService.updateOptions = (options: zcUIProps.Loading) => defaultInstance.updateOptions(options)
+  
+  return loadingService
+}
+
 // 全局loading服务
-const zcLoading = useDocument() ? useLoading() : null
+const zcLoading = createLoadingService()
 
 export { loadingDirective, zcLoading }

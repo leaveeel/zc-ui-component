@@ -55,6 +55,7 @@ export default defineComponent({
   position: relative;
   color: var(--color);
   transition: transform 0.3s ease;
+  flex-shrink: 0;
   
   svg {
     height: 1em;

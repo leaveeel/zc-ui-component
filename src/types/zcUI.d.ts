@@ -26,15 +26,12 @@ export namespace zcUIProps {
     inline?: boolean,
     width?: string | number
     height?: string | number
-    size?: string | number
+    fontSize?: string | number
     radius?: string | number
     color?: string
     background?: string
-    borderColor?: string
-    border?: string | number
     loading?: boolean
-    disabled?: boolean
-    // type?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info'
+    type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
     htmlType?: 'button' | 'submit' | 'reset'
     disabled?: boolean | undefined
   }
@@ -440,7 +437,7 @@ export namespace zcUI {
    */
   export interface TableOptionsBtns {
     name: string
-    color: string
+    color?: string
     handle: (index: number, row: Record<string, any>) => void
   }
 }

@@ -13,11 +13,11 @@ import zcIcon from '@/packages/icon/index.vue'
 import { computed, ref, inject } from 'vue'
 
 const props = withDefaults(defineProps<zcUIProps.Button>(), {
+  type: 'default',
   width: 'auto',
   height: '40',
-  size: 16,
+  fontSize: 16,
   radius: 6,
-  border: 1,
   htmlType: 'button',
   disabled: undefined
 })
@@ -59,36 +59,37 @@ const handleBlur = () => {
   isFocused.value = false
 }
 
+const color = {
+  'default': '',
+  'primary': 'var(--main-color)',
+  'success': 'var(--main-success-color)',
+  'warning': 'var(--main-warning-color)',
+  'danger': 'var(--main-danger-color)',
+  'info': 'var(--main-info-color)',
+}
+
 // 计算样式
 const buttonStyle = computed(() => {
   return {
     display: props.inline ? 'inline-flex' : 'flex',
-    '--width': setUnit(props.width),
-    '--height': setUnit(props.height),
-    '--fontSize': setUnit(props.size),
-    '--backgroundColor': props.background
-      ? props.background
-      : props.plain
-        ? ''
-        : 'var(--main-color)',
-    '--borderColor':
-      props.borderColor || props.background || 'var(--main-color)',
-    'border-radius': setUnit(props.radius),
-    'border-width': props.text ? '0px' : setUnit(props.border),
-    '--color':
-      props.plain || props.text
-        ? props.color || 'var(--main-color)'
-        : props.color || '#fff'
+    width: setUnit(props.width),
+    height: props.text ? 'auto' : setUnit(props.height),
+    fontSize: setUnit(props.fontSize),
+    '--background': props.background ? props.background : props.plain ? '' : color[props.type],
+    borderRadius: setUnit(props.radius),
+    borderWidth: props.plain ? '1px' : 0,
+    '--color': props.color ? props.color : (props.type === 'default' ? 'var(--main-font-color)' : (props.plain || props.text) ? color[props.type] : '#fff')
   }
 })
 
 // 计算类名
 const buttonClasses = computed(() => {
+  const classname = `zc-button-plain--${props.type}`
   return {
-    plain: props.plain,
-    text: props.text,
-    disabled: propsDisabled.value || props.loading,
-    focused: isFocused.value
+    'zc-button-text': props.text,
+    'zc-button-disabled': propsDisabled.value || props.loading,
+    'zc-button-focused': isFocused.value,
+    [classname]: props.plain
   }
 })
 </script>
@@ -110,9 +111,7 @@ const buttonClasses = computed(() => {
   >
     <slot name="icon" v-if="$slots.icon && !loading"></slot>
 
-    <zc-icon v-if="loading" :size="20" :color="
-        plain ? color || 'var(--main-color)' : color || '#fff'
-      " style="margin-right: 2px">
+    <zc-icon v-if="loading" :size="20" :color="buttonStyle['--color']" style="margin-right: 2px">
       <IconLoading></IconLoading>
     </zc-icon>
     <slot></slot>
@@ -123,30 +122,50 @@ const buttonClasses = computed(() => {
 .zc-button {
   font-weight: 500;
   border-style: solid;
+  border-color: var(--color);
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
   overflow: hidden;
-  background-color: var(--backgroundColor);
-  border-color: var(--borderColor);
   color: var(--color);
-  width: var(--width);
-  height: var(--height);
-  font-size: var(--fontSize);
   white-space: nowrap;
+  background: var(--background);
   padding: 4px 12px;
   transition: all 0.2s ease;
   user-select: none;
   outline: none;
-  
-  &:focus-visible {
-    box-shadow: 0 0 0 2px rgba(var(--main-color-rgb, 0, 120, 212), 0.25);
+
+  &-plain {
+    &--primary {
+      border-color: var(--main-color);
+      color: var(--main-color);
+    }
+    &--success {
+      border-color: var(--main-success-color);
+      color: var(--main-success-color);
+    }
+    &--warning {
+      border-color: var(--main-warning-color);
+      color: var(--main-warning-color);
+    }
+    &--danger {
+      border-color: var(--main-danger-color);
+      color: var(--main-danger-color);
+    }
+    &--default {
+      border-color: var(--main-font-color);
+      color: var(--main-font-color);
+    }
   }
   
-  &.focused:not(.text) {
-    box-shadow: 0 0 0 2px rgba(var(--main-color-rgb, 0, 120, 212), 0.25);
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.25);
+  }
+  
+  &-focused:not(&-text) {
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.25);
   }
   
   &:hover:not(.disabled) {
@@ -162,7 +181,7 @@ const buttonClasses = computed(() => {
     }
   }
   
-  &.disabled {
+  &-disabled {
     &::after {
       content: '';
       position: absolute;
@@ -178,7 +197,7 @@ const buttonClasses = computed(() => {
     }
   }
   
-  &.text {
+  &-text {
     width: auto;
     height: auto;
     background: none;

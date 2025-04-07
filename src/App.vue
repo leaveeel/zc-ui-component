@@ -25,48 +25,10 @@ import IconClose from '@/packages/icon/src/IconClose.vue'
 import IconLoading from '@/packages/icon/src/IconLoading.vue'
 import { zcUI } from '@/types/zcUI'
 
-
-const loading = reactive<zcUIProps.Loading>({
-  loading: false
-})
-
-onMounted(() => {
-  // 初始加载
-  loading.loading = true
-  setTimeout(() => {
-    loading.loading = false
-  }, 1000)
-  
-  // 5秒后更新加载状态和配置
-  setTimeout(() => {
-    loading.loading = true
-    loading.text = '正在处理数据...'
-    loading.color = '#ff0000'
-    loading.size = 60
-  }, 5000)
-})
 </script>
 
 <template>
-  <div class="container">
-    <div v-loading="loading" class="loading-area">
-      这里是内容区域，将显示加载状态
-    </div>
-    <!-- {{loading}} -->
-  </div>
 </template>
 
 <style scoped>
-.container {
-  padding: 20px;
-}
-
-.loading-area {
-  height: 200px;
-  border: 1px solid #ddd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
 </style>

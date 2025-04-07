@@ -21,12 +21,10 @@
 | inline | boolean | false | 是否为行内按钮 |
 | width | string/number | 'auto' | 按钮宽度 |
 | height | string/number | '40' | 按钮高度 |
-| size | string/number | 16 | 按钮字体大小 |
+| fontSize | string/number | 16 | 按钮字体大小 |
 | radius | string/number | 6 | 按钮圆角大小 |
 | color | string | - | 按钮文字颜色 |
 | background | string | - | 按钮背景颜色 |
-| borderColor | string | - | 按钮边框颜色 |
-| border | string/number | 1 | 按钮边框宽度 |
 | loading | boolean | false | 是否显示加载状态 |
 | disabled | boolean | - | 是否禁用按钮 |
 | htmlType | 'button'/'submit'/'reset' | 'button' | 原生button类型 |
