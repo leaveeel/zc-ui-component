@@ -4,8 +4,11 @@
 
 ## 最近更新
 
-- 1.5.7
-  - 处理`Unable to preventDefault`错误
+- 1.5.8
+  - 修改loading加载方式
+  - 调整button配置，添加type
+  - 修复宽度充足时table列宽分配错误的问题
+  - 添加image组件
 
 ## 组件列表
 
@@ -126,6 +129,12 @@ app.mount('#app')
 ```
 
 ## 更新日志
+
+- 1.5.8
+  - 修改loading加载方式
+  - 调整button配置，添加type
+  - 修复宽度充足时table列宽分配错误的问题
+  - 添加image组件
 
 - 1.5.7
   - 处理`Unable to preventDefault`错误

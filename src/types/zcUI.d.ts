@@ -366,6 +366,27 @@ export namespace zcUIProps {
     showDelay?: number
     hideDelay?: number
   }
+
+
+  /**
+   * Image 组件属性
+   * @property {string} src - 图片源地址
+   * @property {string|number} width - 图片宽度
+   * @property {string|number} height - 图片高度
+   * @property {string} objectFit - 图片适应方式
+   * @property {string} alt - 图片描述
+   * @property {boolean} lazy - 是否懒加载
+   * @property {number} threshold - 加载阈值
+   */
+  export interface Image {
+    src?: string
+    width?: string | number
+    height?: string | number
+    objectFit?: 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
+    alt?: string
+    lazy?: boolean
+    threshold?: number
+  }
 }
 
 export namespace zcUI {

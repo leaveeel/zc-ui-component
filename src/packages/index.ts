@@ -8,6 +8,7 @@ import zcForm from '@/packages/form/src/index.vue'
 import zcFormItem from '@/packages/formItem/src/index.vue'
 import zcInput from '@/packages/input/src/index.vue'
 import zcIcon from '@/packages/icon/index.vue'
+import zcImage from '@/packages/image/src/index.vue'
 import { loadingDirective, zcLoading } from '@/packages/loading/zc-loading.ts'
 import { zcMessage } from '@/packages/messageBox/zc-messageBox.ts'
 import zcPagination from '@/packages/pagination/src/index.vue'
@@ -34,6 +35,7 @@ const components: Record<string, Component> = {
   zcFormItem,
   zcInput,
   zcIcon,
+  zcImage,
   zcPagination,
   zcScroll,
   zcTable,
@@ -73,7 +75,7 @@ export default { install }
 // 导出单独组件
 export {
   // 组件
-  zcButton, zcButtonGroup, zcCard, zcCheckbox, zcCheckboxGroup, zcDialog, zcForm, zcFormItem, zcInput, zcIcon, zcPagination, zcScroll, zcTable, zcTooltip,
+  zcButton, zcButtonGroup, zcCard, zcCheckbox, zcCheckboxGroup, zcDialog, zcForm, zcFormItem, zcInput, zcIcon, zcImage, zcPagination, zcScroll, zcTable, zcTooltip,
   // 图标
   IconChecked, IconClose, IconLoading, IconRightArrow,
   // 指令

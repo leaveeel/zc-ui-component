@@ -24,6 +24,7 @@ export const zcForm: zcUIProps.Form;
 export const zcFormItem: zcUIProps.FormItem;
 export const zcInput: zcUIProps.Input;
 export const zcIcon: zcIconTypes.Icon;
+export const zcImage: zcUIProps.Image;
 export const zcPagination: zcUIProps.Pagination;
 export const zcScroll: zcUIProps.Scroll;
 export const zcTable: zcUIProps.Table;
