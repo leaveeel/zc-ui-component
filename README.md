@@ -18,6 +18,7 @@
 - [ButtonGroup 按钮组](src/packages/buttonGroup)
 - [Card 卡片](src/packages/card)
 - [Icon 图标](src/packages/icon)
+- [Image 图片](src/packages/image)
 
 ### 表单组件
 

@@ -19,20 +19,21 @@ const props = withDefaults(defineProps<zcUIProps.Input>(), {
   type: 'text',
   clearable: false,
   placeholder: '',
-  maxLength: undefined,
-  size: 'default',
+  lengthModel: 'letter',
+  maxlength: undefined,
   resize: false,
   autocomplete: 'off',
-  height: '40px',
-  disabled: undefined
+  disabled: undefined,
+  min: undefined,
+  max: undefined,
 })
 const propsDisabled = props.disabled === undefined ? inject('fieldDisabled', ref(false)) : computed(() => props.disabled)
 
 // 定义事件
 const emit = defineEmits<{
-  'update:modelValue': [value: string],
-  input: [value: string],
-  blur: [value: string],
+  'update:modelValue': [value: string | number],
+  input: [value: string | number],
+  blur: [value: Event],
   focus: [value: Event],
   clear: [],
 }>()
@@ -60,12 +61,12 @@ const showClear = computed(() =>
   props.clearable && 
   !propsDisabled.value && 
   props.modelValue && 
-  props.modelValue.length > 0
+  props.modelValue.toString().length > 0
 )
 const showTogglePassword = computed(() => 
   props.type === 'password' && 
   props.modelValue && 
-  props.modelValue.length > 0
+  props.modelValue.toString().length > 0
 )
 
 // 方法
@@ -88,12 +89,40 @@ const togglePasswordVisibility = (e?: MouseEvent) => {
 const handleInput = (e: Event) => {
   const target = e.target as HTMLInputElement | HTMLTextAreaElement | null
   if (!target) return
-  const value = target.value
-  emit('update:modelValue', value)
-  emit('input', value)
-  change?.()
-
-
+  let value = target.value
+  if (props.type === 'number') {
+    const reg = /^(-\d+|\d+)\.?\d*?$/g
+    if (value && !reg.test(value)) {
+      target.value = props.modelValue.toString()
+      value = props.modelValue.toString()
+    }else {
+      if (props.min !== undefined && Number(value) < props.min) {
+        value = props.min.toString()
+      }
+      if (props.max !== undefined && Number(value) > props.max) {
+        value = props.max.toString()
+      }
+      emit('update:modelValue', Number(value))
+      emit('input', Number(value))
+      change?.()
+    }
+  }
+  if (props.maxlength && props.lengthModel === 'word') {
+    const words = value.match(/[\w-']+/g) || []
+    if (words.length > props.maxlength) {
+      const firstNWords = words.slice(0, props.maxlength);
+      let lastIndex = -1;
+      
+      for (let i = 0; i < props.maxlength; i++) {
+        const wordIndex = value.indexOf(firstNWords[i], lastIndex + 1);
+        lastIndex = wordIndex + firstNWords[i].length;
+      }
+      value = value.substring(0, lastIndex)
+    }
+    emit('update:modelValue', value)
+    emit('input', value)
+    change?.()
+  }
 }
 const prevent = ref(false)
 
@@ -102,8 +131,7 @@ const handleBlur = (e: FocusEvent) => {
   if(prevent.value) return
   focus.value = false
   blur?.()
-  const target = e.target as HTMLInputElement | HTMLTextAreaElement
-  emit('blur', target.value)
+  emit('blur', e)
 }
 
 const handleFocus = (e: FocusEvent) => {
@@ -125,7 +153,7 @@ if (isTextarea.value) {
 }
 
 // 监听器
-watch(() => props.modelValue, () => {
+watch(() => props.modelValue, (n,o) => {
   if (isTextarea.value && props.resize) {
     nextTick(adjustTextareaHeight)
   }
@@ -137,6 +165,19 @@ const handleClick = (e: MouseEvent) => {
   const target = isTextarea.value ? textareaRef.value : inputRef.value
   target?.focus()
 }
+
+const input = (value: string) => {
+  const target = isTextarea.value ? textareaRef.value : inputRef.value
+  if (!target) return
+  emit('update:modelValue', value)
+  target.value = value
+}
+
+defineExpose({
+  input,
+})
+
+
 </script>
 
 <template>
@@ -159,7 +200,7 @@ const handleClick = (e: MouseEvent) => {
         :value="modelValue"
         :placeholder="placeholder"
         :disabled="propsDisabled"
-        :maxlength="maxLength"
+        :maxlength="lengthModel === 'letter' ? maxlength : undefined"
         :autocomplete="autocomplete"
         :style="{  '--resize': props.resize ? 'auto' : 'none' }"
         @input="handleInput"
@@ -172,13 +213,12 @@ const handleClick = (e: MouseEvent) => {
         ref="inputRef"
         :id="id"
         v-bind="attrs"
-        :type="inputType"
+        :type="inputType !== 'number' ? inputType : 'text'"
         :value="modelValue"
         :placeholder="placeholder"
         :disabled="propsDisabled"
-        :maxlength="maxLength"
+        :maxlength="lengthModel === 'letter' ? maxlength : undefined"
         :autocomplete="autocomplete"
-        :style="{ height: setUnit(height) }"
         @input="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
@@ -280,6 +320,10 @@ const handleClick = (e: MouseEvent) => {
     &.error {
       color: var(--main-danger-color);
     }
+  }
+
+  input{
+    height: 40px;
   }
 
   input, textarea {

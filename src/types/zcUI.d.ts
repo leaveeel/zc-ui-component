@@ -186,24 +186,26 @@ export namespace zcUIProps {
    * @property {boolean} showPassword - 是否显示密码切换按钮
    * @property {boolean} disabled - 是否禁用
    * @property {string} placeholder - 输入框占位文本
+   * @property {string} lengthModel - 输入框长度限制类型：字母、单词
    * @property {number} maxLength - 最大输入长度
-   * @property {string} size - 输入框大小：默认、小、大
    * @property {boolean} resize - 文本域是否可调整大小
-   * @property {string|number} height - 输入框高度
+   * @property {number} min - 最小值
+   * @property {number} max - 最大值
    */
   export interface Input {
     tip?: string
-    modelValue: string
+    modelValue: string | number
     autocomplete?: string
     type?: 'text' | 'password' | 'textarea' | 'number' | 'email' | 'tel' | 'url'
     clearable?: boolean
     showPassword?: boolean
     disabled?: boolean
     placeholder?: string
-    maxLength?: number
-    size?: 'default' | 'small' | 'large'
+    lengthModel?: 'letter' | 'word'
+    maxlength?: number
     resize?: boolean
-    height?: string | number
+    min?: number
+    max?: number
   }
 
   /**
