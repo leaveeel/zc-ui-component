@@ -106,8 +106,7 @@ const handleInput = (e: Event) => {
       emit('input', Number(value))
       change?.()
     }
-  }
-  if (props.maxlength && props.lengthModel === 'word') {
+  }else if (props.maxlength && props.lengthModel === 'word') {
     const words = value.match(/[\w-']+/g) || []
     if (words.length > props.maxlength) {
       const firstNWords = words.slice(0, props.maxlength);
@@ -119,6 +118,10 @@ const handleInput = (e: Event) => {
       }
       value = value.substring(0, lastIndex)
     }
+    emit('update:modelValue', value)
+    emit('input', value)
+    change?.()
+  }else {
     emit('update:modelValue', value)
     emit('input', value)
     change?.()

@@ -233,7 +233,7 @@ const showJumper = () => {
           size="small"
           type="number"
           height="32"
-          min="1"
+          :min="1"
           :max="totalPages"
           @keyup.enter="handleInputConfirm"
           @blur="inputVisible = false"

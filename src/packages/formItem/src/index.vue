@@ -221,11 +221,6 @@ defineExpose({
       border-color: var(--main-danger-color);
     }
   }
-  &.is-required {
-    .formItemLabel {
-      font-weight: bold;
-    }
-  }
   .formItemLabel {
     flex-shrink: 0;
     transition: color 0.3s;

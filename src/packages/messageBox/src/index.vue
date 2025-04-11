@@ -70,7 +70,8 @@ const close = (action: string) => {
   <zc-dialog
     class="zc-messageBox zc-ui-component"
     @cancel="dialogClose"
-    :min-width="300"
+    :min-width="400"
+    width="min-content"
     :closeOnClickModal="!state.loading"
     close-icon
     v-model="visible"
@@ -125,6 +126,8 @@ const close = (action: string) => {
   .content {
     font-size: 14px;
     color: #999;
+    max-width: 40%;
+    min-width: 400px;
   }
   
   .btns {
