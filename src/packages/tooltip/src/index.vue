@@ -1,9 +1,8 @@
-<script
-  lang="ts">
+<script lang="ts">
 import { defineComponent } from 'vue'
 export default defineComponent ({
-    name: 'zcTooltip'
-  })
+  name: 'zcTooltip'
+})
 </script>
 
 <script
@@ -11,7 +10,7 @@ export default defineComponent ({
   setup>
 import { setUnit } from '@/utils/common'
 import { zcUIProps } from '@/types/zcUI'
-import { defineProps, ref, nextTick, onMounted, onBeforeUnmount, computed } from 'vue'
+import { defineProps, ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import zcScroll from '@/packages/scroll/src/index.vue'
 import { useDocument } from '@/utils/common'
 

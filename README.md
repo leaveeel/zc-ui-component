@@ -2,14 +2,6 @@
 
 [Github](https://github.com/leaveeel/zc-ui-component)
 
-## 最近更新
-
-- 1.5.8
-  - 修改loading加载方式
-  - 调整button配置，添加type
-  - 修复宽度充足时table列宽分配错误的问题
-  - 添加image组件
-
 ## 组件列表
 
 ### 基础组件
@@ -125,11 +117,13 @@ app.mount('#app')
   --main-warning-color: #ff8a00;
   --main-warning-icon-color: #f39159;
   --main-success-color: #23c987;
-  --main-font-family: PingFang SC;
 }
 ```
 
 ## 更新日志
+
+- 1.5.13
+  - 字体继承
 
 - 1.5.8
   - 修改loading加载方式

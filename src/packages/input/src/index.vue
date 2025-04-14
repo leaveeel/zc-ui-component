@@ -11,7 +11,6 @@ import IconClose from '@/packages/icon/src/IconClose.vue'
 import IconHide from '@/packages/icon/src/IconHide.vue'
 import IconShow from '@/packages/icon/src/IconShow.vue'
 import { zcUIProps } from '@/types/zcUI'
-import { setUnit } from '@/utils/common'
 import { computed, defineProps, inject, nextTick, ref, useAttrs, watch } from 'vue'
 
 // 定义props
@@ -314,7 +313,7 @@ defineExpose({
 
   .tip {
     font-size: 12px;
-    font-family: var(--main-font-family);
+    font-family: inherit;
     color: #999999;
     line-height: 10px;
     margin-top: 8px;
@@ -336,7 +335,7 @@ defineExpose({
     color: var(--main-font-color);
     transition: all 0.2s ease;
     border:none;
-    
+    font-family: inherit;
     &:disabled {
       background-color: #f5f7fa;
       cursor: not-allowed;

@@ -19,7 +19,6 @@ const emits = defineEmits<{
   change: [value: (string | number)[]]
 }>()
 
-const instance = getCurrentInstance()
 provide('checkboxGroup', {
   props,
   emit: emits

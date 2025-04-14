@@ -184,7 +184,6 @@ const handleBlur = () => {
   
   .checkbox-label {
     font-size: 16px;
-    font-family: var(--main-font-family);
     user-select: none;
   }
   

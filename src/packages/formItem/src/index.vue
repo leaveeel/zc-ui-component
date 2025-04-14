@@ -233,7 +233,6 @@ defineExpose({
     width: 100%;
     .error {
       font-size: 12px;
-      font-family: var(--main-font-family);
       line-height: 10px;
       margin-top: 8px;
       color: var(--main-danger-color);

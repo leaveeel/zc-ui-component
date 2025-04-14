@@ -16,11 +16,7 @@ import zcScroll from '@/packages/scroll/src/index.vue'
 import zcTable from '@/packages/table/src/index.vue'
 import { zcToast } from '@/packages/toast/zc-toast.ts'
 import zcTooltip from '@/packages/tooltip/src/index.vue'
-import IconChecked from '@/packages/icon/src/IconChecked.vue'
-import IconClose from '@/packages/icon/src/IconClose.vue'
-import IconLoading from '@/packages/icon/src/IconLoading.vue'
-import IconRightArrow from '@/packages/icon/src/IconRightArrow.vue'
-import { zcUI, zcUIProps, zcIcon as zcIconTypes } from '@/types/zcUI'
+import { zcUI, zcUIProps } from '@/types/zcUI'
 import type { App, Component } from 'vue'
 
 // 组件列表
@@ -76,8 +72,6 @@ export default { install }
 export {
   // 组件
   zcButton, zcButtonGroup, zcCard, zcCheckbox, zcCheckboxGroup, zcDialog, zcForm, zcFormItem, zcInput, zcIcon, zcImage, zcPagination, zcScroll, zcTable, zcTooltip,
-  // 图标
-  IconChecked, IconClose, IconLoading, IconRightArrow,
   // 指令
   loadingDirective,
   // 服务
@@ -89,6 +83,5 @@ export {
 // 类型导出
 export type {
   zcUI,
-  zcUIProps,
-  zcIconTypes
+  zcUIProps
 }

@@ -10,7 +10,7 @@ import { onMounted, ref, toRefs, watch, nextTick } from 'vue'
 import { setUnit } from '@/utils/common'
 import IconLoading from '@/packages/icon/src/IconLoading.vue'
 import zcIcon from '@/packages/icon/index.vue'
-import { zcUI, zcUIProps } from '@/types/zcUI'
+import { zcUIProps } from '@/types/zcUI'
 
 
 const props = withDefaults(defineProps<zcUIProps.Image>(), {

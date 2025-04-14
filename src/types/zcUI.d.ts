@@ -389,6 +389,22 @@ export namespace zcUIProps {
     lazy?: boolean
     threshold?: number
   }
+
+  /**
+     * Icon 图标组件属性
+     * @property {string|number} size - 图标大小
+     * @property {string} color - 图标颜色
+     * @property {boolean} spin - 是否旋转
+     * @property {number} rotate - 旋转角度
+     * @property {boolean} disabled - 是否禁用
+     */
+  export interface Icon {
+    size?: string | number
+    color?: string
+    spin?: boolean
+    rotate?: number
+    disabled?: boolean
+  }
 }
 
 export namespace zcUI {
@@ -462,23 +478,5 @@ export namespace zcUI {
     name: string
     color?: string
     handle: (index: number, row: Record<string, any>) => void
-  }
-}
-
-export namespace zcIcon {
-  /**
-   * Icon 图标组件属性
-   * @property {string|number} size - 图标大小
-   * @property {string} color - 图标颜色
-   * @property {boolean} spin - 是否旋转
-   * @property {number} rotate - 旋转角度
-   * @property {boolean} disabled - 是否禁用
-   */
-  export interface Icon {
-    size?: string | number
-    color?: string
-    spin?: boolean
-    rotate?: number
-    disabled?: boolean
   }
 }

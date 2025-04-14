@@ -120,6 +120,7 @@ const buttonClasses = computed(() => {
 
 <style scoped lang="scss">
 .zc-button {
+  font-family: inherit;
   font-weight: 500;
   border-style: solid;
   border-color: var(--color);

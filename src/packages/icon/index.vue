@@ -1,9 +1,16 @@
+<script lang="ts">
+import { defineComponent } from 'vue'
+export default defineComponent({
+  name: 'zcIcon'
+})
+</script>
+
 <script lang="ts" setup>
-import { zcIcon } from '@/types/zcUI'
+import { zcUIProps } from '@/types/zcUI'
 import { defineProps, defineEmits } from 'vue'
 import { setUnit } from '@/utils/common'
 
-const props = withDefaults(defineProps<zcIcon.Icon>(), {
+const props = withDefaults(defineProps<zcUIProps.Icon>(), {
   size: 24,
   color: 'var(--main-font-color)',
   spin: false,
@@ -19,13 +26,6 @@ const handleClick = (event: MouseEvent) => {
   if (props.disabled) return
   emit('click', event)
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-  name: 'zcIcon'
-})
 </script>
 
 <template>
