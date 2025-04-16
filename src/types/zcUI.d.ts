@@ -37,6 +37,42 @@ export namespace zcUIProps {
   }
 
   /**
+   * Skeleton 组件属性
+   * @property {boolean} loading - 是否显示骨架屏
+   * @property {boolean} animated - 是否启用动画效果
+   * @property {string} backgroundColor - 骨架屏背景色
+   * @property {string} highlightColor - 动画高亮颜色
+   * @property {boolean} round - 是否显示为圆角
+   * @property {string|number} radius - 圆角大小
+   * @property {number} rows - 默认段落行数
+   * @property {boolean} title - 是否显示默认标题
+   */
+  export interface Skeleton {
+    loading?: boolean
+    animated?: boolean
+    backgroundColor?: string
+    highlightColor?: string
+    round?: boolean
+    radius?: string | number
+    rows?: number
+    title?: boolean
+  }
+  
+  /**
+   * SkeletonItem 组件属性
+   * @property {string} variant - 骨架屏元素类型：文本、标题、图片、圆形
+   * @property {string|number} width - 宽度
+   * @property {string|number} height - 高度
+   * @property {string|number} radius - 圆角大小
+   */
+  export interface SkeletonItem {
+    variant?: 'text' | 'title' | 'image' | 'circle'
+    width?: string | number
+    height?: string | number
+    radius?: string | number
+  }
+
+  /**
    * ButtonGroup 组件属性
    * @property {string} align - 按钮组对齐方式：左对齐、居中对齐、右对齐
    * @property {boolean} inline - 是否为行内按钮组

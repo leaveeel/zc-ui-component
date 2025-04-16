@@ -25,6 +25,7 @@
 - [Table 表格](src/packages/table)
 - [Pagination 分页](src/packages/pagination)
 - [Scroll 滚动容器](src/packages/scroll)
+- [Skeleton 骨架屏](src/packages/skeleton)
 
 ### 反馈组件
 
@@ -121,6 +122,9 @@ app.mount('#app')
 ```
 
 ## 更新日志
+
+- 1.5.14
+  - 添加 Skeleton 骨架屏组件和 SkeletonItem 骨架元素组件
 
 - 1.5.13
   - 字体继承

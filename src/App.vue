@@ -24,6 +24,8 @@ import zcTooltip from '@/packages/tooltip/src/index.vue'
 import IconChecked from '@/packages/icon/src/IconChecked.vue'
 import IconClose from '@/packages/icon/src/IconClose.vue'
 import IconLoading from '@/packages/icon/src/IconLoading.vue'
+import zcSkeleton from '@/packages/skeleton/src/index.vue'
+import zcSkeletonItem from '@/packages/skeleton/src/skeletonItem.vue'
 import { zcUI } from '@/types/zcUI'
 
 </script>
