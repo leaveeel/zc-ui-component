@@ -137,6 +137,9 @@ const useLoading = (options: zcUIProps.Loading = {}) => {
     hide: () => {
       if (instance) {
         instance.hide()
+        loadingApp.unmount()
+        loadingApp = null
+        instance = null
       }
     },
     // 动态更新配置

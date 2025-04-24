@@ -106,16 +106,17 @@ const handleInput = (e: Event) => {
       change?.()
     }
   }else if (props.maxlength && props.lengthModel === 'word') {
-    const words = value.match(/[\w-']+/g) || []
+    const text = value.replace(/\n/g, '\n ')
+    const words = text.match(/[\p{L}\p{P}\p{S}\p{N}]+/gu) || []
     if (words.length > props.maxlength) {
       const firstNWords = words.slice(0, props.maxlength);
       let lastIndex = -1;
       
       for (let i = 0; i < props.maxlength; i++) {
-        const wordIndex = value.indexOf(firstNWords[i], lastIndex + 1);
+        const wordIndex = text.indexOf(firstNWords[i], lastIndex + 1);
         lastIndex = wordIndex + firstNWords[i].length;
       }
-      value = value.substring(0, lastIndex)
+      value = text.substring(0, lastIndex)
     }
     emit('update:modelValue', value)
     emit('input', value)
