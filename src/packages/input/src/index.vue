@@ -88,42 +88,32 @@ const togglePasswordVisibility = (e?: MouseEvent) => {
 const handleInput = (e: Event) => {
   const target = e.target as HTMLInputElement | HTMLTextAreaElement | null
   if (!target) return
-  let value = target.value
   if (props.type === 'number') {
     const reg = /^(-\d+|\d+)\.?\d*?$/g
-    if (value && !reg.test(value)) {
+
+    if (target.value && !reg.test(target.value)) {
       target.value = props.modelValue.toString()
-      value = props.modelValue.toString()
-    }else {
-      if (props.min !== undefined && Number(value) < props.min) {
-        value = props.min.toString()
-      }
-      if (props.max !== undefined && Number(value) > props.max) {
-        value = props.max.toString()
-      }
-      emit('update:modelValue', Number(value))
-      emit('input', Number(value))
-      change?.()
+      return
     }
+
+    emit('update:modelValue', Number(target.value))
+    emit('input', Number(target.value))
+    change?.()
   }else if (props.maxlength && props.lengthModel === 'word') {
-    const text = value.replace(/\n/g, '\n ')
+    const text = target.value.replace(/\n/g, '\n ')
     const words = text.match(/[\p{L}\p{P}\p{S}\p{N}]+/gu) || []
+
     if (words.length > props.maxlength) {
-      const firstNWords = words.slice(0, props.maxlength);
-      let lastIndex = -1;
-      
-      for (let i = 0; i < props.maxlength; i++) {
-        const wordIndex = text.indexOf(firstNWords[i], lastIndex + 1);
-        lastIndex = wordIndex + firstNWords[i].length;
-      }
-      value = text.substring(0, lastIndex)
+      target.value = props.modelValue.toString()
+      return
     }
-    emit('update:modelValue', value)
-    emit('input', value)
+
+    emit('update:modelValue', target.value)
+    emit('input', target.value)
     change?.()
   }else {
-    emit('update:modelValue', value)
-    emit('input', value)
+    emit('update:modelValue', target.value)
+    emit('input', target.value)
     change?.()
   }
 }
@@ -133,6 +123,23 @@ const focus = ref(false)
 const handleBlur = (e: FocusEvent) => {
   if(prevent.value) return
   focus.value = false
+
+  const target = ref(props.modelValue.toString())
+  if (props.type === 'number' && target.value) {
+    if(!(props.min !== undefined && props.max !== undefined && props.min >= props.max)) {
+      if (props.min !== undefined && Number(target.value) < props.min) {
+        target.value = props.min.toString()
+      }
+      if (props.max !== undefined && Number(target.value) > props.max) {
+        target.value = props.max.toString()
+      }
+    }
+
+    // emit('update:modelValue', Number(target.value))
+    // emit('input', target.value)
+    // change?.()
+  }
+  
   blur?.()
   emit('blur', e)
 }
@@ -189,7 +196,6 @@ defineExpose({
     :class="[
       { 
         'is-disabled': propsDisabled,
-        'has-error': errorMsg,
         'is-textarea': isTextarea
       }
     ]"
@@ -226,6 +232,7 @@ defineExpose({
         @blur="handleBlur"
         @focus="handleFocus"
       />
+
       <div
         v-if="showClear || showTogglePassword"
         class="input-buttons"
@@ -268,6 +275,8 @@ defineExpose({
   width: 100%;
   height: 100%;
   position: relative;
+  display: grid;
+  grid-template-rows: auto;
   .input-container {
     position: relative;
     background: #ffffff;
@@ -287,12 +296,6 @@ defineExpose({
     }
 
     &.error {
-      border-color: var(--main-danger-color);
-    }
-  }
-
-  &.has-error {
-    .input-container {
       border-color: var(--main-danger-color);
     }
   }

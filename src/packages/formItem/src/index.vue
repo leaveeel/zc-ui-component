@@ -231,6 +231,8 @@ defineExpose({
   }
   .formItemContent {
     width: 100%;
+    display: grid;
+    grid-template-rows: auto;
     .error {
       font-size: 12px;
       line-height: 10px;
