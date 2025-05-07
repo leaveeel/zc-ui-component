@@ -96,16 +96,6 @@ const calculateColWidths = () => {
   })
 }
 
-// 计算滚动区域高度
-const scrollHeight = ref()
-const getScrollHeight = () => {
-  if (!zcTable.value || !thead.value) return
-  
-  const zcTableHeight = zcTable.value.offsetHeight
-  const theadHeight = thead.value.offsetHeight
-  scrollHeight.value = zcTableHeight - theadHeight
-}
-
 // 固定列位置计算
 const setPx = (fixed: string | undefined, index: number) => {
   if (!fixed || !colWidths.value.length) return '0px'
@@ -254,10 +244,19 @@ const getRowClassName = (row: any, rowIndex: number) => {
   return className
 }
 
+// 计算滚动区域高度
+const scrollHeight = ref<'auto' | number>('auto')
+const getScrollHeight = () => {
+  const zcTableHeight = zcTable.value?.offsetHeight || 0
+  const theadHeight = thead.value?.offsetHeight || 0
+  scrollHeight.value = zcTableHeight - (props.border ? 2 : 0) - theadHeight
+}
+
 // 监听数据变化
 watch(
   () => props.data,
   () => {
+    scrollHeight.value = 'auto'
     nextTick(() => {
       selectedRows.value = []
       calculateColWidths()
@@ -276,14 +275,7 @@ const handleScroll = (e: any) => {
 onMounted(() => {
   nextTick(() => {
     calculateColWidths()
-    getScrollHeight()
   })
-  
-  window.addEventListener('resize', getScrollHeight)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', getScrollHeight)
 })
 </script>
 
@@ -355,12 +347,12 @@ onBeforeUnmount(() => {
     
     <!-- 表格内容 -->
     <zc-scroll 
-      :height="scrollHeight" 
-      :key="scrollHeight"
+      v-if="props.data && props.data.length"
+      :height="scrollHeight"     
       ref="scroll" 
       @scroll="handleScroll"
     >
-      <div class="tbody" ref="tbody" v-if="props.data && props.data.length">
+      <div class="tbody" ref="tbody">
           <div
             class="row"
             ref="rows"
@@ -418,7 +410,6 @@ onBeforeUnmount(() => {
                   </zc-button>
                 </zc-buttonGroup>
               </template>
-              
               <!-- 常规数据列 -->
               <template v-else>
                   {{ column.prop ? column.formatter ? column.formatter(row, column, rowIndex) : row[column.prop] : '' }}
@@ -426,12 +417,12 @@ onBeforeUnmount(() => {
             </div>
         </div>
       </div>
-      
-      <!-- 空数据提示 -->
-      <div v-else class="empty-text">
-        {{ emptyText }}
-      </div>
     </zc-scroll>
+
+    <!-- 空数据提示 -->
+    <div v-else class="empty-text">
+      {{ emptyText }}
+    </div>
   </div>
 </template>
 
