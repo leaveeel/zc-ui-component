@@ -18,7 +18,6 @@ const props = withDefaults(defineProps<zcUIProps.Input>(), {
   type: 'text',
   clearable: false,
   placeholder: '',
-  lengthModel: 'letter',
   maxlength: undefined,
   resize: false,
   autocomplete: 'off',
@@ -99,17 +98,6 @@ const handleInput = (e: Event) => {
     emit('update:modelValue', Number(target.value))
     emit('input', Number(target.value))
     change?.()
-  }else if (props.maxlength && props.lengthModel === 'word') {
-    const words = calcWord(target.value)
-
-    if (words.length > props.maxlength) {
-      target.value = props.modelValue.toString()
-      return
-    }
-
-    emit('update:modelValue', target.value)
-    emit('input', target.value)
-    change?.()
   }else {
     emit('update:modelValue', target.value)
     emit('input', target.value)
@@ -124,6 +112,7 @@ const handleBlur = (e: FocusEvent) => {
   focus.value = false
 
   const target = ref(props.modelValue.toString())
+
   if (props.type === 'number' && target.value) {
     if(!(props.min !== undefined && props.max !== undefined && props.min >= props.max)) {
       if (props.min !== undefined && Number(target.value) < props.min) {
@@ -182,93 +171,9 @@ const input = (value: string) => {
   target.value = value
 }
 
-const calcWord = (text: string) => {
-  const t = text.replace(/\n/g, '\n ')
-  const words = t.match(/[\p{L}\p{P}\p{S}\p{N}]+/gu) || []
-  return words
-}
-
-const handlePaste = (e: ClipboardEvent) => {
-  if(!props.maxlength || props.lengthModel !== 'word') return
-  if (!e.clipboardData) return
-
-  // 阻止默认粘贴行为
-  e.preventDefault()
-  
-  let pastedText = e.clipboardData.getData('text')
-  if (!pastedText) return
-  
-  const target = e.target as HTMLInputElement | HTMLTextAreaElement
-  const selectionStart = target.selectionStart || 0
-  const selectionEnd = target.selectionEnd || 0
-  
-  // 获取当前值
-  const currentValue = target.value.substring(0, selectionStart) + target.value.substring(selectionEnd)
-
-  // 计算粘贴后的新值
-  if(calcWord(pastedText).length + calcWord(currentValue).length > props.maxlength) {
-    const less = props.maxlength - calcWord(currentValue).length
-    const add1 = calcWord(pastedText).slice(0, less)
-    const add1Last = add1.at(-1)
-    let l = 0
-    add1.forEach(w => {
-      l += w===add1Last ? 1 : 0
-    })
-
-    const words = pastedText.match(/[\p{L}\p{P}\p{S}\p{N}\p{C}]+/gu) || []
-    let nWords: any = []
-
-    words.forEach(w => {
-      if(l === 0 || !calcWord(w).length) return
-      if(calcWord(w).length === 1) {
-        nWords.push(w)
-        if(calcWord(w)[0] === add1Last) {
-          l -= 1
-        }
-      }else {
-        let x:any = []
-        calcWord(w).forEach((m,n) => {
-          if(l === 0) return
-          x.push(m)
-          if(m === add1Last) {
-            l -= 1
-          }
-          if(n === calcWord(w).length - 1) {
-            nWords.push(w)
-          }else if(l === 0) {
-            let i = -1
-            x.forEach((y:any) => {
-              i = w.indexOf(y, i + 1)
-            })
-            nWords.push(w.slice(0, i + x.at(-1).length))
-          }
-        })
-      }
-    })
-    
-    pastedText = nWords.join(' ') + ' '
-  }
-
-
-  let newValue = target.value.substring(0, selectionStart) + pastedText + target.value.substring(selectionEnd)
-  
-  // 更新输入框的值
-  target.value = newValue
-  
-  // 更新光标位置
-  const newCursorPos = selectionStart + pastedText.replace(/\p{C}+/gu,' ').length
-  target.setSelectionRange(newCursorPos, newCursorPos)
-  // 触发输入事件
-  emit('update:modelValue', newValue)
-  emit('input', newValue)
-  change?.()
-}
-
 defineExpose({
   input,
 })
-
-
 </script>
 
 <template>
@@ -290,11 +195,10 @@ defineExpose({
         :value="modelValue"
         :placeholder="placeholder"
         :disabled="propsDisabled"
-        :maxlength="lengthModel === 'letter' ? maxlength : undefined"
+        :maxlength="maxlength"
         :autocomplete="autocomplete"
         :style="{  '--resize': props.resize ? 'auto' : 'none' }"
         @input="handleInput"
-        @paste="handlePaste"
         @blur="handleBlur"
         @focus="handleFocus"
       ></textarea>
@@ -308,10 +212,9 @@ defineExpose({
         :value="modelValue"
         :placeholder="placeholder"
         :disabled="propsDisabled"
-        :maxlength="lengthModel === 'letter' ? maxlength : undefined"
+        :maxlength="maxlength"
         :autocomplete="autocomplete"
         @input="handleInput"
-        @paste="handlePaste"
         @blur="handleBlur"
         @focus="handleFocus"
       />

@@ -20,7 +20,6 @@
 | showPassword | boolean | false | 是否显示密码切换按钮 |
 | disabled | boolean | - | 是否禁用 |
 | placeholder | string | '' | 输入框占位文本 |
-| lengthModel | 'letter'/'word' | - | 输入框长度限制类型：字母、单词 |
 | maxlength | number | - | 最大输入长度 |
 | resize | boolean | false | 文本域是否可调整大小 |
 | min | number | - | 最小值 |

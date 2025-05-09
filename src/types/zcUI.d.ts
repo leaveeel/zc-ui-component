@@ -222,7 +222,6 @@ export namespace zcUIProps {
    * @property {boolean} showPassword - 是否显示密码切换按钮
    * @property {boolean} disabled - 是否禁用
    * @property {string} placeholder - 输入框占位文本
-   * @property {string} lengthModel - 输入框长度限制类型：字母、单词
    * @property {number} maxLength - 最大输入长度
    * @property {boolean} resize - 文本域是否可调整大小
    * @property {number} min - 最小值
@@ -237,7 +236,6 @@ export namespace zcUIProps {
     showPassword?: boolean
     disabled?: boolean
     placeholder?: string
-    lengthModel?: 'letter' | 'word'
     maxlength?: number
     resize?: boolean
     min?: number
