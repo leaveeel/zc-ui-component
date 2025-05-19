@@ -20,7 +20,8 @@ const props = withDefaults(defineProps<zcUIProps.Dialog>(), {
   closeOnClickModal: true,
   width: '50%',
   minWidth: 'auto',
-  closeOnPressEscape: true
+  closeOnPressEscape: true,
+  title: ''
 })
 
 const emit = defineEmits<{
@@ -124,8 +125,9 @@ onUnmounted(() => {
           >
             <IconClose></IconClose>
           </zc-icon>
-          <div class="dialog-header" v-if="$slots.header">
-            <slot name="header"></slot>
+          <div class="dialog-header" v-if="$slots.header || title">
+            <h3 v-if="title">{{ title }}</h3>
+            <slot name="header" v-else></slot>
           </div>
           <div class="dialog-body">
             <slot></slot>

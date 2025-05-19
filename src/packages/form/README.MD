@@ -19,6 +19,7 @@
 | rules | Record<string, RuleItem\|RuleItem[]> | - | 表单验证规则 |
 | model | Record<string, any> | - | 表单数据对象 |
 | labelPosition | 'left'/'right'/'top' | 'left' | 表单标签位置 |
+| labelAlign | 'left'/'right' | 'left' | 标签文字对齐方式 |
 | labelWidth | string/number | - | 表单标签宽度 |
 | scrollToError | boolean | false | 提交表单且校验不通过时，是否滚动到错误的表单项 |
 | hideRequiredAsterisk | boolean | false | 是否隐藏必填字段的标签旁边的红色星号 |

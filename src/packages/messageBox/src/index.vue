@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import zcDialog from '@/packages/dialog/src/index.vue'
 import zcButton from '@/packages/button/src/index.vue'
+import zcInput from '@/packages/input/src/index.vue'
 import zcButtonGroup from '@/packages/buttonGroup/src/index.vue'
 import { zcUIProps } from '@/types/zcUI'
 import { defineProps, onMounted, reactive, ref } from 'vue'
@@ -8,7 +9,7 @@ import { defineProps, onMounted, reactive, ref } from 'vue'
 // 类型定义和默认值
 interface MessageBoxProps extends zcUIProps.MessageBox {
   container: HTMLElement;
-  resolve: (value: string) => void;
+  resolve: (value: string, data?: any) => void;
   reject: (reason: string) => void;
 }
 
@@ -22,7 +23,8 @@ const props = withDefaults(defineProps<MessageBoxProps>(), {
 
 // 状态管理
 const state = reactive({
-  loading: false
+  loading: false,
+  value: ''
 })
 
 const visible = ref(false)
@@ -64,6 +66,7 @@ const close = (action: string) => {
     callback(action)
   }
 }
+
 </script>
 
 <template>
@@ -82,11 +85,11 @@ const close = (action: string) => {
       <div class="title">{{ title }}</div>
     </template>
     
-    <slot v-if="$slots.default"></slot>
-    <div v-else class="content">{{ props.message }}</div>
+    <div class="content">{{ props.message }}</div>
+    <zc-input v-if="props.input" v-bind="props.input" v-model="state.value"></zc-input>
     
     <template #footer>
-      <zc-buttonGroup class="btns">
+      <zc-buttonGroup align="right">
         <zc-button
           v-if="props.showCancel"
           :class="props.cancelClass"
@@ -116,26 +119,19 @@ const close = (action: string) => {
 
 <style scoped lang="scss">
 .zc-messageBox {
-  .title {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--main-font-color);
-    margin-bottom: 20px;
-  }
-  
-  .content {
-    font-size: 14px;
-    color: #999;
-    max-width: 40%;
-    min-width: 400px;
-  }
-  
-  .btns {
-    justify-content: flex-end;
-    margin-top: 20px;
+  :deep() {
+    .title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--main-font-color);
+      margin-bottom: 20px;
+    }
     
-    .zcButton {
-      padding: 0 5px;
+    .content {
+      font-size: 14px;
+      color: #999;
+      max-width: 40%;
+      min-width: 400px;
     }
   }
 }

@@ -11,6 +11,7 @@ import { defineProps, provide, reactive, toRefs, ref } from 'vue'
 
 const props = withDefaults(defineProps<zcUIProps.Form>(), {
   labelPosition: 'left',
+  labelAlign: 'left',
   scrollToError: false,
   hideRequiredAsterisk: false,
   validateOnRuleChange: true,

@@ -22,6 +22,7 @@
 | minWidth | string/number | 'auto' | 对话框最小宽度 |
 | loading | boolean | false | 是否显示加载状态 |
 | closeOnPressEscape | boolean | true | 是否在按下 Escape 键时关闭对话框 |
+| title | string | - | 标题 |
 
 ## 事件
 

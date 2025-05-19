@@ -20,6 +20,7 @@
 | required | boolean | false | 是否必填 |
 | labelWidth | string/number | - | 表单项标签宽度 |
 | labelPosition | 'left'/'right'/'top' | - | 表单项标签位置 |
+| labelAlign | 'left'/'right' | 'left' | 标签文字对齐方式 |
 | error | string | - | 表单域验证错误信息 |
 | showMessage | boolean | true | 是否显示校验错误信息 |
 | disabled | boolean | - | 是否禁用表单项 |

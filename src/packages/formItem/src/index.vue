@@ -64,15 +64,20 @@ const validate = async (t = 'change', v = formContext.model[props.prop]) => {
 
   const validator = new AsyncValidator({ [props.prop]: rules } as Rules)
   const model = { [props.prop]: v }
-  
-  try {
-    await validator.validate(model)
+
+  if(!rules.find(i => i.required) && !v) {
     errorMsg.value = ''
     return { status: 'fulfilled' as const }
-  } catch (err: any) {
-    const message = err.errors[0].message
-    errorMsg.value = props.showMessage ? message : ''
-    return { status: 'rejected' as const, reason: message }
+  }else {
+    try {
+      await validator.validate(model)
+      errorMsg.value = ''
+      return { status: 'fulfilled' as const }
+    } catch (err: any) {
+      const message = err.errors[0].message
+      errorMsg.value = props.showMessage ? message : ''
+      return { status: 'rejected' as const, reason: message }
+    }
   }
 }
 
@@ -174,9 +179,9 @@ defineExpose({
         width: (labelWidth || formContext.labelWidth) ? setUnit(
           labelWidth ? labelWidth : formContext.labelWidth as string | number
         ) : 'auto',
-        textAlign: labelPosition
-          ? labelPosition
-          : formContext.labelPosition as string | number
+        textAlign: labelAlign
+          ? labelAlign
+          : formContext.labelAlign as string | number
       } as StyleValue"
       :for="id"
     >

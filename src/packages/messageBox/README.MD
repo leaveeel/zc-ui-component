@@ -26,6 +26,7 @@ zcMessage({
 |-------|------|-------|------|
 | title | string | - | 消息框标题 |
 | message | string | - | 消息框内容 |
+| input | object | - | 输入框参数 |
 | showConfirm | boolean | true | 是否显示确认按钮 |
 | confirmText | string | 'Confirm' | 确认按钮文本 |
 | confirmClass | string | - | 确认按钮样式类 |

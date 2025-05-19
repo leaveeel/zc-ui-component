@@ -111,7 +111,7 @@ const handleBlur = (e: FocusEvent) => {
   if(prevent.value) return
   focus.value = false
 
-  const target = ref(props.modelValue.toString())
+  const target = ref(props.modelValue?.toString())
 
   if (props.type === 'number' && target.value) {
     if(!(props.min !== undefined && props.max !== undefined && props.min >= props.max)) {
@@ -259,7 +259,7 @@ defineExpose({
 <style lang="scss">
 .zc-input {
   width: 100%;
-  height: 100%;
+  height: min-content;
   position: relative;
   display: grid;
   grid-template-rows: auto;
@@ -271,7 +271,7 @@ defineExpose({
     overflow: hidden;
     display: flex;
     cursor: text;
-    height: 100%;
+    height: min-content;
     &:hover:not(:disabled) {
       border-color: var(--main-color);
     }

@@ -152,6 +152,7 @@ export namespace zcUIProps {
    * @property {string|number} minWidth - 对话框最小宽度
    * @property {boolean} loading - 是否显示加载状态
    * @property {boolean} closeOnPressEscape - 是否在按下 Escape 键时关闭对话框
+   * @property {string} title - 对话框标题
    */
   export interface Dialog {
     modelValue: boolean
@@ -162,6 +163,7 @@ export namespace zcUIProps {
     minWidth?: string | number
     loading?: boolean
     closeOnPressEscape?: boolean
+    title?: string
   }
 
   /**
@@ -169,6 +171,7 @@ export namespace zcUIProps {
    * @property {Record<string, RuleItem|RuleItem[]>} rules - 表单验证规则
    * @property {Record<string, any>} model - 表单数据对象
    * @property {string} labelPosition - 表单标签位置：左对齐、右对齐、顶部对齐
+   * @property {string} labelAlign - 标签文字对齐方式：左对齐、右对齐
    * @property {string|number} labelWidth - 表单标签宽度
    * @property {boolean} scrollToError - 提交表单且校验不通过时，是否滚动到错误的表单项
    * @property {boolean} hideRequiredAsterisk - 是否隐藏必填字段的标签旁边的红色星号
@@ -180,6 +183,7 @@ export namespace zcUIProps {
     rules?: Record<string, (RuleItem & { trigger: 'change' | 'blur' }) | (RuleItem & { trigger: 'change' | 'blur' })[]>
     model: Record<string, any>
     labelPosition?: 'left' | 'right' | 'top'
+    labelAlign?: 'left' | 'right'
     labelWidth?: string | number
     scrollToError?: boolean
     hideRequiredAsterisk?: boolean
@@ -196,20 +200,22 @@ export namespace zcUIProps {
    * @property {boolean} required - 是否必填
    * @property {string|number} labelWidth - 表单项标签宽度
    * @property {string} labelPosition - 表单项标签位置：左对齐、右对齐、顶部对齐
+   * @property {string} labelAlign - 标签文字对齐方式：左对齐、右对齐
    * @property {boolean} error - 表单域验证错误信息
    * @property {boolean} showMessage - 是否显示校验错误信息
    * @property {boolean | undefined} disabled - 是否禁用
    */
   export interface FormItem {
-      label?: string
-      prop: string
-      rules?: (RuleItem & { trigger: 'change' | 'blur' }) | (RuleItem & { trigger: 'change' | 'blur' })[]
-      required?: boolean
-      labelWidth?: string | number
-      labelPosition?: 'left' | 'right' | 'top'
-      error?: string
-      showMessage?: boolean
-      disabled?: boolean | undefined
+    label?: string
+    prop: string
+    rules?: (RuleItem & { trigger: 'change' | 'blur' }) | (RuleItem & { trigger: 'change' | 'blur' })[]
+    required?: boolean
+    labelWidth?: string | number
+    labelPosition?: 'left' | 'right' | 'top'
+    labelAlign?: 'left' | 'right'
+    error?: string
+    showMessage?: boolean
+    disabled?: boolean | undefined
   }
 
   /**
@@ -360,6 +366,7 @@ export namespace zcUIProps {
    * @property {Function} beforeClose - 关闭前的回调函数
    * @property {Function} callback - 关闭后的回调函数
    * @property {boolean} loading - 是否显示加载状态
+   * @property {zcUI.Input} input - 输入框属性
    */
   export interface MessageBox {
     title?: string,
@@ -372,7 +379,8 @@ export namespace zcUIProps {
     cancelClass?: string,
     beforeClose?: (action: string, instance: any, done: () => void) => void,
     callback?: (state: Record<string, any>) => void
-    loading?: boolean
+    loading?: boolean,
+    input?: Input
   }
 
   /**

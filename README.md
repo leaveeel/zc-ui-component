@@ -123,6 +123,11 @@ app.mount('#app')
 
 ## 更新日志
 
+- 1.6.3
+  - 添加formitem组件label文字对齐属性
+  - 为messagebox添加可选的输入框，参数继承input，通过beforeclose: instance 返回值
+  - 优化部分报错
+
 - 1.6.1
   - 对table-body高度调整进行优化
 
