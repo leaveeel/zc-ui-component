@@ -12,12 +12,15 @@ import zcImage from '@/packages/image/src/index.vue'
 import { loadingDirective, zcLoading } from '@/packages/loading/zc-loading.ts'
 import { zcMessage } from '@/packages/messageBox/zc-messageBox.ts'
 import zcPagination from '@/packages/pagination/src/index.vue'
+import zcRadio from '@/packages/radio/src/index.vue'
+import zcRadioGroup from '@/packages/radioGroup/src/index.vue'
 import zcScroll from '@/packages/scroll/src/index.vue'
 import zcSkeleton from '@/packages/skeleton/src/index.vue'
 import zcSkeletonItem from '@/packages/skeleton/src/skeletonItem.vue'
 import zcTable from '@/packages/table/src/index.vue'
 import { zcToast } from '@/packages/toast/zc-toast.ts'
 import zcTooltip from '@/packages/tooltip/src/index.vue'
+import zcSwitch from '@/packages/switch/src/index.vue'
 import { zcUI, zcUIProps } from '@/types/zcUI'
 import type { App, Component } from 'vue'
 
@@ -35,11 +38,14 @@ const components: Record<string, Component> = {
   zcIcon,
   zcImage,
   zcPagination,
+  zcRadio,
+  zcRadioGroup,
   zcScroll,
   zcSkeleton,
   zcSkeletonItem,
   zcTable,
-  zcTooltip
+  zcTooltip,
+  zcSwitch
 }
 
 // 指令
@@ -75,8 +81,27 @@ export default { install }
 // 导出单独组件
 export {
   // 组件
-  zcButton, zcButtonGroup, zcCard, zcCheckbox, zcCheckboxGroup, zcDialog, zcForm, zcFormItem, zcInput, zcIcon, zcImage, zcPagination, zcScroll, zcSkeleton, zcSkeletonItem, zcTable, zcTooltip,
-  // 指令
+  zcButton,
+  zcButtonGroup,
+  zcCard,
+  zcCheckbox,
+  zcCheckboxGroup,
+  zcDialog,
+  zcForm,
+  zcFormItem,
+  zcInput,
+  zcIcon,
+  zcImage,
+  zcPagination,
+  zcRadio,
+  zcRadioGroup,
+  zcScroll,
+  zcSkeleton,
+  zcSkeletonItem,
+  zcTable,
+  zcTooltip,
+  zcSwitch,
+   // 指令
   loadingDirective,
   // 服务
   zcLoading,

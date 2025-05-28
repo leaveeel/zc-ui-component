@@ -1,81 +1,53 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 export default defineComponent ({
-  name: 'zcCheckbox'
+  name: 'zcRadio'
 })
 </script>
 
 <script lang="ts" setup>
 import { zcUIProps } from '@/types/zcUI'
 import { inject, computed, ref, Ref } from 'vue'
-import IconChecked from '@/packages/icon/src/IconChecked.vue'
-import zcIcon from '@/packages/icon/index.vue'
 
-const props = withDefaults(defineProps<zcUIProps.Checkbox>(), {
+const props = withDefaults(defineProps<zcUIProps.Radio>(), {
   modelValue: false,
   value: undefined,
   disabled: undefined
 })
 const propsDisabled = props.disabled ? computed(() => props.disabled) : inject('fieldDisabled', ref(false))
 
-const propsModelValue = inject('fieldModelValue', undefined) as undefined | Ref<boolean | (string | number)[]>
+const propsModelValue = inject('fieldModelValue', undefined) as undefined | Ref<boolean | string | number>
 
 const emits = defineEmits(['update:modelValue', 'change'])
-
 const change = inject<(() => void) | undefined>('change', undefined)
 const errorMsg = ref(inject('errorMsg', ''))
 
-const checkboxGroup = inject('emits' , undefined) as ((event: string, ...args: any[]) => void) | undefined
+const group = inject('emits', undefined) as ((event: string, ...args: any[]) => void) | undefined
 const isGroup = computed(() => propsModelValue !== undefined)
 const isFocused = ref(false)
 
 const model = computed({
   get() {
-    return isGroup.value ? propsModelValue!.value : (props.value || props.value === 0) ? props.value === props.modelValue :props.modelValue
+    return isGroup.value ? propsModelValue!.value : props.modelValue
   },
-  set(val: boolean | (string | number)[]) {
+  set(val: boolean | string | number) {
     if (isGroup.value) {
       change?.()
-      checkboxGroup && checkboxGroup('change', val as (string | number)[])
-      checkboxGroup && checkboxGroup('update:modelValue', val as (string | number)[])
+      group && group('change', val as (string | number | boolean))
+      group && group('update:modelValue', val as (string | number | boolean))
     } else {
-      let v
-      if(props.value || props.value === 0) {
-        v = val ? props.value : ''
-      }else {
-        v = val
-      }
       change?.()
-      emits('update:modelValue', v)
-      emits('change', v)
+      emits('update:modelValue', val)
+      emits('change', val)
     }
   }
 })
 
-const isChecked = computed(() => {
-  if (isGroup.value) {
-    const v = model.value as (string | number)[] || []
-    return v.includes((props.value || props.value === 0) ? props.value : props.label as string | number)
-  } else {
-    return model.value as boolean
-  }
-})
+const isChecked = computed(() => (props.value || props.value === 0) ? model.value === props.value : model.value === props.label)
 
 const toggle = () => {
-  if (propsDisabled.value) return
-  if (isGroup.value) {
-    const list = model.value as (string | number)[] || []
-    const value = (props.value || props.value === 0) ? props.value : props.label
-    const index = list.indexOf(value)
-    if (index === -1) {
-      list.push(value)
-    } else {
-      list.splice(index, 1)
-    }
-    model.value = [...list]
-  } else {
-    model.value = !model.value
-  }
+  if (propsDisabled.value || isChecked.value) return
+  model.value = (props.value || props.value === 0) ? props.value : props.label
 }
 
 const handleKeyDown = (e: KeyboardEvent) => {
@@ -96,33 +68,29 @@ const handleBlur = () => {
 
 <template>
   <div
-    class="zc-checkbox zc-ui-component"
+    class="zc-radio zc-ui-component"
     @click="toggle"
     :class="{ 
       disabled: propsDisabled, 
+      error: errorMsg,
       'is-checked': isChecked,
-      'is-focused': isFocused,
-      error: errorMsg
+      'is-focused': isFocused
     }"
     tabindex="0"
-    role="checkbox"
+    role="radio"
     @keydown="handleKeyDown"
     @focus="handleFocus"
     @blur="handleBlur"
   >
-    <input type="checkbox" :checked="isChecked" :disabled="propsDisabled" />
-    <span class="checkbox" :class="{ checked: isChecked }">
-      <zc-icon v-if="isChecked" color="#fff" size="10">
-        <IconChecked></IconChecked>
-      </zc-icon>
-    </span>
+    <input type="radio" :checked="isChecked" :disabled="propsDisabled" />
+    <span class="radio" :class="{ checked: isChecked }"></span>
     <slot v-if="$slots.default"></slot>
-    <span v-else class="checkbox-label">{{ label }}</span>
+    <span v-else class="radio-label">{{ label }}</span>
   </div>
 </template>
 
 <style lang="scss">
-.zc-checkbox {
+.zc-radio {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -133,6 +101,7 @@ const handleBlur = () => {
   * {
     cursor: pointer;
   }
+
   
   &.error {
     color: var(--main-danger-color);
@@ -142,13 +111,13 @@ const handleBlur = () => {
   }
   
   &:hover:not(.disabled) {
-    .checkbox {
+    .radio {
       border-color: var(--main-color);
     }
   }
   
   &.is-focused:not(.disabled) {
-    .checkbox {
+    .radio {
       border-color: var(--main-color);
       box-shadow: 0 0 0 2px rgba(var(--main-color-rgb), 0.2);
     }
@@ -160,7 +129,7 @@ const handleBlur = () => {
     * {
       cursor: not-allowed;
     }
-    .checkbox {
+    .radio {
       &.checked {
         background-color: var(--main-font-color);
         border-color: var(--main-font-color);
@@ -172,11 +141,11 @@ const handleBlur = () => {
     display: none;
   }
   
-  .checkbox {
+  .radio {
     flex-shrink: 0;
     width: 16px;
     height: 16px;
-    border-radius: 2px;
+    border-radius: 50%;
     border: 1px solid #cccccc;
     display: flex;
     align-items: center;
@@ -197,16 +166,25 @@ const handleBlur = () => {
     &.checked {
       background-color: var(--main-color);
       border-color: var(--main-color);
+      &::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        background-color: #fff;
+        width: 6px;
+        height: 6px;
+      }
     }
+
   }
   
-  .checkbox-label {
+  .radio-label {
     font-size: 16px;
     user-select: none;
   }
   
   &.error {
-    .checkbox {
+    .radio {
       border-color: var(--main-danger-color);
     }
     color: var(--main-danger-color);

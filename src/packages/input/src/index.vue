@@ -15,6 +15,7 @@ import { computed, defineProps, inject, nextTick, ref, useAttrs, watch } from 'v
 
 // 定义props
 const props = withDefaults(defineProps<zcUIProps.Input>(), {
+  modelValue: '',
   type: 'text',
   clearable: false,
   placeholder: '',

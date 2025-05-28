@@ -6,51 +6,25 @@ export default defineComponent ({
 </script>
 
 <script lang="ts" setup>
-import { zcUIProps } from '@/types/zcUI'
+import { zcUI } from '@/types/zcUI'
+import Group from '@/packages/component/group.vue'
 import { provide } from 'vue'
-import { setUnit } from '@/utils/common'
-const props = withDefaults(defineProps<zcUIProps.CheckboxGroup>(), {
-  direction: 'vertical',
-  gap: '8px'
+
+
+const props = withDefaults(defineProps<zcUI.Group>(), {
+  align: 'left',
+  inline: false,
+  vertical: false,
+  gap: 10,
+  disabled: false
 })
 
-const emits = defineEmits<{
-  'update:modelValue': [value: (string | number)[]],
-  change: [value: (string | number)[]]
-}>()
-
-provide('checkboxGroup', {
-  props,
-  emit: emits
-})
+const emits = defineEmits(['update:modelValue', 'change'])
+provide('emits', emits)
 </script>
 
 <template>
-  <div class="zc-checkboxGroup zc-ui-component" 
-    :class="{ 
-      'is-horizontal': direction === 'horizontal',
-      'is-vertical': direction === 'vertical'
-    }"
-    :style="{ 
-      '--gap': setUnit(gap)
-    }"
-  >
+  <Group v-bind="props" name="checkboxGroup">
     <slot></slot>
-  </div>
+  </Group>
 </template>
-
-<style lang="scss">
-.zc-checkboxGroup {
-  display: flex;
-  gap: var(--gap);
-  
-  &.is-vertical {
-    flex-direction: column;
-  }
-  
-  &.is-horizontal {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-}
-</style>

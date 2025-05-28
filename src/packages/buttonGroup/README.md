@@ -20,6 +20,7 @@
 | inline | boolean | false | 是否为行内按钮组 |
 | vertical | boolean | false | 是否垂直排列 |
 | gap | string/number | 10 | 按钮之间的间距 |
+| disabled | boolean | false | 禁用状态 |
 
 ## 插槽
 

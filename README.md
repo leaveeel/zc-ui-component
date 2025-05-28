@@ -19,6 +19,9 @@
 - [Form 表单](src/packages/form)
 - [FormItem 表单项](src/packages/formItem)
 - [Input 输入框](src/packages/input)
+- [Radio 复选框](src/packages/radio)
+- [Radio 复选框组](src/packages/radioGroup)
+- [Switch 复选框](src/packages/switch)
 
 ### 数据展示
 
@@ -122,6 +125,11 @@ app.mount('#app')
 ```
 
 ## 更新日志
+
+- 1.6.4
+  - 整合组组件
+  - 添加radio组件
+  - 添加switch组件
 
 - 1.6.3
   - 添加formitem组件label文字对齐属性

@@ -18,7 +18,7 @@ export namespace zcUIProps {
    * @property {boolean} disabled - 是否禁用按钮
    * @property {string} type - 按钮类型：默认、主要、成功、警告、危险、信息
    * @property {string} htmlType - 原生button类型：button、submit、reset
-   * @property {boolean | undefined} disabled - 是否禁用按钮
+   * @property {boolean} disabled - 是否禁用按钮
    */
   export interface Button {
     plain?: boolean
@@ -33,7 +33,7 @@ export namespace zcUIProps {
     loading?: boolean
     type?: 'default' | 'primary' | 'success' | 'warning' | 'danger'
     htmlType?: 'button' | 'submit' | 'reset'
-    disabled?: boolean | undefined
+    disabled?: boolean
   }
 
   /**
@@ -73,20 +73,6 @@ export namespace zcUIProps {
   }
 
   /**
-   * ButtonGroup 组件属性
-   * @property {string} align - 按钮组对齐方式：左对齐、居中对齐、右对齐
-   * @property {boolean} inline - 是否为行内按钮组
-   * @property {boolean} vertical - 是否垂直排列
-   * @property {string|number} gap - 按钮之间的间距
-   */
-  export interface ButtonGroup {
-    align?: 'left' | 'center' | 'right'
-    inline?: boolean
-    vertical?: boolean
-    gap?: string | number
-  }
-  
-  /**
    * Card 组件属性
    * @property {string|number} height - 卡片高度
    * @property {string|number} maxHeight - 卡片最大高度
@@ -118,29 +104,31 @@ export namespace zcUIProps {
 
   /**
    * Checkbox 组件属性
-   * @property {boolean} modelValue - 复选框绑定值
+   * @property {boolean | string | number} modelValue - 复选框绑定值
    * @property {string} label - 复选框标签文本
    * @property {string|number} value - 复选框值，用于在复选框组中使用
    * @property {boolean | undefined} disabled - 是否禁用复选框
    */
   export interface Checkbox {
-    modelValue?: boolean
+    modelValue?: boolean | string | number
     label: string
     value?: string | number
     disabled?: boolean | undefined
   }
 
-  /**
-   * CheckboxGroup 组件属性
-   * @property {(string|number)[]} modelValue - 复选框组选中值的数组
-   * @property {string} direction - 布局方向：水平或垂直
-   * @property {string|number} gap - 复选框之间的间距
+    /**
+   * Radio 组件属性
+   * @property {boolean} modelValue - 单选框绑定值
+   * @property {string} label - 单选框标签文本
+   * @property {string|number} value - 单选框值，用于在单选框组中使用
+   * @property {boolean | undefined} disabled - 是否禁用单选框
    */
-  export interface CheckboxGroup {
-    modelValue: (string | number)[]
-    direction?: 'horizontal' | 'vertical'
-    gap?: string | number
-  }
+    export interface Radio {
+      modelValue?: boolean | string | number
+      label: string
+      value?: boolean | string | number
+      disabled?: boolean | undefined
+    }
 
   /**
    * Dialog 组件属性
@@ -447,6 +435,22 @@ export namespace zcUIProps {
     rotate?: number
     disabled?: boolean
   }
+
+  /**
+   * Switch 组件属性
+   * @property {string | number | boolean} modelValue - 开关绑定值
+   * @property {boolean} disabled - 是否禁用
+   * @property {() => Promise<boolean> | boolean} beforeChange - 切换前执行的函数，返回 false 或 Promise.reject 则阻止切换
+   * @property {string | number | boolean} activeValue - 打开时的值
+   * @property {string | number | boolean} inactiveValue - 关闭时的值
+   */
+  export interface Switch {
+    modelValue: string | number | boolean
+    disabled?: boolean
+    beforeChange?: () => Promise<boolean> | boolean
+    activeValue?: string | number | boolean
+    inactiveValue?: string | number | boolean
+  }
 }
 
 export namespace zcUI {
@@ -455,11 +459,27 @@ export namespace zcUI {
    * @property {Object} props - 组件属性
    * @property {Function} emit - 组件事件发射函数
    */
-  export interface CheckboxGroup {
-    props: {
-      modelValue: (string | number)[]
-    }
-    emit: (event: 'change' | 'update:modelValue', value: (string | number)[]) => void
+  export interface GroupInject {
+    emits: (event: 'change' | 'update:modelValue', value: (string | number)[]) => void
+  }
+
+  /**
+   * Group 组件属性
+   * @property {string} name - 组件名称
+   * @property {string} align - 按钮组对齐方式：左对齐、居中对齐、右对齐
+   * @property {boolean} inline - 是否为行内按钮组
+   * @property {boolean} vertical - 是否垂直排列
+   * @property {string|number} gap - 按钮之间的间距
+   * @property {boolean} disabled - 是否禁用
+   */
+  export interface Group {
+    modelValue?: (string | number)[] | (string | number | boolean)
+    name?: string,
+    align?: 'left' | 'center' | 'right'
+    inline?: boolean
+    vertical?: boolean
+    gap?: string | number
+    disabled?: boolean,
   }
 
   /**
