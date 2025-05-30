@@ -8,326 +8,377 @@ export default defineComponent ({
 <script lang="ts" setup>
 import { setUnit } from '@/utils/common'
 import { zcUIProps } from '@/types/zcUI'
-import { defineProps, ref, nextTick, onMounted, onBeforeUnmount, computed } from 'vue'
+import { defineProps, ref, nextTick, onMounted, computed } from 'vue'
 import { debounce } from 'lodash-es'
 import { useDocument } from '@/utils/common'
+import {    onUnmounted,  StyleValue, watch } from 'vue';
 
 const props = withDefaults(defineProps<zcUIProps.Scroll>(), {
-  width: '100%',
-  height: '100%',
-})
+  width: 'auto',
+  height: 'auto',
+  maxWidth: '100%',
+  maxHeight: '100%'
+});
 
 const emit = defineEmits(['scroll'])
 
-const zcScroll = ref()
-const rightScroll = ref()
-const bottomScroll = ref()
-const scrollBody = ref()
-const rightBlock = ref()
-const bottomBlock = ref()
-const getScrollLeft = ref(0)
-const getScrollTop = ref(0)
+const scrollContainerRef = ref<HTMLElement | null>(null);
+const scrollContentRef = ref<HTMLElement | null>(null);
+const verticalTrackRef = ref<HTMLElement | null>(null);
+const verticalThumbRef = ref<HTMLElement | null>(null);
+const horizontalTrackRef = ref<HTMLElement | null>(null);
+const horizontalThumbRef = ref<HTMLElement | null>(null);
 
-const rightBlockHeight = () => {
-  if (!zcScroll.value || !scrollBody.value || !rightScroll.value || !rightBlock.value) return
-  
-  const zcScrollHeight = zcScroll.value.offsetHeight
-  const scrollBodyHeight = scrollBody.value.scrollHeight
+// Scroll state
+const scrollTop = ref(0);
+const scrollLeft = ref(0);
+const clientHeight = ref(0);
+const clientWidth = ref(0);
+const scrollHeight = ref(0);
+const scrollWidth = ref(0);
 
-  if(zcScrollHeight / scrollBodyHeight >= 1) {
-    rightScroll.value.style.display = 'none'
-    rightBlock.value.style.height = 0
-  } else {
-    rightScroll.value.style.display = 'block'
-    rightBlock.value.style.height = `${(zcScrollHeight / scrollBodyHeight) * 100}%`
-  }
-}
+// Scrollbar visibility and interaction state
+const isHoveringContainer = ref(false);
+const showScrollbarsDebounced = ref(false);
 
-const bottomBlockWidth = () => {
-  if (!zcScroll.value || !scrollBody.value || !bottomScroll.value || !bottomBlock.value) return
-  
-  const zcScrollWidth = zcScroll.value.offsetWidth
-  const scrollBodyWidth = scrollBody.value.scrollWidth
+const isDraggingVerticalThumb = ref(false);
+const isDraggingHorizontalThumb = ref(false);
+let dragStartY = 0;
+let dragStartScrollTop = 0;
+let dragStartX = 0;
+let dragStartScrollLeft = 0;
 
-  if(zcScrollWidth / scrollBodyWidth >= 1) {
-    bottomScroll.value.style.display = 'none'
-    bottomBlock.value.style.width = 0
-  } else {
-    bottomScroll.value.style.display = 'block'
-    bottomBlock.value.style.width = `${(zcScrollWidth / scrollBodyWidth) * 100}%`
-  }
-}
+// --- Computed Styles ---
+const containerStyle = computed<StyleValue>(() => ({
+  position: 'relative',
+  overflow: 'hidden', // Crucial for containing scrollContent and custom scrollbars
+  boxSizing: 'border-box',
+  width: setUnit(props.width),
+  height: setUnit(props.height),
+  maxWidth: setUnit(props.maxWidth),
+  maxHeight: setUnit(props.height),
+}));
 
-// 使用防抖函数优化尺寸更新
-const updateScrollBars = debounce(() => {
-  rightBlockHeight()
-  bottomBlockWidth()
-}, 200)
+const needsVerticalScroll = computed(() => scrollHeight.value > clientHeight.value);
+const needsHorizontalScroll = computed(() => scrollWidth.value > clientWidth.value);
 
-// 处理滚动事件
+const shouldShowScrollbars = computed(() => {
+  return showScrollbarsDebounced.value || isDraggingVerticalThumb.value || isDraggingHorizontalThumb.value;
+});
+
+const verticalThumbHeight = computed(() => {
+  if (!clientHeight.value || !scrollHeight.value || !needsVerticalScroll.value) return 0;
+  const trackHeight = clientHeight.value; // Assuming track fills container height
+  const minThumbHeight = 20; // Minimum thumb size
+  const calculatedHeight = Math.pow(clientHeight.value, 2) / scrollHeight.value;
+  return Math.max(minThumbHeight, Math.min(trackHeight, calculatedHeight));
+});
+
+const verticalThumbY = computed(() => {
+  if (!needsVerticalScroll.value || !clientHeight.value || !scrollHeight.value) return 0;
+  const trackHeight = clientHeight.value;
+  const scrollableDist = scrollHeight.value - clientHeight.value;
+  if (scrollableDist <= 0) return 0;
+  const thumbMovableDist = trackHeight - verticalThumbHeight.value;
+  return (scrollTop.value / scrollableDist) * thumbMovableDist;
+});
+
+const verticalThumbStyle = computed<StyleValue>(() => ({
+  height: `${verticalThumbHeight.value}px`,
+  transform: `translateY(${verticalThumbY.value}px)`,
+  backgroundColor: 'rgba(0,0,0,0.3)',
+  width: `8px`,
+}));
+
+const horizontalThumbWidth = computed(() => {
+  if (!clientWidth.value || !scrollWidth.value || !needsHorizontalScroll.value) return 0;
+  const trackWidth = clientWidth.value;
+  const minThumbWidth = 20;
+  const calculatedWidth = Math.pow(clientWidth.value, 2) / scrollWidth.value;
+  return Math.max(minThumbWidth, Math.min(trackWidth, calculatedWidth));
+});
+
+const horizontalThumbX = computed(() => {
+  if (!needsHorizontalScroll.value || !clientWidth.value || !scrollWidth.value) return 0;
+  const trackWidth = clientWidth.value;
+  const scrollableDist = scrollWidth.value - clientWidth.value;
+  if (scrollableDist <= 0) return 0;
+  const thumbMovableDist = trackWidth - horizontalThumbWidth.value;
+  return (scrollLeft.value / scrollableDist) * thumbMovableDist;
+});
+
+const horizontalThumbStyle = computed<StyleValue>(() => ({
+  width: `${horizontalThumbWidth.value}px`,
+  transform: `translateX(${horizontalThumbX.value}px)`,
+  backgroundColor: 'rgba(0,0,0,0.3)',
+  height: `8px`,
+}));
+
+
+// --- Methods ---
+const updateScrollState = () => {
+  if (!scrollContentRef.value) return;
+  scrollTop.value = scrollContentRef.value.scrollTop;
+  scrollLeft.value = scrollContentRef.value.scrollLeft;
+  clientHeight.value = scrollContentRef.value.clientHeight;
+  clientWidth.value = scrollContentRef.value.clientWidth;
+  scrollHeight.value = scrollContentRef.value.scrollHeight;
+  scrollWidth.value = scrollContentRef.value.scrollWidth;
+};
+
 const handleScroll = () => {
-  if (!scrollBody.value || !rightScroll.value || !rightBlock.value || !bottomScroll.value || !bottomBlock.value) return
+  updateScrollState();
+  emit('scroll', {
+    scrollLeft: scrollLeft.value,
+    scrollTop: scrollTop.value,
+    scrollHeight: scrollHeight.value,
+    scrollWidth:scrollWidth.value
+  })
+};
+
+const handleContainerMouseEnter = () => {
+  isHoveringContainer.value = true;
+  showScrollbarsDebounced.value = true;
+  updateScrollState(); // Ensure up-to-date measurements when showing
+};
+
+const handleContainerMouseLeave = () => {
+  isHoveringContainer.value = false;
+  if (!isDraggingVerticalThumb.value && !isDraggingHorizontalThumb.value) {
+      showScrollbarsDebounced.value = false;
+  }
+};
+
+// Vertical Thumb Drag
+const handleVerticalThumbMouseDown = (event: MouseEvent) => {
+  isDraggingVerticalThumb.value = true;
+  dragStartY = event.clientY;
+  dragStartScrollTop = scrollTop.value;
+  document.addEventListener('mousemove', handleVerticalThumbMouseMove);
+  document.addEventListener('mouseup', handleVerticalThumbMouseUp);
+  document.body.style.userSelect = 'none'; // Prevent text selection
+};
+
+const handleVerticalThumbMouseMove = (event: MouseEvent) => {
+  if (!isDraggingVerticalThumb.value || !scrollContentRef.value || !clientHeight.value || !scrollHeight.value) return;
+  const deltaY = event.clientY - dragStartY;
+  const trackHeight = clientHeight.value;
+  const thumbHeightVal = verticalThumbHeight.value;
+  const scrollableDist = scrollHeight.value - clientHeight.value;
+  if (scrollableDist <= 0) return;
   
-  const scrollTop = scrollBody.value.scrollTop
-  const scrollHeight = rightScroll.value.offsetHeight + 8
-  const scrollLeft = scrollBody.value.scrollLeft
-  const scrollWidth = bottomScroll.value.offsetWidth + 8
+  const scrollDelta = (deltaY / (trackHeight - thumbHeightVal)) * scrollableDist;
+  scrollContentRef.value.scrollTop = dragStartScrollTop + scrollDelta;
+};
 
-  rightBlock.value.style.transform = `translateY(${(scrollTop / scrollHeight) * 100}%)`
-  bottomBlock.value.style.transform = `translateX(${(scrollLeft / scrollWidth) * 100}%)`
-
-  getScrollLeft.value = scrollLeft
-  getScrollTop.value = scrollTop
-
-  emit('scroll', { scrollLeft, scrollTop, scrollHeight: scrollBody.value.scrollHeight, scrollWidth: scrollBody.value.scrollWidth })
-}
-
-// 处理窗口大小变化
-const handleResize = debounce(() => {
-  updateScrollBars()
-}, 200)
-
-const syncScroll = () => {
-  if (!scrollBody.value || !rightBlock.value || !bottomBlock.value) return
-  
-  // 绑定滚动事件
-  scrollBody.value.addEventListener('scroll', handleScroll, { passive: false })
-  
-  // 监听窗口大小变化
-  window.addEventListener('resize', handleResize, { passive: false })
-
-  let isDragging = false
-  let startY = 0
-  let startScrollTop = 0
-
-  const handleRightMouseDown = (e: MouseEvent) => {
-    isDragging = true
-    startY = e.clientY
-    startScrollTop = scrollBody.value.scrollTop
-    if(useDocument()) {
-      document.body.style.userSelect = 'none'
-    }
+const handleVerticalThumbMouseUp = () => {
+  isDraggingVerticalThumb.value = false;
+  document.removeEventListener('mousemove', handleVerticalThumbMouseMove);
+  document.removeEventListener('mouseup', handleVerticalThumbMouseUp);
+  document.body.style.userSelect = '';
+  if (!isHoveringContainer.value) { // If mouse left container during drag
+    handleContainerMouseLeave();
   }
+};
 
-  let isDraggingBottom = false
-  let startX = 0
-  let startScrollLeft = 0
+// Horizontal Thumb Drag (similar to vertical)
+const handleHorizontalThumbMouseDown = (event: MouseEvent) => {
+  isDraggingHorizontalThumb.value = true;
+  dragStartX = event.clientX;
+  dragStartScrollLeft = scrollLeft.value;
+  document.addEventListener('mousemove', handleHorizontalThumbMouseMove);
+  document.addEventListener('mouseup', handleHorizontalThumbMouseUp);
+  document.body.style.userSelect = 'none';
+};
 
-  const handleBottomMouseDown = (e: MouseEvent) => {
-    isDraggingBottom = true
-    startX = e.clientX
-    startScrollLeft = scrollBody.value.scrollLeft
-    if(useDocument()) {
-      document.body.style.userSelect = 'none'
-    }
+const handleHorizontalThumbMouseMove = (event: MouseEvent) => {
+  if (!isDraggingHorizontalThumb.value || !scrollContentRef.value || !clientWidth.value || !scrollWidth.value) return;
+  const deltaX = event.clientX - dragStartX;
+  const trackWidth = clientWidth.value;
+  const thumbWidthVal = horizontalThumbWidth.value;
+  const scrollableDist = scrollWidth.value - clientWidth.value;
+  if (scrollableDist <= 0) return;
+
+  const scrollDelta = (deltaX / (trackWidth - thumbWidthVal)) * scrollableDist;
+  scrollContentRef.value.scrollLeft = dragStartScrollLeft + scrollDelta;
+};
+
+const handleHorizontalThumbMouseUp = () => {
+  isDraggingHorizontalThumb.value = false;
+  document.removeEventListener('mousemove', handleHorizontalThumbMouseMove);
+  document.removeEventListener('mouseup', handleHorizontalThumbMouseUp);
+  document.body.style.userSelect = '';
+  if (!isHoveringContainer.value) {
+    handleContainerMouseLeave();
   }
+};
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging && !isDraggingBottom) return
-    
-    if (isDragging) {
-      const deltaY = e.clientY - startY
-      const scrollHeight =
-        scrollBody.value.scrollHeight - scrollBody.value.clientHeight
+// Track Clicks
+const handleVerticalTrackMouseDown = (event: MouseEvent) => {
+  if (!scrollContentRef.value || !verticalTrackRef.value || event.target !== verticalTrackRef.value) return;
+  const rect = verticalTrackRef.value.getBoundingClientRect();
+  const clickY = event.clientY - rect.top;
+  const thumbHeightVal = verticalThumbHeight.value;
+  const targetScrollTopPercent = (clickY - thumbHeightVal / 2) / (rect.height - thumbHeightVal);
+  scrollContentRef.value.scrollTop = targetScrollTopPercent * (scrollHeight.value - clientHeight.value);
+};
 
-      scrollBody.value.scrollTop =
-        startScrollTop +
-        (deltaY /
-          (rightScroll.value.offsetHeight - rightBlock.value.offsetHeight)) *
-          scrollHeight
-    } else {
-      const deltaX = e.clientX - startX
-      const scrollWidth =
-        scrollBody.value.scrollWidth - scrollBody.value.clientWidth
+const handleHorizontalTrackMouseDown = (event: MouseEvent) => {
+  if (!scrollContentRef.value || !horizontalTrackRef.value || event.target !== horizontalTrackRef.value) return;
+  const rect = horizontalTrackRef.value.getBoundingClientRect();
+  const clickX = event.clientX - rect.left;
+  const thumbWidthVal = horizontalThumbWidth.value;
+  const targetScrollLeftPercent = (clickX - thumbWidthVal / 2) / (rect.width - thumbWidthVal);
+  scrollContentRef.value.scrollLeft = targetScrollLeftPercent * (scrollWidth.value - clientWidth.value);
+};
 
-      scrollBody.value.scrollLeft =
-        startScrollLeft +
-        (deltaX /
-          (bottomScroll.value.offsetWidth - bottomBlock.value.offsetWidth)) *
-          scrollWidth
-    }
-  }
 
-  const handleMouseUp = () => {
-    isDragging = false
-    isDraggingBottom = false
-    if(useDocument()) {
-      document.body.style.userSelect = ''
-    }
-  }
-
-  // 绑定事件监听器
-  rightBlock.value.addEventListener('mousedown', handleRightMouseDown, { passive: false })
-  bottomBlock.value.addEventListener('mousedown', handleBottomMouseDown, { passive: false })
-  if(useDocument()) {
-    document.addEventListener('mousemove', handleMouseMove, { passive: false })
-    document.addEventListener('mouseup', handleMouseUp, { passive: false })
-  }
-
-  // 返回清理函数
-  return () => {
-    scrollBody.value?.removeEventListener('scroll', handleScroll)
-    window.removeEventListener('resize', handleResize)
-    rightBlock.value?.removeEventListener('mousedown', handleRightMouseDown, { passive: false })
-    bottomBlock.value?.removeEventListener('mousedown', handleBottomMouseDown, { passive: false })
-    if(useDocument()) {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-    }
-  }
-}
-
-// 使用ResizeObserver监听元素大小变化
-let resizeObserver: ResizeObserver | null = null
-const setupResizeObserver = () => {
-  if (typeof ResizeObserver === 'undefined') return
-  
-  resizeObserver = new ResizeObserver(updateScrollBars)
-  
-  if (zcScroll.value) {
-    resizeObserver.observe(zcScroll.value)
-  }
-  if (scrollBody.value) {
-    resizeObserver.observe(scrollBody.value)
-  }
-}
-
-let cleanupScrollEvents: (() => void) | null = null
+// Resize Observer
+let containerResizeObserver: ResizeObserver | null = null;
+let contentResizeObserver: ResizeObserver | null = null;
 
 onMounted(() => {
-  nextTick(() => {
-    rightBlockHeight()
-    bottomBlockWidth()
-    const cleanup = syncScroll()
-    if (cleanup) {
-      cleanupScrollEvents = cleanup
+  nextTick(() => { // Ensure elements are rendered
+    updateScrollState();
+    if (scrollContainerRef.value) {
+      containerResizeObserver = new ResizeObserver(updateScrollState);
+      containerResizeObserver.observe(scrollContainerRef.value);
     }
-    setupResizeObserver()
-  })
-})
+    if (scrollContentRef.value) {
+      contentResizeObserver = new ResizeObserver(updateScrollState);
+      contentResizeObserver.observe(scrollContentRef.value);
+      // Observe children of scrollContent for more robust content change detection
+      const slotContent = scrollContentRef.value.children[0]; // Assuming slot has one direct child wrapper
+      if (slotContent) contentResizeObserver.observe(slotContent);
+    }
+  });
+});
 
-onBeforeUnmount(() => {
-  if (cleanupScrollEvents) {
-    cleanupScrollEvents()
+onUnmounted(() => {
+  if (containerResizeObserver) containerResizeObserver.disconnect();
+  if (contentResizeObserver) contentResizeObserver.disconnect();
+  if(useDocument()) {
+    document.removeEventListener('mousemove', handleVerticalThumbMouseMove);
+    document.removeEventListener('mouseup', handleVerticalThumbMouseUp);
+    document.removeEventListener('mousemove', handleHorizontalThumbMouseMove);
+    document.removeEventListener('mouseup', handleHorizontalThumbMouseUp);
   }
-  
-  if (resizeObserver) {
-    resizeObserver.disconnect()
-    resizeObserver = null
-  }
-})
+});
 
-// 滚动到指定位置
-const scrollTo = (options: { left?: number; top?: number; behavior?: ScrollBehavior }) => {
-  if (scrollBody.value) {
-    scrollBody.value.scrollTo(options)
-  }
-}
+// Watch for prop changes that might affect layout and require scroll state update
+watch(
+  () => [props.width, props.height, props.maxWidth, props.maxHeight],
+  async () => {
+    await nextTick();
+    updateScrollState();
+  },
+  { deep: true }
+);
 
-// 滚动到顶部
-const scrollToTop = (behavior: ScrollBehavior = 'auto') => {
-  scrollTo({ top: 0, behavior })
-}
-
-// 滚动到底部
-const scrollToBottom = (behavior: ScrollBehavior = 'auto') => {
-  if (scrollBody.value) {
-    scrollTo({ top: scrollBody.value.scrollHeight, behavior })
-  }
-}
-
+// Expose methods if needed
 defineExpose({
-  scrollTo,
-  scrollToTop,
-  scrollToBottom
-})
+  scrollTo: (options: ScrollToOptions) => scrollContentRef.value?.scrollTo(options),
+});
 </script>
 
 <template>
   <div
+    ref="scrollContainerRef"
+    :style="containerStyle"
     class="zc-scroll zc-ui-component"
-    ref="zcScroll"
-    :style="{ height: setUnit(props.height), width: setUnit(props.width) }"
+    @mouseenter="handleContainerMouseEnter"
+    @mouseleave="handleContainerMouseLeave"
   >
-    <div class="rightScroll" ref="rightScroll">
-      <div class="block" ref="rightBlock"></div>
-    </div>
-    <div class="bottomScroll" ref="bottomScroll">
-      <div class="block" ref="bottomBlock"></div>
-    </div>
     <div
-      class="scrollBody"
-      ref="scrollBody"
-      :style="{ height: setUnit(props.height) }"
+      ref="scrollContentRef"
+      class="scroll-content"
+      @scroll="handleScroll"
     >
-      <slot></slot>
+      <slot />
+    </div>
+
+    <div
+      v-if="needsVerticalScroll"
+      ref="verticalTrackRef"
+      class="custom-scrollbar-track custom-scrollbar-track--vertical"
+      :class="{'custom-scrollbar-active': shouldShowScrollbars}"
+      @mousedown.prevent="handleVerticalTrackMouseDown"
+    >
+      <div
+        ref="verticalThumbRef"
+        class="custom-scrollbar-thumb custom-scrollbar-thumb--vertical"
+        :style="verticalThumbStyle"
+        @mousedown.prevent.stop="handleVerticalThumbMouseDown"
+      />
+    </div>
+
+    <div
+      v-if="needsHorizontalScroll && shouldShowScrollbars"
+      ref="horizontalTrackRef"
+      class="custom-scrollbar-track custom-scrollbar-track--horizontal"
+      :class="{'custom-scrollbar-active': shouldShowScrollbars}"
+      @mousedown.prevent="handleHorizontalTrackMouseDown"
+    >
+      <div
+        ref="horizontalThumbRef"
+        class="custom-scrollbar-thumb custom-scrollbar-thumb--horizontal"
+        :style="horizontalThumbStyle"
+        @mousedown.prevent.stop="handleHorizontalThumbMouseDown"
+      />
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.zc-scroll {
-  position: relative;
+.scroll-content {
+  width: 100%;
+  height: 100%;
+  /* Native scrollbar hiding */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  overflow: scroll;
+}
+.scroll-content::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+  width: 0 !important; /* !important to override user-agent stylesheets */
+  height: 0 !important;
+}
+
+.custom-scrollbar-track {
+  position: absolute;
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
   overflow: hidden;
-  &:hover {
-    .rightScroll {
-      opacity: 1;
-    }
-    .bottomScroll {
-      opacity: 1;
-    }
+  &.custom-scrollbar-active {
+    opacity: 1;
   }
-  .rightScroll {
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    width: 8px;
-    height: 100%;
-    z-index: 100;
-    transition: opacity 0.2s ease;
-    &:active {
-      opacity: 1;
-    }
-    .block {
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      cursor: pointer;
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.3);
-      }
-    }
-  }
-  .bottomScroll {
-    opacity: 0;
-    position: absolute;
-    bottom: 1px;
-    left: 0;
-    width: 100%;
-    height: 8px;
-    z-index: 10;
-    transition: opacity 0.2s ease;
-    &:active {
-      opacity: 1;
-    }
-    .block {
-      height: 8px;
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      cursor: pointer;
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.3);
-      }
-    }
-  }
-  /* 自定义滚动条样式 */
-  .scrollBody::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
-  }
-  /* Firefox 自定义滚动条样式 */
-  .scrollBody {
-    overflow: auto;
-    scrollbar-width: none;
-  }
+}
+
+.custom-scrollbar-thumb {
+  position: relative; /* Relative to track for transform */
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.custom-scrollbar-track--vertical {
+  top: 2px; /* Small gap */
+  right: 2px;
+  bottom: 2px;
+  width: 8px;
+}
+.custom-scrollbar-thumb--vertical {
+  width: 100%;
+}
+
+.custom-scrollbar-track--horizontal {
+  left: 2px;
+  bottom: 2px;
+  right: 2px;
+  height: 8px;
+}
+.custom-scrollbar-thumb--horizontal {
+  height: 100%;
 }
 </style>

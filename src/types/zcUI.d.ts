@@ -260,11 +260,14 @@ export namespace zcUIProps {
    * Scroll 组件属性
    * @property {number|string} width - 滚动区域宽度
    * @property {number|string} height - 滚动区域高度
+   * @property {number|string} maxWidth - 滚动区域最大宽度
    * @property {number|string} maxHeight - 滚动区域最大高度
    */
   export interface Scroll {
-    width?: number | string
-    height?: number | string
+    width?: string | number;
+    height?: string | number;
+    maxWidth?: string | number;
+    maxHeight?: string | number;
   }
 
   /**

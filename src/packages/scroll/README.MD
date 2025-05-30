@@ -14,8 +14,10 @@
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |-------|------|-------|------|
-| width | string/number | '100%' | 滚动区域宽度 |
-| height | string/number | '100%' | 滚动区域高度 |
+| width | string \| number | 'auto' | 滚动区域宽度 |
+| height | string \| number | 'auto' | 滚动区域高度 |
+| maxWidth | string \| number | '100%' | 滚动区域高度 |
+| maxHeight | string \| number | '100%' | 滚动区域高度 |
 
 ## 事件
 
@@ -28,8 +30,6 @@
 | 方法名 | 说明 | 参数 |
 |-------|------|------|
 | scrollTo | 滚动到指定位置 | { left?: number, top?: number, behavior?: ScrollBehavior } |
-| scrollToTop | 滚动到顶部 | behavior?: ScrollBehavior |
-| scrollToBottom | 滚动到底部 | behavior?: ScrollBehavior |
 
 ## 插槽
 
@@ -74,48 +74,6 @@ const scrollToPosition = () => {
     left: 0, 
     behavior: 'smooth' 
   })
-}
-</script>
-```
-
-### 滚动到顶部
-
-```vue
-<template>
-  <zc-scroll ref="scrollRef">
-    <div>滚动内容</div>
-  </zc-scroll>
-  <button @click="scrollToTop">滚动到顶部</button>
-</template>
-
-<script setup>
-import { ref } from 'vue'
-
-const scrollRef = ref()
-
-const scrollToTop = () => {
-  scrollRef.value.scrollToTop('smooth')
-}
-</script>
-```
-
-### 滚动到底部
-
-```vue
-<template>
-  <zc-scroll ref="scrollRef">
-    <div>滚动内容</div>
-  </zc-scroll>
-  <button @click="scrollToBottom">滚动到底部</button>
-</template>
-
-<script setup>
-import { ref } from 'vue'
-
-const scrollRef = ref()
-
-const scrollToBottom = () => {
-  scrollRef.value.scrollToBottom('smooth')
 }
 </script>
 ```
