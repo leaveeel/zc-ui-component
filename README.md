@@ -128,9 +128,8 @@ app.mount('#app')
 
 - 1.6.4
   - 整合组组件
-  - 添加radio组件
-  - 添加switch组件
-  - 重构scroll组件
+  - 添加radio、switch组件
+  - 重构scroll、tooltip组件
 
 - 1.6.3
   - 添加formitem组件label文字对齐属性

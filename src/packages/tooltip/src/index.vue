@@ -5,305 +5,248 @@ export default defineComponent ({
 })
 </script>
 
-<script
-  lang="ts"
-  setup>
-import { setUnit } from '@/utils/common'
-import { zcUIProps } from '@/types/zcUI'
-import { defineProps, ref, onMounted, onBeforeUnmount, computed } from 'vue'
+<script setup lang="ts">
+import { ref, watch, computed, toRefs, onMounted, onUnmounted, nextTick } from 'vue';
+import {
+  useFloating,
+  offset as offsetMiddleware,
+  flip as flipMiddleware,
+  shift as shiftMiddleware,
+  arrow as arrowMiddleware,
+  autoUpdate,
+  type Placement,
+} from '@floating-ui/vue';
+import { zcUIProps } from '@/types';
 import zcScroll from '@/packages/scroll/src/index.vue'
-import { useDocument } from '@/utils/common'
+import { setUnit, useDocument } from '@/utils/common';
 
 const props = withDefaults(defineProps<zcUIProps.Tooltip>(), {
-  width: '100%',
-  height: 'auto',
-  position: 'top',
-  trigger: 'hover',
+  maxWidth: '500px',
+  maxHeight: 'auto',
+  placement: 'top',
   theme: 'light',
-  arrow: true,
-  zIndex: 1000,
-  showDelay: 0,
-  hideDelay: 200
-})
+  trigger: 'hover',
+  offset: 8,
+  showArrow: true,
+  disabled: false,
+});
 
-const zcTooltip = ref<HTMLElement | null>(null)
-const tipVisible = ref(false)
-const isEnterTooltip = ref(false)
-const isEnterContent = ref(false)
+const { content, trigger, offset: offsetValue, showArrow, disabled } = toRefs(props);
 
-let showTimer: number | null = null
-let hideTimer: number | null = null
+const isOpen = ref(false);
+const referenceRef = ref<HTMLElement | null>(null);
+const floatingRef = ref<HTMLElement | null>(null);
+const arrowRef = ref<HTMLElement | null>(null);
 
-const tooltipStyles = computed(() => {
-  return {
-    width: setUnit(props.width), 
-    maxHeight: setUnit(props.height),
-    zIndex: props.zIndex
+const computedTheme = computed(() => {
+  if(props.theme === 'dark') {
+    return {
+      '--backgroundColor': '#333',
+      '--color': 'white'
+    }
+  } else {
+    return {
+      '--backgroundColor': 'white',
+      '--color': 'var(--main-font-color)'
+    }
   }
 })
 
-const clearTimers = () => {
-  if (showTimer) {
-    clearTimeout(showTimer)
-    showTimer = null
+const middleware = computed(() => {
+  const mw = [
+    offsetMiddleware(offsetValue.value),
+    flipMiddleware({
+    }),
+    shiftMiddleware({ padding: 5 }),
+  ];
+  if (showArrow.value && arrowRef.value) {
+    mw.push(arrowMiddleware({ element: arrowRef, padding: 4 }));
   }
-  if (hideTimer) {
-    clearTimeout(hideTimer)
-    hideTimer = null
+  return mw;
+});
+
+const {
+  floatingStyles,
+  middlewareData,
+  update,
+  placement: currentPlacement,
+} = useFloating(
+  referenceRef,
+  floatingRef,
+  {
+    placement: computed(() => props.placement),
+    whileElementsMounted: autoUpdate,
+    middleware,
   }
-}
+);
+
+const finalArrowStyles = computed(() => {
+  if (showArrow.value && middlewareData.value.arrow) {
+    const { x, y } = middlewareData.value.arrow;
+
+    const side = currentPlacement.value.split('-')[0] as string;
+
+    const staticSide = {
+      top: 'bottom',
+      right: 'left',
+      bottom: 'top',
+      left: 'right',
+    }[side];
+
+    if (!staticSide) return {};
+
+    return {
+      left: x != null ? `${x}px` : '',
+      top: y != null ? `${y}px` : '',
+      [staticSide]: '-4px',
+    };
+  }
+  return {};
+});
 
 const showTooltip = () => {
-  clearTimers()
-  if (props.showDelay > 0) {
-    showTimer = setTimeout(() => {
-      tipVisible.value = true
-    }, props.showDelay)
-  } else {
-    tipVisible.value = true
+  if (!disabled.value) {
+    isOpen.value = true;
   }
-}
+};
 
 const hideTooltip = () => {
-  clearTimers()
-  if (!isEnterTooltip.value && !isEnterContent.value) {
-    hideTimer = setTimeout(() => {
-      tipVisible.value = false
-    }, props.hideDelay)
+  isOpen.value = false;
+};
+
+const toggleTooltip = () => {
+  if (!disabled.value) {
+    isOpen.value = !isOpen.value;
   }
-}
+};
+
+let clickOutsideListener: ((event: MouseEvent) => void) | null = null;
+let hoverTimeout: number | undefined;
 
 const handleMouseEnter = () => {
-  if (props.trigger !== 'hover') return
-  isEnterTooltip.value = true
-  showTooltip()
-}
+  clearTimeout(hoverTimeout);
+  if (trigger.value === 'hover') {
+    showTooltip();
+  }
+};
 
 const handleMouseLeave = () => {
-  if (props.trigger !== 'hover') return
-  isEnterTooltip.value = false
-  hideTooltip()
-}
-
-const handleContentMouseEnter = () => {
-  if (props.trigger !== 'hover') return
-  isEnterContent.value = true
-}
-
-const handleContentMouseLeave = () => {
-  if (props.trigger !== 'hover') return
-  isEnterContent.value = false
-  hideTooltip()
-}
-
-const handleClick = () => {
-  if (props.trigger !== 'click') return
-  tipVisible.value = !tipVisible.value
-}
-
-const handleClickOutside = (event: MouseEvent) => {
-  if (props.trigger !== 'click') return
-  if (zcTooltip.value && !zcTooltip.value.contains(event.target as Node)) {
-    tipVisible.value = false
+  if (trigger.value === 'hover') {
+    hoverTimeout = setTimeout(() => {
+      if (referenceRef.value && floatingRef.value) {
+          const isOverReference = referenceRef.value.matches(':hover');
+          const isOverFloating = floatingRef.value.matches(':hover');
+          if (!isOverReference && !isOverFloating) {
+              hideTooltip();
+          }
+      } else {
+          hideTooltip();
+      }
+    }, 100);
   }
-}
+};
 
 onMounted(() => {
-  if(useDocument()) { 
-    document.addEventListener('click', handleClickOutside)
+  const referenceEl = referenceRef.value;
+  if (referenceEl) {
+    if (trigger.value === 'hover') {
+      referenceEl.addEventListener('mouseenter', handleMouseEnter);
+      referenceEl.addEventListener('mouseleave', handleMouseLeave);
+      watch(floatingRef, (newFloatingEl) => {
+        if (newFloatingEl) {
+          newFloatingEl.addEventListener('mouseenter', handleMouseEnter);
+          newFloatingEl.addEventListener('mouseleave', handleMouseLeave);
+        }
+      });
+    } else if (trigger.value === 'click') {
+      referenceEl.addEventListener('click', toggleTooltip);
+      clickOutsideListener = (event: MouseEvent) => {
+        if (
+          isOpen.value &&
+          referenceRef.value &&
+          !referenceRef.value.contains(event.target as Node) &&
+          floatingRef.value &&
+          !floatingRef.value.contains(event.target as Node)
+        ) {
+          hideTooltip();
+        }
+      };
+      if(useDocument()) {
+        document.addEventListener('mousedown', clickOutsideListener, true);
+      }
+    }
   }
-})
+});
 
-onBeforeUnmount(() => {
-  if(useDocument()) { 
-    document.removeEventListener('click', handleClickOutside)
-    clearTimers()
+onUnmounted(() => {
+  clearTimeout(hoverTimeout);
+  const referenceEl = referenceRef.value;
+  if (referenceEl) {
+    if (trigger.value === 'hover') {
+      referenceEl.removeEventListener('mouseenter', handleMouseEnter);
+      referenceEl.removeEventListener('mouseleave', handleMouseLeave);
+    } else if (trigger.value === 'click') {
+      referenceEl.removeEventListener('click', toggleTooltip);
+      if (clickOutsideListener) {
+        document.removeEventListener('mousedown', clickOutsideListener, true);
+      }
+    }
   }
-})
+  unwatchOpen()
+  unwatchContent()
+});
+
+const unwatchOpen = watch(isOpen, (newValue) => {
+  if (newValue && floatingRef.value) {
+    nextTick(update);
+  }
+});
+
+const unwatchContent = watch(() => props.content, () => { if (isOpen.value) update(); });
 </script>
 
 <template>
-  <div
-    class="zc-tooltip zc-ui-component"
-    ref="zcTooltip"
-    :class="[
-      `zc-tooltip-${position}`, 
-      `zc-tooltip-${trigger}`,
-      `theme-${theme}`
-    ]"
-    @mouseenter="handleMouseEnter"
-    @mouseleave="handleMouseLeave"
-    @click="handleClick">
+  <div ref="referenceRef" class="zc-tooltip zc-ui-component">
     <slot></slot>
-    <Transition name="tooltip-fade">
-      <div
-        class="tooltip-content"
-        v-if="tipVisible"
-        :style="tooltipStyles"
-        @mouseenter="handleContentMouseEnter"
-        @mouseleave="handleContentMouseLeave">
-        <div v-if="arrow" class="tooltip-arrow"></div>
-        <slot
-          name="content"
-          v-if="$slots.content"></slot>
-        <zc-scroll
-          width="100%"
-          height="100%"
-          ref="scroll"
-          v-else>
-          <div class="tooltip-inner">
-            {{ content }}
-          </div>
-        </zc-scroll>
-      </div>
-    </Transition>
+  </div>
+  <div
+    ref="floatingRef"
+    v-if="isOpen"
+    class="zc-tooltip-content"
+    :style="{...floatingStyles, maxWidth: setUnit(maxWidth), maxHeight: setUnit(maxHeight), ...computedTheme}"
+  >
+    <zc-scroll>
+      <slot name="content">{{ content }}</slot>
+    </zc-scroll>
+    <div ref="arrowRef" class="tooltip-arrow" :style="finalArrowStyles"></div>
   </div>
 </template>
 
-<style
-  lang="scss">
+<style scoped lang="scss">
 .zc-tooltip {
+  display: inline-block;
   position: relative;
-  display: inline-flex;
-  
-  .tooltip-content {
+}
+
+.zc-tooltip-content {
+  position: absolute;
+  background-color: var(--backgroundColor);
+  color: var(--color);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  z-index: 10000;
+  overflow-wrap: break-word;
+  display: flex;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  .tooltip-arrow {
     position: absolute;
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-    z-index: 1000;
-    
-    .tooltip-inner {
-      line-height: 1.5;
-    }
-    
-    .tooltip-arrow {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      z-index: -1;
-      transform: rotate(45deg);
-    }
-  }
-  
-  &.theme-dark {
-    .tooltip-content {
-      background-color: #303133;
-      color: #ffffff;
-      
-      .tooltip-arrow {
-        background-color: #303133;
-      }
-    }
-  }
-  
-  &.theme-light {
-    .tooltip-content {
-      background-color: #ffffff;
-      color: #303133;
-      border: 1px solid #e4e7ed;
-      box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-      
-      .tooltip-arrow {
-        background-color: #ffffff;
-        border: 1px solid #e4e7ed;
-      }
-    }
-  }
-  
-  /* 箭头位置 */
-  &.zc-tooltip-top {
-    .tooltip-content {
-      bottom: 100%;
-      left: 50%;
-      transform: translateX(-50%) translateY(-10px);
-      
-      .tooltip-arrow {
-        bottom: -4px;
-        left: 50%;
-        margin-left: -4px;
-        border-top: none;
-        border-left: none;
-      }
-    }
-  }
-  
-  &.zc-tooltip-bottom {
-    .tooltip-content {
-      top: 100%;
-      left: 50%;
-      transform: translateX(-50%) translateY(10px);
-      
-      .tooltip-arrow {
-        top: -4px;
-        left: 50%;
-        margin-left: -4px;
-        border-bottom: none;
-        border-right: none;
-      }
-    }
-  }
-  
-  &.zc-tooltip-left {
-    .tooltip-content {
-      top: 50%;
-      right: 100%;
-      transform: translateY(-50%) translateX(-10px);
-      
-      .tooltip-arrow {
-        top: 50%;
-        right: -4px;
-        margin-top: -4px;
-        border-left: none;
-        border-bottom: none;
-      }
-    }
-  }
-  
-  &.zc-tooltip-right {
-    .tooltip-content {
-      top: 50%;
-      left: 100%;
-      transform: translateY(-50%) translateX(10px);
-      
-      .tooltip-arrow {
-        top: 50%;
-        left: -4px;
-        margin-top: -4px;
-        border-right: none;
-        border-top: none;
-      }
-    }
-  }
-}
-
-/* 过渡动画 */
-.tooltip-fade-enter-active,
-.tooltip-fade-leave-active {
-  transition: opacity 0.3s, transform 0.3s;
-}
-
-.tooltip-fade-enter-from,
-.tooltip-fade-leave-to {
-  opacity: 0;
-}
-
-.tooltip-fade-enter-from {
-  &.zc-tooltip-top .tooltip-content {
-    transform: translateX(-50%) translateY(-20px);
-  }
-  
-  &.zc-tooltip-bottom .tooltip-content {
-    transform: translateX(-50%) translateY(20px);
-  }
-  
-  &.zc-tooltip-left .tooltip-content {
-    transform: translateY(-50%) translateX(-20px);
-  }
-  
-  &.zc-tooltip-right .tooltip-content {
-    transform: translateY(-50%) translateX(20px);
+    width: 8px;
+    height: 8px;
+    background-color: var(--backgroundColor);
+    transform: rotate(45deg);
+    z-index: -1;
   }
 }
 </style>

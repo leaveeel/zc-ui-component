@@ -14,16 +14,15 @@
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |-------|------|-------|------|
+| maxWidth | string \| number | '500px' | 最大宽度 |
+| maxHeight | string \| number | 'auto' | 最大高度 |
 | content | string | - | 提示内容 |
-| width | string/number | '100%' | 提示框宽度 |
-| height | string/number | 'auto' | 提示框高度 |
-| position | 'top'/'bottom'/'left'/'right' | 'top' | 提示框出现的位置 |
-| trigger | 'hover'/'click' | 'hover' | 触发方式 |
-| theme | 'light'/'dark' | 'light' | 提示框主题 |
-| arrow | boolean | true | 是否显示箭头 |
-| zIndex | number | 1000 | 提示框的z-index |
-| showDelay | number | 0 | 显示延迟时间(毫秒) |
-| hideDelay | number | 200 | 隐藏延迟时间(毫秒) |
+| placement | 'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \| 'left' \| 'left-start' \| 'left-end' \| 'right' \| 'right-start' \| 'right-end' | 'top' | 提示框出现的位置 |
+| theme | 'light' \| 'dark' | 'light' | 提示框主题 |
+| trigger | 'hover' \| 'click' | 'hover' | 触发方式 |
+| offset | number | 8 | 间距 |
+| showArrow | boolean | true | 是否显示箭头 |
+| disabled | boolean | false | 是否禁用 |
 
 ## 插槽
 
@@ -80,35 +79,11 @@
 </zc-tooltip>
 ```
 
-### 自定义宽度和高度
-
-```vue
-<zc-tooltip content="自定义宽度的提示" width="200px">
-  <button>自定义宽度</button>
-</zc-tooltip>
-
-<zc-tooltip content="自定义高度的提示" height="100px">
-  <button>自定义高度</button>
-</zc-tooltip>
-```
-
 ### 不显示箭头
 
 ```vue
-<zc-tooltip content="无箭头提示" :arrow="false">
+<zc-tooltip content="无箭头提示" :showArrow="false">
   <button>无箭头</button>
-</zc-tooltip>
-```
-
-### 延迟显示和隐藏
-
-```vue
-<zc-tooltip content="延迟显示" :show-delay="500">
-  <button>延迟显示</button>
-</zc-tooltip>
-
-<zc-tooltip content="延迟隐藏" :hide-delay="1000">
-  <button>延迟隐藏</button>
 </zc-tooltip>
 ```
 
@@ -131,7 +106,6 @@
 
 ## 注意事项
 
-- 当提示内容较长时，会自动添加滚动条
 - hover触发方式下，鼠标移入提示框内容区域不会导致提示消失
 - click触发方式下，点击页面其他区域会关闭提示
 - 提示框会根据position属性自动调整箭头位置

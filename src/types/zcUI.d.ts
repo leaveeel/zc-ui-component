@@ -376,30 +376,26 @@ export namespace zcUIProps {
 
   /**
    * Tooltip 组件属性
-   * @property {string} content - 提示内容
-   * @property {string|number} width - 提示框宽度
-   * @property {string|number} height - 提示框高度
-   * @property {string} position - 提示框位置：顶部、左侧、底部、右侧
-   * @property {string} trigger - 触发方式：悬停、点击
-   * @property {string} contentStyle - 提示框内容样式
-   * @property {string} theme - 主题：亮色、暗色
-   * @property {boolean} arrow - 是否显示箭头
-   * @property {number} zIndex - 提示框层级
-   * @property {number} showDelay - 显示延迟时间(毫秒)
-   * @property {number} hideDelay - 隐藏延迟时间(毫秒)
+   * @property {string|number} maxWidth - 最大宽度
+   * @property {string|number} maxHeight - 最大高度
+   * @property {string} content - 文字内容，如果使用slot="content"则此prop可忽略
+   * @property {Placement} placement - 提示框位置
+   * @property {'light' | 'dark'} theme - 主题：亮色、暗色
+   * @property {'hover' | 'click'} trigger - 触发方式：悬停、点击
+   * @property {number} offset - 间距
+   * @property {boolean} showArrow - 是否显示箭头
+   * @property {boolean} disabled - 是否禁用
    */
   export interface Tooltip {
-    content: string
-    width?: string | number
-    height?: string | number
-    position?: 'top' | 'left' | 'bottom' | 'right'
-    trigger?: 'hover' | 'click'
-    contentStyle?: string
+    maxWidth?: string | number
+    maxHeight?: string | number
+    content?: string
+    placement?: Placement
     theme?: 'light' | 'dark'
-    arrow?: boolean
-    zIndex?: number
-    showDelay?: number
-    hideDelay?: number
+    trigger?: 'hover' | 'click'
+    offset?: number
+    showArrow?: boolean
+    disabled?: boolean
   }
 
 
