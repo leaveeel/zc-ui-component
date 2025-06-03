@@ -2,8 +2,8 @@
  * 设置单位
  */
 export const setUnit = (n: string | number, unit: string = 'px') => {
-  if (n === undefined || n === null) return undefined
-  return typeof n === 'number' ? `${n}${unit}` : n;
+  const reg = /^[-]?\d+(\.\d+)?$/i
+  return reg.test(n.toString()) ? n.toString() + unit : n
 }
 
 /**
