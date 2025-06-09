@@ -21,6 +21,7 @@ import zcTable from '@/packages/table/src/index.vue'
 import { zcToast } from '@/packages/toast/zc-toast.ts'
 import zcTooltip from '@/packages/tooltip/src/index.vue'
 import zcSwitch from '@/packages/switch/src/index.vue'
+import zcDatePicker from '@/packages/datePicker/src/index.vue'
 import { zcUI, zcUIProps } from '@/types/zcUI'
 import type { App, Component } from 'vue'
 
@@ -45,7 +46,8 @@ const components: Record<string, Component> = {
   zcSkeletonItem,
   zcTable,
   zcTooltip,
-  zcSwitch
+  zcSwitch,
+  zcDatePicker
 }
 
 // 指令
@@ -101,6 +103,7 @@ export {
   zcTable,
   zcTooltip,
   zcSwitch,
+  zcDatePicker,
    // 指令
   loadingDirective,
   // 服务

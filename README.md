@@ -22,6 +22,7 @@
 - [Radio 复选框](src/packages/radio)
 - [Radio 复选框组](src/packages/radioGroup)
 - [Switch 复选框](src/packages/switch)
+- [DatePicker 复选框](src/packages/datePicker)
 
 ### 数据展示
 
@@ -128,7 +129,7 @@ app.mount('#app')
 
 - 1.6.4
   - 整合组组件
-  - 添加radio、switch组件
+  - 添加radio、switch、datepicker组件
   - 重构scroll、tooltip组件
 
 - 1.6.3

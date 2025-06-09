@@ -50,7 +50,6 @@ const toggle = async () => {
 }
 
 const handleKeyDown = (e: KeyboardEvent) => {
-    console.log(1)
   if (e.key === 'Enter' || e.key === ' ') {
     e.preventDefault()
     toggle()

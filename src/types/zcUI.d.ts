@@ -224,6 +224,7 @@ export namespace zcUIProps {
   export interface Input {
     tip?: string
     modelValue: string | number
+    height?: string | number
     autocomplete?: string
     type?: 'text' | 'password' | 'textarea' | 'number' | 'email' | 'tel' | 'url'
     clearable?: boolean
@@ -449,6 +450,26 @@ export namespace zcUIProps {
     beforeChange?: () => Promise<boolean> | boolean
     activeValue?: string | number | boolean
     inactiveValue?: string | number | boolean
+  }
+
+  /**
+   * Datepicker 组件属性
+   * @property {string | string[] | Date | Date[]} modelValue - 开关绑定值
+   * @property {'date' | 'daterange' | 'datetime'} type - 类型
+   * @property {string} placeholder - 占位文本
+   * @property {boolean} clearable - 是否显示清空按钮
+   * @property {boolean} disabled - 是否禁用
+   * @property {string} format - 显示格式
+   * @property {string} valueFormat - 值格式
+   */
+  export interface DatePicker {
+    modelValue: string | string[] | Date | Date[]
+    type?: 'date' | 'daterange' | 'datetime'
+    placeholder?: string
+    clearable?: boolean
+    disabled?: boolean
+    format?: string
+    valueFormat?: string
   }
 }
 

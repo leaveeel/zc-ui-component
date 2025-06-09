@@ -14,6 +14,7 @@
 |-------|------|-------|------|
 | tip | string | - | 输入框提示信息 |
 | modelValue | string | - | 输入框绑定值 |
+| height | string \| number | 40px | 输入框高度 |
 | autocomplete | string | 'off' | 自动完成属性 |
 | type | 'text'/'password'/'textarea'/'number'/'email'/'tel'/'url' | 'text' | 输入框类型 |
 | clearable | boolean | false | 是否可清空 |

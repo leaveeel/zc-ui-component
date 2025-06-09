@@ -11,11 +11,13 @@ import IconClose from '@/packages/icon/src/IconClose.vue'
 import IconHide from '@/packages/icon/src/IconHide.vue'
 import IconShow from '@/packages/icon/src/IconShow.vue'
 import { zcUIProps } from '@/types/zcUI'
+import { setUnit } from '@/utils/common'
 import { computed, defineProps, inject, nextTick, ref, useAttrs, watch } from 'vue'
 
 // 定义props
 const props = withDefaults(defineProps<zcUIProps.Input>(), {
   modelValue: '',
+  height: '40px',
   type: 'text',
   clearable: false,
   placeholder: '',
@@ -215,6 +217,7 @@ defineExpose({
         :disabled="propsDisabled"
         :maxlength="maxlength"
         :autocomplete="autocomplete"
+        :style="{height: setUnit(height)}"
         @input="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
@@ -313,10 +316,6 @@ defineExpose({
     &.error {
       color: var(--main-danger-color);
     }
-  }
-
-  input{
-    height: 40px;
   }
 
   input, textarea {
