@@ -108,12 +108,14 @@ export namespace zcUIProps {
    * @property {string} label - 复选框标签文本
    * @property {string|number} value - 复选框值，用于在复选框组中使用
    * @property {boolean | undefined} disabled - 是否禁用复选框
+   * @property {boolean} indeterminate - 是否半选
    */
   export interface Checkbox {
     modelValue?: boolean | string | number
-    label: string
+    label?: string
     value?: string | number
     disabled?: boolean | undefined
+    indeterminate?: boolean
   }
 
     /**
@@ -471,6 +473,35 @@ export namespace zcUIProps {
     format?: string
     valueFormat?: string
   }
+
+  /**
+   * Tree 组件
+   * @property {zcUI.TreeNode[]} data - 树组件数据
+   * @property {boolean} defaultExpandAll - 是否默认展开所有节点
+   * @property {boolean} checkable - 节点是否可选择
+   * @property {boolean} selectable - 节点是否可点击选中
+   * @property {boolean} accordion - 是否每次只打开一个同级树节点
+   * @property {boolean} checkStrictly - 是否严格的遵循父子不互相关联
+   * @property {string[]} defaultCheckedKeys - 默认勾选的节点
+   * @property {[key: string]: string} props - 配置选项，如 { label: 'name', children: 'child' }
+   * @property {(value: string, data: zcUI.TreeNode) => boolean} filterNodeMethod - 对树节点进行筛选时执行的方法
+   * @property {string} nodeKey - 每个树节点用来作为唯一标识的属性
+   * @property {boolean} expandOnClickNode - 是否在点击节点的时候展开或者收缩节点
+   * 
+   */
+  export interface Tree {
+    data: zcUI.TreeNode[]
+    defaultExpandAll?: boolean
+    checkable?: boolean
+    selectable?: boolean
+    accordion?: boolean
+    checkStrictly?: boolean
+    defaultCheckedKeys?: (string | number)[]
+    props?: {[key: string]: string}
+    filterNodeMethod?: (value: string, data: zcUI.TreeNode) => boolean
+    nodeKey?: string
+    expandOnClickNode?: boolean
+  }
 }
 
 export namespace zcUI {
@@ -560,5 +591,28 @@ export namespace zcUI {
     name: string
     color?: string
     handle: (index: number, row: Record<string, any>) => void
+  }
+
+  
+  /**
+   * TreeNode
+   * @property {[key: string]: any} [key: string]: any - 允许使用字符串索引
+   * @property {TreeNode[]} children - 子节点
+   * @property {boolean} expanded - 是否展开
+   * @property {boolean} selected - 是否选中
+   * @property {boolean} disabled - 是否禁用
+   * @property {string} icon - 图标
+   * @property {boolean} checked - 是否勾选
+   * @property {boolean} indeterminate - 是否半选
+   */
+  export interface TreeNode {
+    [key: string]: any
+    children?: TreeNode[]
+    expanded?: boolean
+    selected?: boolean
+    disabled?: boolean
+    icon?: string
+    checked?: boolean
+    indeterminate?: boolean
   }
 }

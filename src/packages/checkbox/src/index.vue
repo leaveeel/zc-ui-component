@@ -111,9 +111,10 @@ const handleBlur = () => {
     @blur="handleBlur"
   >
     <input type="checkbox" :checked="isChecked" :disabled="propsDisabled" />
-    <span class="checkbox" :class="{ checked: isChecked }">
-      <zc-icon v-if="isChecked" color="#fff" size="10">
-        <IconChecked></IconChecked>
+    <span class="checkbox" :class="{ checked: isChecked || indeterminate }">
+      <zc-icon v-if="isChecked || indeterminate" color="#fff" size="10">
+        <IconChecked v-if="!indeterminate"></IconChecked>
+        <i class="half-checked" v-else></i>
       </zc-icon>
     </span>
     <slot v-if="$slots.default"></slot>
@@ -197,6 +198,12 @@ const handleBlur = () => {
     &.checked {
       background-color: var(--main-color);
       border-color: var(--main-color);
+      .half-checked {
+        background-color: #fff;
+        width: 8px;
+        height: 2px;
+        display: block;
+      }
     }
   }
   

@@ -37,6 +37,7 @@ export const IconLoading: Plugin;
 export const IconRightArrow: Plugin;
 export const zcSwitch: zcUIProps.Switch
 export const zcDatePicker: zcUIProps.DatePicker
+export const zcTree: zcUIProps.Tree
 
 export const zcToast: {
   (message: string, options?: zcUIProps.Toast): void;

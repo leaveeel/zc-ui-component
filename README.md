@@ -30,6 +30,7 @@
 - [Pagination 分页](src/packages/pagination)
 - [Scroll 滚动容器](src/packages/scroll)
 - [Skeleton 骨架屏](src/packages/skeleton)
+- [Tree 骨架屏](src/packages/tree)
 
 ### 反馈组件
 
@@ -129,8 +130,9 @@ app.mount('#app')
 
 - 1.6.4
   - 整合组组件
-  - 添加radio、switch、datepicker组件
+  - 添加radio、switch、datepicker、tree组件
   - 重构scroll、tooltip组件
+  - checkbox添加半选状态，兼容tree组件
 
 - 1.6.3
   - 添加formitem组件label文字对齐属性
