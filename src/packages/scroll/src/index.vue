@@ -14,10 +14,6 @@ import { useDocument } from '@/utils/common'
 import {    onUnmounted,  StyleValue, watch } from 'vue';
 
 const props = withDefaults(defineProps<zcUIProps.Scroll>(), {
-  width: 'auto',
-  height: 'auto',
-  maxWidth: '100%',
-  maxHeight: '100%'
 });
 
 const emit = defineEmits(['scroll'])
@@ -53,10 +49,11 @@ const containerStyle = computed<StyleValue>(() => ({
   position: 'relative',
   overflow: 'hidden', // Crucial for containing scrollContent and custom scrollbars
   boxSizing: 'border-box',
-  width: setUnit(props.width),
-  height: setUnit(props.height),
-  maxWidth: setUnit(props.maxWidth),
-  maxHeight: setUnit(props.height),
+  display: 'flex',
+  width: props.width && setUnit(props.width),
+  height: props.height && setUnit(props.height),
+  maxWidth: props.maxWidth && setUnit(props.maxWidth),
+  maxHeight: props.maxHeight && setUnit(props.maxHeight),
 }));
 
 const needsVerticalScroll = computed(() => scrollHeight.value > clientHeight.value);
@@ -331,8 +328,7 @@ defineExpose({
 
 <style scoped lang="scss">
 .scroll-content {
-  width: 100%;
-  height: 100%;
+  flex-grow: 1;
   /* Native scrollbar hiding */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE 10+ */

@@ -197,7 +197,7 @@ export namespace zcUIProps {
    */
   export interface FormItem {
     label?: string
-    prop: string
+    prop?: string
     rules?: (RuleItem & { trigger: 'change' | 'blur' }) | (RuleItem & { trigger: 'change' | 'blur' })[]
     required?: boolean
     labelWidth?: string | number
@@ -501,6 +501,46 @@ export namespace zcUIProps {
     filterNodeMethod?: (value: string, data: zcUI.TreeNode) => boolean
     nodeKey?: string
     expandOnClickNode?: boolean
+  }
+
+  /**
+   * Select 组件属性
+   * @property {string | number | (string | number)[]} modelValue - 选择器绑定值
+   * @property {zcUIProps.SelectOption[]} options - 选项数据
+   * @property {string} placeholder - 占位文本
+   * @property {boolean} clearable - 是否可清空
+   * @property {boolean} disabled - 是否禁用
+   * @property {boolean} filterable - 是否可搜索
+   * @property {string} valueKey - 选项对象中，value 对应的 key
+   * @property {string} labelKey - 选项对象中，label 对应的 key
+   * @property {boolean} multiple - 是否多选
+   * @property {boolean} collapseTags - 多选时是否折叠标签
+   * @property {number} maxCollapseTags - 折叠标签时最多显示的标签数量
+   */
+  export interface Select {
+    modelValue: string | number | (string | number)[]
+    options?: zcUIProps.SelectOption[]
+    placeholder?: string
+    clearable?: boolean
+    disabled?: boolean
+    filterable?: boolean
+    valueKey?: string
+    labelKey?: string
+    multiple?: boolean
+    collapseTags?: boolean
+    maxCollapseTags?: number
+  }
+
+  /**
+   * Select 选项接口
+   * @property {string | number} value - 选项值
+   * @property {string} label - 选项标签
+   * @property {boolean} disabled - 是否禁用该选项
+   */
+  export interface SelectOption {
+    value: string | number
+    label: string
+    disabled?: boolean
   }
 }
 

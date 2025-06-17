@@ -331,6 +331,10 @@ defineExpose({
       cursor: not-allowed;
       color: #c0c4cc;
     }
+    
+    &::placeholder {
+      color: #999999;
+    }
   }
   
   textarea {
@@ -338,9 +342,6 @@ defineExpose({
     resize: var(--resize);
   }
 
-  &::placeholder {
-    color: #dcdcdc;
-  }
   
   &.is-disabled {
     opacity: 0.7;
