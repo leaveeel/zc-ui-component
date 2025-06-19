@@ -7,10 +7,8 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, provide, reactive, toRefs, ref, computed, watch } from 'vue'
-import zcCheckbox from '@/packages/checkbox/src/index.vue'
-import zcIcon from '@/packages/icon/index.vue'
-import IconRightArrow from '@/packages/icon/src/IconRightArrow.vue'
+import { defineProps, provide, reactive, ref } from 'vue'
+import TreeNodeComponent from './treeNode.vue'
 
 const props = withDefaults(defineProps<zcUIProps.Tree>(), {
   defaultExpandAll: false,
@@ -96,17 +94,29 @@ const getParentNodes = (node: zcUI.TreeNode, nodes = treeData): zcUI.TreeNode[] 
   const parents: zcUI.TreeNode[] = []
   const traverse = (data: zcUI.TreeNode[], parent?: zcUI.TreeNode) => {
     for (const item of data) {
+      if (item === node) {
+        // 如果找到了目标节点，并且有父节点，则添加父节点
+        if (parent) {
+          parents.push(parent)
+        }
+        return true
+      }
+      
       const children = getChildren(item)
       if (children) {
-        if (children.includes(node)) {
-          parents.push(item)
+        // 如果在子节点中找到了目标节点，则当前节点也是父节点之一
+        if (traverse(children, item)) {
+          if (parent) {
+            parents.push(parent)
+          }
+          return true
         }
-        traverse(children, item)
       }
     }
+    return false
   }
   traverse(nodes)
-  return parents
+  return parents.reverse() // 反转数组，使得从最远的祖先节点开始
 }
 
 // 更新父节点状态
@@ -134,6 +144,7 @@ const updateParentState = (node: zcUI.TreeNode) => {
 
   // 从下往上更新父节点状态
   const parents = getParentNodes(node, treeData)
+
   for (let i = parents.length - 1; i >= 0; i--) {
     updateSingleParent(parents[i])
   }
@@ -221,41 +232,6 @@ const filterNode = (value: string) => {
   filter(treeData)
 }
 
-const handleNodeClick = (node: zcUI.TreeNode) => {
-  if (props.selectable && !node.disabled) {
-    node.selected = !node.selected
-    emit('node-click', node)
-  }
-  // 只有当 expandOnClickNode 为 true 时，点击节点才会触发展开/收起
-  if (props.expandOnClickNode) {
-    toggleExpand(node)
-  }
-}
-
-// 添加一个专门处理展开图标点击的方法
-const handleExpandIconClick = (node: zcUI.TreeNode, event: Event) => {
-  event.stopPropagation() // 阻止事件冒泡
-  toggleExpand(node)
-}
-
-const toggleExpand = (node: zcUI.TreeNode) => {
-  if (node.disabled) return
-  
-  if (props.accordion && getChildren(node)?.length) {
-    const siblings = treeData.filter(n => n !== node)
-    siblings.forEach(sibling => {
-      sibling.expanded = false
-    })
-  }
-  
-  node.expanded = !node.expanded
-  if(node.expanded) {
-    emit('node-expand', node)
-  }else {
-    emit('node-collapse', node)
-  }
-}
-
 // 获取所有选中的节点
 const getCheckedNodes = () => {
   const checkedNodes: zcUI.TreeNode[] = []
@@ -304,9 +280,14 @@ const getHalfCheckedKeys = () => {
 
 // 提供树组件上下文给子组件使用
 provide('treeContext', {
+  props: props.props,
+  checkStrictly: props.checkStrictly,
   checkable: props.checkable,
   selectable: props.selectable,
-  filterText
+  expandOnClickNode: props.expandOnClickNode,
+  accordion: props.accordion,
+  handleNodeCheck: handleNodeCheck,
+  emit: emit
 })
 
 // 对外暴露的方法
@@ -322,198 +303,12 @@ defineExpose({
 
 <template>
   <div class="zc-tree">
-    <div
-      v-for="node in treeData"
-      :key="getNodeKey(node)"
-      class="zc-tree-node"
-      :class="{
-        'is-expanded': node.expanded,
-        'is-selected': node.selected,
-        'is-disabled': node.disabled,
-        'is-hidden': node.visible === false
-      }"
-      v-show="node.visible !== false"
-    >
-      <div class="zc-tree-node__content" @click="handleNodeClick(node)">
-        <zcIcon class="zc-tree-node__expand-icon" v-if="getChildren(node)?.length" size="24" :rotate="node.expanded ? 90 : 0" @click="handleExpandIconClick(node, $event)">
-          <IconRightArrow></IconRightArrow>
-        </zcIcon>
-        <span v-else class="zc-tree-node__empty"></span>
-        
-        <zc-checkbox v-if="checkable" v-model="node.checked" :indeterminate="node.indeterminate" @change="handleNodeCheck(node)" label=""></zc-checkbox>
-      
-        <span v-if="node.icon" class="zc-tree-node__icon">
-          <i :class="node.icon"></i>
-        </span>
-        
-        <span class="zc-tree-node__label">{{ getLabel(node) }}</span>
-      </div>
-      
-      <transition name="tree-expand">
-        <div v-if="getChildren(node)?.length && node.expanded" class="zc-tree-node__children">
-          <template v-for="child in getChildren(node)" :key="getNodeKey(child)">
-            <div
-              class="zc-tree-node"
-              :class="{
-                'is-expanded': child.expanded,
-                'is-selected': child.selected,
-                'is-disabled': child.disabled,
-                'is-hidden': child.visible === false
-              }"
-              v-show="child.visible !== false"
-            >
-              <div class="zc-tree-node__content" @click="handleNodeClick(child)">
-                <zcIcon class="zc-tree-node__expand-icon" v-if="getChildren(child)?.length" size="24" :rotate="child.expanded ? 90 : 0" @click="handleExpandIconClick(child, $event)">
-                  <IconRightArrow></IconRightArrow>
-                </zcIcon>
-                <span v-else class="zc-tree-node__empty"></span>
-                
-                <zc-checkbox v-if="checkable" v-model="child.checked" :indeterminate="child.indeterminate" @change="handleNodeCheck(child)">
-                  <span v-if="child.icon" class="zc-tree-node__icon">
-                    <i :class="child.icon"></i>
-                  </span>
-                  {{ getLabel(child) }}
-                </zc-checkbox>
-              </div>
-            </div>
-          </template>
-        </div>
-      </transition>
-    </div>
+    <TreeNodeComponent v-for="node in treeData" :key="getNodeKey(node)" :tree-data="treeData" :tree-node="node" />
   </div>
 </template>
 
 <style lang="scss" scoped>
 .zc-tree {
   font-size: 14px;
-  
-  &-node {
-    &__content {
-      display: flex;
-      align-items: center;
-      padding: 8px 0;
-      cursor: pointer;
-      
-      &:hover {
-        background-color: #f5f7fa;
-      }
-    }
-    
-    &__expand-icon {
-      width: 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      
-      &:hover {
-        color: #409eff;
-      }
-    }
-    
-    &__empty {
-      width: 24px;
-    }
-    
-    &__checkbox {
-      width: 16px;
-      height: 16px;
-      border: 1px solid #dcdfe6;
-      border-radius: 2px;
-      margin-right: 8px;
-      position: relative;
-      cursor: pointer;
-      
-      &:hover {
-        border-color: #409eff;
-      }
-      
-      &.is-checked {
-        background-color: #409eff;
-        border-color: #409eff;
-        
-        &::after {
-          content: '';
-          position: absolute;
-          left: 4px;
-          top: 1px;
-          width: 4px;
-          height: 8px;
-          border: solid #fff;
-          border-width: 0 2px 2px 0;
-          transform: rotate(45deg);
-        }
-      }
-      
-      &.is-indeterminate {
-        background-color: #409eff;
-        border-color: #409eff;
-        
-        &::after {
-          content: '';
-          position: absolute;
-          left: 3px;
-          top: 7px;
-          width: 8px;
-          height: 2px;
-          background-color: #fff;
-        }
-      }
-    }
-    
-    &__icon {
-      margin-right: 8px;
-    }
-    
-    &__label {
-      flex: 1;
-    }
-    
-    &__children {
-      padding-left: 24px;
-      overflow: hidden;
-    }
-    
-    &.is-selected {
-      > .zc-tree-node__content {
-        background-color: #ecf5ff;
-        color: #409eff;
-      }
-    }
-    
-    &.is-disabled {
-      > .zc-tree-node__content {
-        color: #c0c4cc;
-        cursor: not-allowed;
-        
-        .zc-tree-node__checkbox {
-          background-color: #f5f7fa;
-          border-color: #dcdfe6;
-          cursor: not-allowed;
-        }
-      }
-    }
-
-    &.is-hidden {
-      display: none;
-    }
-  }
-}
-
-// 展开收起动画
-.tree-expand-enter-active,
-.tree-expand-leave-active {
-  transition: all 0.3s ease;
-}
-
-.tree-expand-enter-from,
-.tree-expand-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
-}
-
-.tree-expand-enter-to,
-.tree-expand-leave-from {
-  opacity: 1;
-  transform: translateY(0);
 }
 </style>
