@@ -46,7 +46,7 @@ const initTreeData = (data: zcUI.TreeNode[]): zcUI.TreeNode[] => {
     const nodeKey = getNodeKey(node)
     const isChecked = props.defaultCheckedKeys?.includes(nodeKey) || false
     
-    const processedNode = {
+    const processedNode: any = {
       ...node,
       expanded: props.defaultExpandAll || false,
       selected: false,
@@ -59,11 +59,11 @@ const initTreeData = (data: zcUI.TreeNode[]): zcUI.TreeNode[] => {
       // 只在非严格模式下更新父节点状态
       if (!props.checkStrictly) {
         // 如果子节点都被选中，父节点也应该被选中
-        if (processedNode[props.props.children].every(child => child.checked)) {
+        if (processedNode[props.props.children].every((child: any) => child.checked)) {
           processedNode.checked = true
         }
         // 如果部分子节点被选中，父节点应该显示半选状态
-        else if (processedNode[props.props.children].some(child => child.checked)) {
+        else if (processedNode[props.props.children].some((child: any) => child.checked)) {
           processedNode.indeterminate = true
         }
       }
@@ -81,7 +81,7 @@ const getChildNodes = (node: zcUI.TreeNode): zcUI.TreeNode[] => {
   const traverse = (node: zcUI.TreeNode) => {
     const nodeChildren = getChildren(node)
     if (nodeChildren) {
-      nodeChildren.forEach(child => {
+      nodeChildren.forEach((child: any) => {
         children.push(child)
         traverse(child)
       })
@@ -117,8 +117,8 @@ const updateParentState = (node: zcUI.TreeNode) => {
     const children = getChildren(parent)
     if (!children) return
 
-    const checkedCount = children.filter(child => child.checked).length
-    const indeterminateCount = children.filter(child => child.indeterminate).length
+    const checkedCount = children.filter((child: any) => child.checked).length
+    const indeterminateCount = children.filter((child: any) => child.indeterminate).length
 
     if (checkedCount === children.length) {
       parent.checked = true
@@ -161,12 +161,12 @@ const handleNodeCheck = (node: zcUI.TreeNode) => {
   
   if (!props.checkStrictly) {
     // 先更新子节点状态
-    updateChildrenState(node, node.checked)
+    updateChildrenState(node, !!node.checked)
     // 再更新父节点状态
     updateParentState(node)
   }
 
-  emit('check-change', node, node.checked)
+  emit('check-change', node, !!node.checked)
 }
 
 // 手动设置节点选中状态
@@ -249,7 +249,11 @@ const toggleExpand = (node: zcUI.TreeNode) => {
   }
   
   node.expanded = !node.expanded
-  emit(node.expanded ? 'node-expand' : 'node-collapse', node)
+  if(node.expanded) {
+    emit('node-expand', node)
+  }else {
+    emit('node-collapse', node)
+  }
 }
 
 // 获取所有选中的节点
