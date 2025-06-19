@@ -50,7 +50,7 @@ const change = inject<(() => void) | undefined>('change', undefined)
 
 
 const setOptions = computed(() => {
-  if(slots.default()) {
+  if(slots.default && slots.default()) {
     const child = slots.default()
     return child.map((i: any) => ({
       ...i.props,
@@ -72,7 +72,7 @@ const inputValue = computed(() => {
   }else {
     const label = setOptions.value.find((i: any) => i.value === props.modelValue)?.label
     setPlaceholder.value = label || props.placeholder
-    if(visible.value) {
+    if(visible.value && props.filterable) {
       return ''
     }
     return label
@@ -246,7 +246,6 @@ onUnmounted(() => {
       </template>
 
       <input
-        v-if="filterable"
         ref="inputRef"
         :class="{
           'is-filterable': filterable,
