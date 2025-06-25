@@ -6,50 +6,34 @@ import zcIcon from '@/packages/icon/index.vue'
 import IconRightArrow from '@/packages/icon/src/IconRightArrow.vue'
 import TreeNodeComponent from './treeNode.vue'
 
-const props = withDefaults(defineProps<{treeData: any,treeNode:any}>(), {
-  treeData: [],
-  treeNode: {},
-})
+const props = defineProps<{ treeData: zcUI.TreeNode[], treeNode: zcUI.TreeNode }>()
+const treeContext = inject<any>('treeContext')
 
-const treeContext: any = inject('treeContext')
+const getLabel = (node: zcUI.TreeNode) => node[treeContext.props.label] ?? node.label
+const getChildren = (node: zcUI.TreeNode) => node[treeContext.props.children] ?? node.children
 
-// 处理自定义属性
-const getLabel = (node: zcUI.TreeNode) => node[treeContext.props.label] || node.label
-const getChildren = (node: zcUI.TreeNode) => node[treeContext.props.children] || node.children
-
-const handleNodeClick = (node: zcUI.TreeNode) => {
+function handleNodeClick(node: zcUI.TreeNode) {
   if (treeContext.selectable && !node.disabled) {
     node.selected = !node.selected
     treeContext.emit('node-click', node)
   }
-  // 只有当 expandOnClickNode 为 true 时，点击节点才会触发展开/收起
-  if (treeContext.expandOnClickNode) {
-    toggleExpand(node)
-  }
+  if (treeContext.expandOnClickNode) toggleExpand(node)
 }
 
-// 添加一个专门处理展开图标点击的方法
-const handleExpandIconClick = (node: zcUI.TreeNode, event: Event) => {
-  event.stopPropagation() // 阻止事件冒泡
+function handleExpandIconClick(node: zcUI.TreeNode, event: Event) {
+  event.stopPropagation()
   toggleExpand(node)
 }
 
-const toggleExpand = (node: zcUI.TreeNode) => {
+function toggleExpand(node: zcUI.TreeNode) {
   if (node.disabled) return
-  
   if (treeContext.accordion && getChildren(node)?.length) {
-    const siblings = props.treeData.filter((n: any) => n !== node)
-    siblings.forEach((sibling: any) => {
-      sibling.expanded = false
+    props.treeData.forEach((n: zcUI.TreeNode) => {
+      if (n !== node) n.expanded = false
     })
   }
-  
   node.expanded = !node.expanded
-  if(node.expanded) {
-    treeContext.emit('node-expand', node)
-  }else {
-    treeContext.emit('node-collapse', node)
-  }
+  treeContext.emit(node.expanded ? 'node-expand' : 'node-collapse', node)
 }
 </script>
 
@@ -65,26 +49,41 @@ const toggleExpand = (node: zcUI.TreeNode) => {
     v-show="treeNode.visible !== false"
   >
     <div class="zc-tree-node__content" @click="handleNodeClick(treeNode)">
-      <zcIcon class="zc-tree-node__expand-icon" v-if="getChildren(treeNode)?.length" size="24" :rotate="treeNode.expanded ? 90 : 0" @click="handleExpandIconClick(treeNode, $event)">
-        <IconRightArrow></IconRightArrow>
+      <zcIcon
+        class="zc-tree-node__expand-icon"
+        v-if="getChildren(treeNode)?.length"
+        size="24"
+        :rotate="treeNode.expanded ? 90 : 0"
+        @click="handleExpandIconClick(treeNode, $event)"
+      >
+        <IconRightArrow />
       </zcIcon>
       <span v-else class="zc-tree-node__empty"></span>
-      
-      <zc-checkbox v-if="treeContext.checkable" v-model="treeNode.checked" :indeterminate="treeNode.indeterminate" @change="treeContext.handleNodeCheck(treeNode)" label=""></zc-checkbox>
-    
+
+      <zc-checkbox
+        v-if="treeContext.checkable"
+        v-model="treeNode.checked"
+        :indeterminate="treeNode.indeterminate"
+        @change="treeContext.handleNodeCheck(treeNode)"
+        label=""
+      />
+
       <span v-if="treeNode.icon" class="zc-tree-node__icon">
         <i :class="treeNode.icon"></i>
       </span>
-      
+
       <span class="zc-tree-node__label">{{ getLabel(treeNode) }}</span>
     </div>
-    
+
     <transition name="tree-expand">
-      <div v-if="getChildren(treeNode)?.length && treeNode.expanded" class="zc-tree-node__children">
-        <TreeNodeComponent 
-          v-for="child in getChildren(treeNode)" 
-          :key="child[treeContext.props.nodeKey]" 
-          :tree-data="getChildren(treeNode)" 
+      <div
+        v-if="getChildren(treeNode)?.length && treeNode.expanded"
+        class="zc-tree-node__children"
+      >
+        <TreeNodeComponent
+          v-for="child in getChildren(treeNode)"
+          :key="child[treeContext.props.nodeKey]"
+          :tree-data="getChildren(treeNode)"
           :tree-node="child"
         />
       </div>

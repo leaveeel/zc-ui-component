@@ -333,7 +333,7 @@ export namespace zcUIProps {
    * @property {boolean} fullscreen - 是否全屏显示
    * @property {number|string} fontSize - 加载文本字体大小
    * @property {boolean} loading - 是否显示加载状态
-   * @property {[key: string]: any} [key: string]: any - 允许使用字符串索引
+   * @property {[property: string]: any} [property: string]: any - 允许使用字符串索引
    */
   export interface Loading {
     size?: number | string
@@ -344,7 +344,7 @@ export namespace zcUIProps {
     fullscreen?: boolean
     fontSize?: number | string
     loading?: boolean
-    [key: string]: any
+    [property: string]: any
   }
   
   /**
@@ -483,7 +483,7 @@ export namespace zcUIProps {
    * @property {boolean} accordion - 是否每次只打开一个同级树节点
    * @property {boolean} checkStrictly - 是否严格的遵循父子不互相关联
    * @property {string[]} defaultCheckedKeys - 默认勾选的节点
-   * @property {[key: string]: string} props - 配置选项，如 { label: 'name', children: 'child' }
+   * @property { label: string, children: string } props - 配置选项，如 { label: 'name', children: 'child' }
    * @property {(value: string, data: zcUI.TreeNode) => boolean} filterNodeMethod - 对树节点进行筛选时执行的方法
    * @property {string} nodeKey - 每个树节点用来作为唯一标识的属性
    * @property {boolean} expandOnClickNode - 是否在点击节点的时候展开或者收缩节点
@@ -497,7 +497,7 @@ export namespace zcUIProps {
     accordion?: boolean
     checkStrictly?: boolean
     defaultCheckedKeys?: (string | number)[]
-    props?: {[key: string]: string}
+    props?: { label: string, children: string }
     filterNodeMethod?: (value: string, data: zcUI.TreeNode) => boolean
     nodeKey?: string
     expandOnClickNode?: boolean
@@ -538,6 +538,8 @@ export namespace zcUIProps {
     label: string
     disabled?: boolean
   }
+
+  export type TreeSelect = Select & Tree
 }
 
 export namespace zcUI {
@@ -632,7 +634,7 @@ export namespace zcUI {
   
   /**
    * TreeNode
-   * @property {[key: string]: any} [key: string]: any - 允许使用字符串索引
+   * @property {[property: string]: any} [property: string]: any - 允许使用字符串索引
    * @property {TreeNode[]} children - 子节点
    * @property {boolean} expanded - 是否展开
    * @property {boolean} selected - 是否选中
@@ -642,7 +644,7 @@ export namespace zcUI {
    * @property {boolean} indeterminate - 是否半选
    */
   export interface TreeNode {
-    [key: string]: any
+    [property: string]: any
     children?: TreeNode[]
     expanded?: boolean
     selected?: boolean
