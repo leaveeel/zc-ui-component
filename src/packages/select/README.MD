@@ -38,8 +38,6 @@ const handleChange = (value: string | number | boolean) => {
 | clearable | boolean | false | 是否可清空 |
 | disabled | boolean | false | 是否禁用 |
 | filterable | boolean | false | 是否可搜索 |
-| valueKey | string | 'value' | 选项对象中，value 对应的 key |
-| labelKey | string | 'label' | 选项对象中，label 对应的 key |
 | multiple | boolean | false | 是否多选 |
 | collapseTags | boolean | false | 多选时是否折叠标签 |
 | maxCollapseTags | number | 1 | 折叠标签时最多显示的标签数量 |

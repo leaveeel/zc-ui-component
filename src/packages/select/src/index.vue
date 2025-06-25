@@ -1,27 +1,24 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-export default defineComponent ({
+export default defineComponent({
   name: 'zcSelect'
 })
 </script>
 
 <script lang="ts" setup>
-import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, defineEmits, ref, computed, nextTick, onMounted, onUnmounted, provide, inject  } from 'vue'
+import { zcUIProps } from '@/types/zcUI'
+import { defineProps, defineEmits, ref, computed, nextTick, onMounted, onUnmounted, provide, inject } from 'vue'
 import zcIcon from '@/packages/icon/index.vue'
 import IconRightArrow from '@/packages/icon/src/IconRightArrow.vue'
 import IconClose from '@/packages/icon/src/IconClose.vue'
 import zcScroll from '@/packages/scroll/src/index.vue'
 import zcOption from '@/packages/select/src/option.vue'
-import { setUnit } from '@/utils/common'
 
 const props = withDefaults(defineProps<zcUIProps.Select>(), {
   placeholder: '请选择',
   clearable: false,
   disabled: false,
   filterable: false,
-  valueKey: 'value',
-  labelKey: 'label',
   multiple: false,
   collapseTags: false,
   maxCollapseTags: 1,
@@ -36,68 +33,59 @@ const emit = defineEmits<{
 
 const slots = defineSlots()
 
-// 下拉框显示状态
 const visible = ref(false)
-// 选择器容器引用
 const selectRef = ref<HTMLElement | null>(null)
-// 输入框引用
 const inputRef = ref<HTMLElement | null>(null)
 
-// 注入的值
 const id = inject('id', undefined)
-const errorMsg = ref(inject('errorMsg', ''))
+const errorMsg = inject('errorMsg', '')
 const change = inject<(() => void) | undefined>('change', undefined)
 
-
-const setOptions = computed(() => {
-  if(slots.default && slots.default()) {
-    const child = slots.default()
-    return child.map((i: any) => ({
-      ...i.props,
-      disabled: i.props.disabled || i.props.disabled === ''
-    }))
-  }else {
-    return props.options
+// 统一处理 options 来源
+const optionsList = computed(() => {
+  if (slots.default && slots.default()) {
+    let options: any = []
+    slots.default().forEach((i: any) => {
+      if(i.children) {
+        options = options.concat(i.children.map((n: any) => (
+          {
+            ...n.props,
+            disabled: n.props?.disabled || n.props?.disabled === ''
+          }
+        )))
+      }else {
+        options.push({
+          ...i.props,
+          disabled: i.props?.disabled || i.props?.disabled === ''
+        })
+      }
+    })
+    return options
   }
+  return props.options
 })
 
-
-// 搜索关键字
 const keyword = ref('')
-const setPlaceholder = ref()
-// 计算显示的标签文本
+
+// 计算输入框显示内容
 const inputValue = computed(() => {
-  if(props.multiple) {
-    return keyword.value
-  }else {
-    const label = setOptions.value.find((i: any) => i.value === props.modelValue)?.label
-    setPlaceholder.value = label || props.placeholder
-    if(visible.value && props.filterable) {
-      return ''
-    }
-    return label
-  }
+  if (props.multiple) return keyword.value
+  const option = optionsList.value?.find((i: any) => i.value === props.modelValue)
+  if (visible.value && props.filterable) return ''
+  return option?.label || ''
 })
 
-// 处理选项点击
+// 选项点击
 const handleOptionClick = (value: string | number, label: string) => {
   if (props.multiple) {
     const newValue = Array.isArray(props.modelValue) ? [...props.modelValue] : []
-    const index = newValue.indexOf(value)
-    
-    if (index > -1) {
-      newValue.splice(index, 1)
-    } else {
-      newValue.push(value)
-    }
-    
+    const idx = newValue.indexOf(value)
+    if (idx > -1) newValue.splice(idx, 1)
+    else newValue.push(value)
     emit('update:modelValue', newValue)
     emit('change', newValue)
     change?.()
-    
-    if (props.filterable) {
-      inputRef.value?.focus()
-    }
+    if (props.filterable) nextTick(() => inputRef.value?.focus())
   } else {
     emit('update:modelValue', value)
     emit('change', value)
@@ -106,28 +94,23 @@ const handleOptionClick = (value: string | number, label: string) => {
   }
 }
 
-
-// 注入选择器上下文
 provide('select', {
   modelValue: computed(() => props.modelValue),
   multiple: props.multiple,
   handleOptionClick,
 })
 
-// 处理标签删除
+// 标签删除
 const handleTagClose = (event: Event, value: string | number) => {
   event.stopPropagation()
-  
   if (props.disabled) return
-  
   const newValue = (Array.isArray(props.modelValue) ? props.modelValue : []).filter(v => v !== value)
-  
   emit('update:modelValue', newValue)
   emit('change', newValue)
   change?.()
 }
 
-// 处理清空
+// 清空
 const handleClear = (event: Event) => {
   event.stopPropagation()
   emit('update:modelValue', props.multiple ? [] : '')
@@ -136,52 +119,40 @@ const handleClear = (event: Event) => {
   closeDropdown()
 }
 
-// 处理输入框点击
+// 输入框点击
 const handleInputClick = () => {
-  if (props.disabled) return
-  toggleDropdown()
+  if (!props.disabled) toggleDropdown()
 }
 
-// 处理输入框键入
+// 输入事件
 const handleInput = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  keyword.value = target.value
-  if(!visible.value) {
-    toggleDropdown()
-  }
+  keyword.value = (event.target as HTMLInputElement).value
+  if (!visible.value) toggleDropdown()
 }
 
-// 处理文档点击
+// 外部点击
 const handleClickOutside = (event: MouseEvent) => {
-  if (selectRef.value && !selectRef.value.contains(event.target as Node)) {
-    closeDropdown()
-  }
+  if (selectRef.value && !selectRef.value.contains(event.target as Node)) closeDropdown()
 }
 
-// 切换下拉框显示状态
+// 切换下拉
 const toggleDropdown = () => {
   if (props.disabled) return
-  
   visible.value = !visible.value
-  if (visible.value && props.filterable) {
-    nextTick(() => {
-      keyword.value = ''
-      inputRef.value?.focus()
-    })
-  }
+  if (visible.value && props.filterable) nextTick(() => {
+    keyword.value = ''
+    inputRef.value?.focus()
+  })
 }
 
-// 关闭下拉框
 const closeDropdown = () => {
   keyword.value = ''
   visible.value = false
 }
 
-// 监听点击事件
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
 })
-
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
@@ -190,41 +161,27 @@ onUnmounted(() => {
 <template>
   <div 
     class="zc-select" 
-    :class="[
-      {
-        'is-disabled': disabled,
-        'is-focus': visible
-      }
-    ]"
+    :class="['zc-select', { 'is-disabled': disabled, 'is-focus': visible }]"
     ref="selectRef"
   >
     <div 
       class="zc-select__input" 
       @click.stop="handleInputClick"
-      :class="{ 
-        error: errorMsg,
-        'is-focus': visible
-      }"
+      :class="{ error: errorMsg, 'is-focus': visible }"
     >
-      <template v-if="multiple && Array.isArray(modelValue) && modelValue.length ">
+      <template v-if="multiple && Array.isArray(modelValue) && modelValue.length">
         <template v-if="collapseTags">
           <span 
             v-for="option in modelValue.slice(0, maxCollapseTags)"
             :key="option"
             class="zc-select__tag"
           >
-            {{ setOptions.find((i: any) => i.value === option)?.label }}
-            <zcIcon 
-              @click="handleTagClose($event, option)"
-              size="14"
-            >
+            {{ optionsList.find((i: any) => i.value === option)?.label }}
+            <zcIcon @click="handleTagClose($event, option)" size="14">
               <IconClose />
             </zcIcon>
           </span>
-          <span 
-            v-if="modelValue.length > maxCollapseTags"
-            class="zc-select__tag is-more"
-          >
+          <span v-if="modelValue.length > maxCollapseTags" class="zc-select__tag is-more">
             +{{ modelValue.length - maxCollapseTags }}
           </span>
         </template>
@@ -234,17 +191,13 @@ onUnmounted(() => {
             :key="option"
             class="zc-select__tag"
           >
-            {{ setOptions.find((i: any) => i.value === option)?.label }}
-            <zcIcon 
-              @click="handleTagClose($event, option)"
-              size="14"
-            >
+            {{ optionsList.find((i: any) => i.value === option)?.label }}
+            <zcIcon @click="handleTagClose($event, option)" size="14">
               <IconClose />
             </zcIcon>
           </span>
         </template>
       </template>
-
       <input
         ref="inputRef"
         :class="{
@@ -258,7 +211,6 @@ onUnmounted(() => {
         :value="inputValue"
         @input="handleInput"
       />
-      
       <div class="zc-select__suffix">
         <zcIcon 
           v-if="clearable && ((multiple && Array.isArray(modelValue)) ? modelValue.length : modelValue) && !disabled"
@@ -268,7 +220,6 @@ onUnmounted(() => {
         >
           <IconClose />
         </zcIcon>
-        
         <zcIcon 
           class="zc-select__arrow"
           size="20"
@@ -278,20 +229,19 @@ onUnmounted(() => {
         </zcIcon>
       </div>
     </div>
-
     <transition name="zc-select-dropdown">
       <div class="zc-select__dropdown" v-show="visible">
         <zc-scroll max-height="240px">
-          <template v-for="option in setOptions" :key="option.value">
+          <template v-for="option in optionsList" :key="option.value">
             <zc-option
-              v-if="setOptions.find((i: any) => i.value === option.value)?.label.toString().toLowerCase().includes(keyword.toLowerCase())"
+              v-if="option.label?.toString().toLowerCase().includes(keyword.toLowerCase())"
               :value="option.value" 
               :label="option.label" 
               :disabled="option.disabled"
             />
           </template>
           <div 
-            v-if="keyword && !setOptions.find((i: any) => i.value === keyword)"
+            v-if="keyword && !optionsList.find((i: any) => i.label?.toString().toLowerCase().includes(keyword.toLowerCase()))"
             class="zc-select__empty"
           >
             无匹配数据
