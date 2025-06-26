@@ -22,7 +22,6 @@ const props = withDefaults(defineProps<zcUIProps.Select>(), {
   multiple: false,
   collapseTags: false,
   maxCollapseTags: 1,
-  height: '40px'
 })
 
 const emit = defineEmits<{
@@ -40,6 +39,26 @@ const inputRef = ref<HTMLElement | null>(null)
 const id = inject('id', undefined)
 const errorMsg = inject('errorMsg', '')
 const change = inject<(() => void) | undefined>('change', undefined)
+
+// 全局select事件管理
+const SELECT_CLOSE_EVENT = 'zc-select-close-all'
+const SELECT_OPEN_EVENT = 'zc-select-open'
+
+// 生成唯一ID
+const selectId = ref(Math.random().toString(36).substr(2, 9))
+
+// 关闭下拉框
+const closeDropdown = () => {
+  keyword.value = ''
+  visible.value = false
+}
+
+// 监听其他select打开事件
+const handleOtherSelectOpen = (event: CustomEvent) => {
+  if (event.detail.selectId !== selectId.value) {
+    closeDropdown()
+  }
+}
 
 // 统一处理 options 来源
 const optionsList = computed(() => {
@@ -138,23 +157,35 @@ const handleClickOutside = (event: MouseEvent) => {
 // 切换下拉
 const toggleDropdown = () => {
   if (props.disabled) return
+  
+  // 如果当前是关闭状态，要打开时先通知其他select关闭
+  if (!visible.value) {
+    // 触发全局事件，通知其他select关闭
+    window.dispatchEvent(new CustomEvent(SELECT_CLOSE_EVENT, {
+      detail: { selectId: selectId.value }
+    }))
+  }
+  
   visible.value = !visible.value
+  
   if (visible.value && props.filterable) nextTick(() => {
     keyword.value = ''
     inputRef.value?.focus()
   })
 }
 
-const closeDropdown = () => {
-  keyword.value = ''
-  visible.value = false
-}
-
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  // 监听其他select打开事件
+  window.addEventListener(SELECT_OPEN_EVENT, handleOtherSelectOpen as EventListener)
+  // 监听关闭所有select事件
+  window.addEventListener(SELECT_CLOSE_EVENT, handleOtherSelectOpen as EventListener)
 })
+
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  window.removeEventListener(SELECT_OPEN_EVENT, handleOtherSelectOpen as EventListener)
+  window.removeEventListener(SELECT_CLOSE_EVENT, handleOtherSelectOpen as EventListener)
 })
 </script>
 
@@ -232,20 +263,23 @@ onUnmounted(() => {
     <transition name="zc-select-dropdown">
       <div class="zc-select__dropdown" v-show="visible">
         <zc-scroll max-height="240px">
-          <template v-for="option in optionsList" :key="option.value">
-            <zc-option
-              v-if="option.label?.toString().toLowerCase().includes(keyword.toLowerCase())"
-              :value="option.value" 
-              :label="option.label" 
-              :disabled="option.disabled"
-            />
+          <slot name="tree" :keyword="keyword" :visible="visible" :clear="handleClear" :close="closeDropdown" :open="toggleDropdown" :filter="handleInput" />
+          <template v-if="!slots.tree">
+            <template v-for="option in optionsList" :key="option.value">
+              <zc-option
+                v-if="option.label?.toString().toLowerCase().includes(keyword.toLowerCase())"
+                :value="option.value" 
+                :label="option.label" 
+                :disabled="option.disabled"
+              />
+            </template>
+            <div 
+              v-if="keyword && !optionsList.find((i: any) => i.label?.toString().toLowerCase().includes(keyword.toLowerCase()))"
+              class="zc-select__empty"
+            >
+              无匹配数据
+            </div>
           </template>
-          <div 
-            v-if="keyword && !optionsList.find((i: any) => i.label?.toString().toLowerCase().includes(keyword.toLowerCase()))"
-            class="zc-select__empty"
-          >
-            无匹配数据
-          </div>
         </zc-scroll>
       </div>
     </transition>
