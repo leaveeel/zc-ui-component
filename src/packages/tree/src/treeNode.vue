@@ -14,6 +14,9 @@ const getChildren = (node: zcUI.TreeNode) => node[treeContext.props.children] ??
 
 function handleNodeClick(node: zcUI.TreeNode) {
   if (treeContext.selectable && !node.disabled) {
+    if (!treeContext.multiple) {
+      treeContext.clearOtherSelectedNodes(node)
+    }
     node.selected = !node.selected
     treeContext.emit('node-click', node)
   }

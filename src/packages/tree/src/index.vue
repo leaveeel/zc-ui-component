@@ -7,10 +7,10 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, provide, reactive } from 'vue'
+import { defineProps, inject, provide, reactive } from 'vue'
 import TreeNodeComponent from './treeNode.vue'
 
-const props = withDefaults(defineProps<zcUIProps.Tree>(), {
+const props = withDefaults(defineProps<zcUIProps.Tree & {defaultSelectKeys?: (string | number)[]}>(), {
   defaultExpandAll: false,
   checkable: false,
   selectable: false,
@@ -35,16 +35,19 @@ const nodeUtil = {
   key: (node: zcUI.TreeNode) => node[props.nodeKey]
 }
 
+const multiple = inject('multiple', false)
+
 // 初始化树数据
 function initTreeData(data: zcUI.TreeNode[]): zcUI.TreeNode[] {
   return data.map(node => {
     const children = nodeUtil.children(node)
     const nodeKey = nodeUtil.key(node)
     const isChecked = props.defaultCheckedKeys?.includes(nodeKey) || false
+    const isSelect = multiple ? props.defaultSelectKeys?.includes(nodeKey) || false : false
     const processedNode: any = {
       ...node,
       expanded: props.defaultExpandAll,
-      selected: false,
+      selected: isSelect,
       checked: isChecked,
       indeterminate: false,
     }
@@ -189,6 +192,15 @@ function getHalfCheckedNodes() {
 function getCheckedKeys() { return getCheckedNodes().map(node => nodeUtil.key(node)) }
 function getHalfCheckedKeys() { return getHalfCheckedNodes().map(node => nodeUtil.key(node)) }
 
+// 清除其他节点的选中状态
+function clearOtherSelectedNodes(currentNode: zcUI.TreeNode) {
+  traverse(treeData, node => {
+    if (node !== currentNode) {
+      node.selected = false
+    }
+  })
+}
+
 // 提供树组件上下文给子组件
 provide('treeContext', {
   props: { ...props.props, nodeKey: props.nodeKey },
@@ -197,6 +209,8 @@ provide('treeContext', {
   selectable: props.selectable,
   expandOnClickNode: props.expandOnClickNode,
   accordion: props.accordion,
+  multiple,
+  clearOtherSelectedNodes,
   handleNodeCheck,
   emit
 })
@@ -208,7 +222,8 @@ defineExpose({
   getCheckedNodes,
   getHalfCheckedNodes,
   getCheckedKeys,
-  getHalfCheckedKeys
+  getHalfCheckedKeys,
+  clearOtherSelectedNodes
 })
 </script>
 
