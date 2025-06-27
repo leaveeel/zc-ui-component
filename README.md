@@ -24,6 +24,7 @@
 - [Switch 复选框](src/packages/switch)
 - [DatePicker 复选框](src/packages/datePicker)
 - [Select 选择器](src/packages/select)
+- [TreeSelect 树选择器](src/packages/treeSelect)
 
 ### 数据展示
 
@@ -31,7 +32,7 @@
 - [Pagination 分页](src/packages/pagination)
 - [Scroll 滚动容器](src/packages/scroll)
 - [Skeleton 骨架屏](src/packages/skeleton)
-- [Tree 骨架屏](src/packages/tree)
+- [Tree 树](src/packages/tree)
 
 ### 反馈组件
 
@@ -131,7 +132,7 @@ app.mount('#app')
 
 - 1.6.4
   - 整合组组件
-  - 添加radio、switch、datepicker、tree、select组件
+  - 添加radio、switch、datepicker、tree、select、treeSelect组件
   - 重构scroll、tooltip组件
   - checkbox添加半选状态，兼容tree组件
 

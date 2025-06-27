@@ -482,7 +482,7 @@ export namespace zcUIProps {
    * @property {boolean} selectable - 节点是否可点击选中
    * @property {boolean} accordion - 是否每次只打开一个同级树节点
    * @property {boolean} checkStrictly - 是否严格的遵循父子不互相关联
-   * @property {string[]} defaultCheckedKeys - 默认勾选的节点
+   * @property {(string | number)[]} defaultCheckedKeys - 默认勾选的节点
    * @property { label: string, children: string } props - 配置选项，如 { label: 'name', children: 'child' }
    * @property {(value: string, data: zcUI.TreeNode) => boolean} filterNodeMethod - 对树节点进行筛选时执行的方法
    * @property {string} nodeKey - 每个树节点用来作为唯一标识的属性
@@ -631,7 +631,6 @@ export namespace zcUI {
     handle: (index: number, row: Record<string, any>) => void
   }
 
-  
   /**
    * TreeNode
    * @property {[property: string]: any} [property: string]: any - 允许使用字符串索引

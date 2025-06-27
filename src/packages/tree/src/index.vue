@@ -7,7 +7,7 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, inject, provide, reactive } from 'vue'
+import { defineProps, inject, provide, reactive, ref } from 'vue'
 import TreeNodeComponent from './treeNode.vue'
 
 const props = withDefaults(defineProps<zcUIProps.Tree & {defaultSelectKeys?: (string | number)[]}>(), {
@@ -38,12 +38,12 @@ const nodeUtil = {
 const multiple = inject('multiple', false)
 
 // 初始化树数据
-function initTreeData(data: zcUI.TreeNode[]): zcUI.TreeNode[] {
+function initTreeData(data: zcUI.TreeNode[], parent: zcUI.TreeNode[] = []): zcUI.TreeNode[] {
   return data.map(node => {
     const children = nodeUtil.children(node)
     const nodeKey = nodeUtil.key(node)
     const isChecked = props.defaultCheckedKeys?.includes(nodeKey) || false
-    const isSelect = multiple ? props.defaultSelectKeys?.includes(nodeKey) || false : false
+    const isSelect = props.defaultSelectKeys?.includes(nodeKey) || false
     const processedNode: any = {
       ...node,
       expanded: props.defaultExpandAll,
@@ -51,8 +51,13 @@ function initTreeData(data: zcUI.TreeNode[]): zcUI.TreeNode[] {
       checked: isChecked,
       indeterminate: false,
     }
+    if (isSelect && parent.length) {
+      parent.forEach(p => {
+        p.expanded = true
+      })
+    }
     if (children) {
-      processedNode[props.props.children] = initTreeData(children)
+      processedNode[props.props.children] = initTreeData(children, [...parent, processedNode])
       if (!props.checkStrictly) {
         const allChecked = processedNode[props.props.children].every((c: any) => c.checked)
         const someChecked = processedNode[props.props.children].some((c: any) => c.checked)
@@ -158,8 +163,10 @@ function setChecked(key: string | number, checked: boolean) {
   }
 }
 
+const allNodeHide = ref(false)
 // 过滤节点
 function filterNode(value: string) {
+  allNodeHide.value = true
   function filter(nodes: zcUI.TreeNode[]) {
     nodes.forEach(node => {
       const children = nodeUtil.children(node)
@@ -173,6 +180,7 @@ function filterNode(value: string) {
       const childrenVisible = children ? children.some((c: any) => c.visible) : false
       node.visible = !value || currentVisible || childrenVisible
       if (node.visible && value) node.expanded = true
+      if (node.visible) allNodeHide.value = false
     })
   }
   filter(treeData)
@@ -229,6 +237,11 @@ defineExpose({
 
 <template>
   <div class="zc-tree">
+    <template v-if="allNodeHide">
+      <div class="zc-tree__empty">
+        无匹配节点
+      </div>
+    </template>
     <TreeNodeComponent 
       v-for="node in treeData" 
       :key="nodeUtil.key(node)" 
@@ -241,5 +254,9 @@ defineExpose({
 <style lang="scss" scoped>
 .zc-tree {
   font-size: 14px;
+  &__empty {
+    text-align: center;
+    padding: 10px;
+  }
 }
 </style>

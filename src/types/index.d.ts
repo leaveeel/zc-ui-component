@@ -39,6 +39,7 @@ export const zcSwitch: zcUIProps.Switch
 export const zcDatePicker: zcUIProps.DatePicker
 export const zcTree: zcUIProps.Tree
 export const zcSelect: zcUIProps.Select
+export const zcTreeSelect: zcUIProps.TreeSelect
 
 export const zcToast: {
   (message: string, options?: zcUIProps.Toast): void;

@@ -24,6 +24,7 @@ import zcSwitch from '@/packages/switch/src/index.vue'
 import zcDatePicker from '@/packages/datePicker/src/index.vue'
 import zcTree from '@/packages/tree/src/index.vue'
 import zcSelect from '@/packages/select/src/index.vue'
+import zcTreeSelect from '@/packages/treeSelect/src/index.vue'
 import { zcUI, zcUIProps } from '@/types/zcUI'
 import type { App, Component } from 'vue'
 
@@ -51,7 +52,8 @@ const components: Record<string, Component> = {
   zcSwitch,
   zcDatePicker,
   zcTree,
-  zcSelect
+  zcSelect,
+  zcTreeSelect
 }
 
 // 指令
@@ -109,6 +111,7 @@ export {
   zcSwitch,
   zcDatePicker,
   zcTree,
+  zcTreeSelect,
    // 指令
   loadingDirective,
   // 服务

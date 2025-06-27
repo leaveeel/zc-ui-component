@@ -47,7 +47,7 @@ const treeData = [
 | checkStrictly | boolean | false | 是否严格的遵循父子不互相关联 |
 | defaultCheckedKeys | (string \| number)[] | [] | 默认勾选的节点的 nodeKey 数组 |
 | props | object | { label: 'label', children: 'children' } | 配置选项，可配置节点标签和子节点的字段名 |
-| filterNodeMethod | Function | - | 对树节点进行筛选时执行的方法 |
+| filterNodeMethod | (value: string, data: zcUI.TreeNode) => boolean | - | 对树节点进行筛选时执行的方法 |
 | nodeKey | string | 'id' | 每个树节点用来作为唯一标识的属性名 |
 | expandOnClickNode | boolean | true | 是否在点击节点的时候展开或者收缩节点 |
 
@@ -76,9 +76,11 @@ const treeData = [
 | 属性名 | 类型 | 说明 |
 |-------|------|------|
 | children | TreeNode[] | 子节点 |
+| expanded | boolean | 是否展开 |
+| selected | boolean | 是否选中 |
 | disabled | boolean | 是否禁用该节点 |
-| icon | string | 节点图标的自定义类名 |
-| label | string | 节点标签（可通过 props 配置字段名） |
+| checked | boolean | 是否勾选 |
+<!-- | icon | string | 节点图标的自定义类名 | -->
 
 ## 注意事项
 

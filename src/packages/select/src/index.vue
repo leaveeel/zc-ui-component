@@ -84,13 +84,13 @@ const optionsList = computed(() => {
   return props.options
 })
 
-const keyword = ref('')
+const keyword = inject('keyword', ref(''))
 
 // 计算输入框显示内容
 const inputValue = computed(() => {
   if (props.multiple) return keyword.value
-  const option = optionsList.value?.find((i: any) => i.value === props.modelValue)
   if (visible.value && props.filterable) return ''
+  const option = optionsList.value?.find((i: any) => i.value === props.modelValue)
   return option?.label || ''
 })
 
@@ -263,7 +263,7 @@ onUnmounted(() => {
     <transition name="zc-select-dropdown">
       <div class="zc-select__dropdown" v-show="visible">
         <zc-scroll max-height="240px">
-          <slot name="tree" :keyword="keyword" :visible="visible" :clear="handleClear" :close="closeDropdown" :open="toggleDropdown" :filter="handleInput" />
+          <slot name="tree" :close="closeDropdown" />
           <template v-if="!slots.tree">
             <template v-for="option in optionsList" :key="option.value">
               <zc-option

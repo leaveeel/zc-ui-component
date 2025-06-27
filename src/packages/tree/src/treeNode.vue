@@ -16,8 +16,10 @@ function handleNodeClick(node: zcUI.TreeNode) {
   if (treeContext.selectable && !node.disabled) {
     if (!treeContext.multiple) {
       treeContext.clearOtherSelectedNodes(node)
+      node.selected = true
+    }else {
+      node.selected = !node.selected
     }
-    node.selected = !node.selected
     treeContext.emit('node-click', node)
   }
   if (treeContext.expandOnClickNode) toggleExpand(node)
@@ -71,9 +73,9 @@ function toggleExpand(node: zcUI.TreeNode) {
         label=""
       />
 
-      <span v-if="treeNode.icon" class="zc-tree-node__icon">
+      <!-- <span v-if="treeNode.icon" class="zc-tree-node__icon">
         <i :class="treeNode.icon"></i>
-      </span>
+      </span> -->
 
       <span class="zc-tree-node__label">{{ getLabel(treeNode) }}</span>
     </div>
