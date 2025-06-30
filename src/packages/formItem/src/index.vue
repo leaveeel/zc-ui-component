@@ -206,9 +206,6 @@ defineExpose({
   display: flex;
   margin-bottom: 20px;
   transition: all 0.3s;
-  &:last-child {
-    margin-bottom: 0;
-  }
   
   &.column {
     flex-direction: column;
@@ -220,7 +217,7 @@ defineExpose({
     flex-direction: row;
     line-height: 40px;
     .formItemLabel {
-      margin-right: 6px;
+      padding-right: 6px;
     }
   }
   &.is-error {

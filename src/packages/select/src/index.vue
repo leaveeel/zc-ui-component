@@ -7,12 +7,13 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { zcUIProps } from '@/types/zcUI'
-import { defineProps, defineEmits, ref, computed, nextTick, onMounted, onUnmounted, provide, inject } from 'vue'
+import { defineProps, defineEmits, ref, computed, nextTick, onMounted, onUnmounted, provide, inject, Teleport, watch, onBeforeUnmount } from 'vue'
 import zcIcon from '@/packages/icon/index.vue'
 import IconRightArrow from '@/packages/icon/src/IconRightArrow.vue'
 import IconClose from '@/packages/icon/src/IconClose.vue'
 import zcScroll from '@/packages/scroll/src/index.vue'
 import zcOption from '@/packages/select/src/option.vue'
+import Popup from '@/packages/component/Popup.vue'
 
 const props = withDefaults(defineProps<zcUIProps.Select>(), {
   placeholder: '请选择',
@@ -33,8 +34,8 @@ const emit = defineEmits<{
 const slots = defineSlots()
 
 const visible = ref(false)
-const selectRef = ref<HTMLElement | null>(null)
-const inputRef = ref<HTMLElement | null>(null)
+const selectRef = ref<HTMLElement>()
+const inputRef = ref<HTMLElement>()
 
 const id = inject('id', undefined)
 const errorMsg = inject('errorMsg', '')
@@ -174,6 +175,32 @@ const toggleDropdown = () => {
   })
 }
 
+const dropdownRef = ref<HTMLElement | null>(null)
+const dropdownStyles = ref<Record<string, string>>({ left: '0px', top: '0px', width: '100px' })
+
+const updateDropdownPosition = () => {
+  if (!selectRef.value || !dropdownRef.value) return
+  const rect = selectRef.value.getBoundingClientRect()
+  dropdownStyles.value = {
+    left: rect.left + window.scrollX + 'px',
+    top: rect.bottom + window.scrollY + 8 + 'px', // 8px 间距
+    width: rect.width + 'px',
+    position: 'absolute',
+    zIndex: '1000',
+  }
+}
+
+watch(visible, (val) => {
+  if (val) {
+    nextTick(updateDropdownPosition)
+    window.addEventListener('scroll', updateDropdownPosition, true)
+    window.addEventListener('resize', updateDropdownPosition)
+  } else {
+    window.removeEventListener('scroll', updateDropdownPosition, true)
+    window.removeEventListener('resize', updateDropdownPosition)
+  }
+})
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   // 监听其他select打开事件
@@ -187,6 +214,13 @@ onUnmounted(() => {
   window.removeEventListener(SELECT_OPEN_EVENT, handleOtherSelectOpen as EventListener)
   window.removeEventListener(SELECT_CLOSE_EVENT, handleOtherSelectOpen as EventListener)
 })
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', updateDropdownPosition, true)
+  window.removeEventListener('resize', updateDropdownPosition)
+})
+
+const selectWidth = computed(() => selectRef.value ? selectRef.value.offsetWidth : undefined)
 </script>
 
 <template>
@@ -229,19 +263,22 @@ onUnmounted(() => {
           </span>
         </template>
       </template>
-      <input
-        ref="inputRef"
-        :class="{
-          'is-filterable': filterable,
-          'has-tags': multiple && Array.isArray(modelValue) && modelValue.length
-        }"
-        :id="id"
-        :placeholder="multiple && Array.isArray(modelValue) && modelValue.length ? '' : placeholder"
-        :disabled="disabled"
-        :readonly="!filterable"
-        :value="inputValue"
-        @input="handleInput"
-      />
+      <div class="zc-select__input-container">
+        <input
+          ref="inputRef"
+          v-if="!(multiple && Array.isArray(modelValue) && modelValue.length) ||filterable"
+          :class="{
+            'is-filterable': filterable,
+            'has-tags': multiple && Array.isArray(modelValue) && modelValue.length
+          }"
+          :id="id"
+          :placeholder="multiple && Array.isArray(modelValue) && modelValue.length ? '' : placeholder"
+          :disabled="disabled"
+          :readonly="!filterable"
+          :value="inputValue"
+          @input="handleInput"
+        />
+      </div>
       <div class="zc-select__suffix">
         <zcIcon 
           v-if="clearable && ((multiple && Array.isArray(modelValue)) ? modelValue.length : modelValue) && !disabled"
@@ -260,29 +297,27 @@ onUnmounted(() => {
         </zcIcon>
       </div>
     </div>
-    <transition name="zc-select-dropdown">
-      <div class="zc-select__dropdown" v-show="visible">
-        <zc-scroll max-height="240px">
-          <slot name="tree" :close="closeDropdown" />
-          <template v-if="!slots.tree">
-            <template v-for="option in optionsList" :key="option.value">
-              <zc-option
-                v-if="option.label?.toString().toLowerCase().includes(keyword.toLowerCase())"
-                :value="option.value" 
-                :label="option.label" 
-                :disabled="option.disabled"
-              />
-            </template>
-            <div 
-              v-if="keyword && !optionsList.find((i: any) => i.label?.toString().toLowerCase().includes(keyword.toLowerCase()))"
-              class="zc-select__empty"
-            >
-              无匹配数据
-            </div>
+    <Popup :show="visible" :targetRef="selectRef" :width="selectWidth" >
+      <zc-scroll max-height="240px">
+        <slot name="tree" :close="closeDropdown" />
+        <template v-if="!slots.tree">
+          <template v-for="option in optionsList" :key="option.value">
+            <zc-option
+              v-if="option.label?.toString().toLowerCase().includes(keyword.toLowerCase())"
+              :value="option.value" 
+              :label="option.label" 
+              :disabled="option.disabled"
+            />
           </template>
-        </zc-scroll>
-      </div>
-    </transition>
+          <div 
+            v-if="keyword && !optionsList.find((i: any) => i.label?.toString().toLowerCase().includes(keyword.toLowerCase()))"
+            class="zc-select__empty"
+          >
+            无匹配数据
+          </div>
+        </template>
+      </zc-scroll>
+    </Popup>
   </div>
 </template>
 
@@ -290,6 +325,7 @@ onUnmounted(() => {
 .zc-select {
   width: 100%;
   min-height: 40px;
+  height: min-content;
   position: relative;
   
   .zc-select__tag {
@@ -300,7 +336,6 @@ onUnmounted(() => {
   
   &__input {
     width: 100%;
-    height: 100%;
     position: relative;
     display: flex;
     gap: 4px;
@@ -326,35 +361,36 @@ onUnmounted(() => {
       border-color: var(--main-danger-color);
     }
 
-    input {
+    .zc-select__input-container {
+      height: 30px;
       flex: 1;
-      padding: 0;
-      font-size: inherit;
-      color: var(--main-font-color);
-      cursor: inherit;
-      outline: none;
-      border: none;
-      background: none;
-      font-family: inherit;
-      
-      &:disabled {
-        background-color: #f5f7fa;
-        cursor: not-allowed;
-        color: #c0c4cc;
-      }
-
-      
-      &::placeholder {
-        color: #999999;
-      }
-      
-      &.is-filterable {
-        cursor: text;
-      }
-
-      &.has-tags {
-        flex: 0;
-        width: 80px;
+      display: flex;
+      input {
+        height: 100%;
+        padding: 0;
+        color: var(--main-font-color);
+        cursor: inherit;
+        outline: none;
+        border: none;
+        background: none;
+        font-family: inherit;
+        
+        &:disabled {
+          background-color: #f5f7fa;
+          cursor: not-allowed;
+          color: #c0c4cc;
+        }
+        &::placeholder {
+          color: #999999;
+        }
+        
+        &.is-filterable {
+          cursor: text;
+        }
+        &.has-tags {
+          flex: 0;
+          width: 80px;
+        }
       }
     }
   }
@@ -397,19 +433,6 @@ onUnmounted(() => {
     color: #c0c4cc;
   }
   
-  &__dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    padding: 4px 0;
-    border: 1px solid #e4e7ed;
-    border-radius: 4px;
-    background-color: #fff;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
   
   &__empty {
     padding: 8px 12px;
@@ -441,18 +464,5 @@ onUnmounted(() => {
       }
     }
   }
-}
-
-// 下拉框动画
-.zc-select-dropdown-enter-active,
-.zc-select-dropdown-leave-active {
-  transition: all 0.2s;
-}
-
-.zc-select-dropdown-enter-from,
-.zc-select-dropdown-leave-to {
-  opacity: 0;
-  transform: scaleY(0);
-  transform-origin: center top;
 }
 </style>

@@ -80,6 +80,13 @@ const innerValue = computed({
   }
 })
 
+const handleChange = (newValue: any) => {
+  emit('update:modelValue', newValue)
+  emit('change', newValue)
+  treeRef.value?.updateSelectedNodes(newValue)
+  change?.()
+}
+
 const treeRef = ref()
 const keyword = ref('')
 provide('keyword', keyword)
@@ -110,6 +117,7 @@ function handleClear() {
     :filterable="filterable"
     :options="options"
     @clear="handleClear"
+    @change="handleChange"
   >
     <template #tree="{ close }">
       <zc-tree

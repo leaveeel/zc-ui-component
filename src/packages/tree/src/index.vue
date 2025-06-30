@@ -209,6 +209,13 @@ function clearOtherSelectedNodes(currentNode: zcUI.TreeNode) {
   })
 }
 
+// 更新节点的选中状态
+function updateSelectedNodes(selectedKeys: (string | number)[]) {
+  traverse(treeData, node => {
+    node.selected = selectedKeys.includes(nodeUtil.key(node))
+  })
+}
+
 // 提供树组件上下文给子组件
 provide('treeContext', {
   props: { ...props.props, nodeKey: props.nodeKey },
@@ -231,7 +238,8 @@ defineExpose({
   getHalfCheckedNodes,
   getCheckedKeys,
   getHalfCheckedKeys,
-  clearOtherSelectedNodes
+  clearOtherSelectedNodes,
+  updateSelectedNodes
 })
 </script>
 
