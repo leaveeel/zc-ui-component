@@ -26,7 +26,15 @@ import IconClose from '@/packages/icon/src/IconClose.vue'
 import IconLoading from '@/packages/icon/src/IconLoading.vue'
 import zcSkeleton from '@/packages/skeleton/src/index.vue'
 import zcSkeletonItem from '@/packages/skeleton/src/skeletonItem.vue'
+import zcRadio from '@/packages/radio/src/index.vue'
+import zcRadioGroup from '@/packages/radioGroup/src/index.vue'
+import zcSwitch from '@/packages/switch/src/index.vue'
 import { zcUI } from '@/types/zcUI'
+import zcDatePicker from '@/packages/datePicker/src/index.vue'
+import zcTree from '@/packages/tree/src/index.vue'
+import zcSelect from '@/packages/select/src/index.vue'
+import zcOption from '@/packages/select/src/option.vue'
+import zcTreeSelect from '@/packages/treeSelect/src/index.vue'
 
 </script>
 

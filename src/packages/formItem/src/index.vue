@@ -10,9 +10,10 @@ import { setUnit } from '@/utils/common'
 import AsyncValidator, { RuleItem, Rules } from 'async-validator'
 import { debounce } from 'lodash-es'
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, ref, provide, reactive, toRefs, inject, computed, onMounted, onBeforeUnmount, StyleValue, nextTick, watch,watchEffect } from 'vue'
+import { defineProps, ref, provide, reactive, toRefs, inject, computed, onMounted, onBeforeUnmount, StyleValue, nextTick, watch } from 'vue'
 
 const props = withDefaults(defineProps<zcUIProps.FormItem>(), {
+  prop: '',
   showMessage: true,
   disabled: undefined
 })
@@ -30,7 +31,7 @@ const isFieldDisabled = props.disabled === undefined ? ref(formContext.disabled)
 })
 
 
-const propRule = props.rules || (formContext.rules && formContext.rules[props.prop])
+const propRule = props.rules || (formContext.rules && props.prop && formContext.rules[props.prop])
 
 const rules: (RuleItem & { trigger: 'change' | 'blur' }) | (RuleItem & { trigger: 'change' | 'blur' })[] | undefined = propRule instanceof Array ? propRule : propRule instanceof Object ? [propRule] : undefined
 
@@ -60,6 +61,10 @@ const itemTrigger = computed(() => {
 const validate = async (t = 'change', v = formContext.model[props.prop]) => {
   if (!rules) {
     return { status: 'fulfilled' as const }
+  }
+
+  if(itemRequired.value) {
+    rules[0].required = true
   }
 
   const validator = new AsyncValidator({ [props.prop]: rules } as Rules)

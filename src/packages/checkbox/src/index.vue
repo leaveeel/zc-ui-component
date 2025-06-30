@@ -13,6 +13,7 @@ import zcIcon from '@/packages/icon/index.vue'
 
 const props = withDefaults(defineProps<zcUIProps.Checkbox>(), {
   modelValue: false,
+  label: '',
   value: undefined,
   disabled: undefined
 })
@@ -55,7 +56,7 @@ const model = computed({
 const isChecked = computed(() => {
   if (isGroup.value) {
     const v = model.value as (string | number)[] || []
-    return v.includes((props.value || props.value === 0) ? props.value : props.label as string | number)
+    return v.includes((props.value || props.value === 0) ? props.value : props.label)
   } else {
     return model.value as boolean
   }
