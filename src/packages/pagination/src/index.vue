@@ -262,7 +262,7 @@ const showJumper = () => {
       border: 1px solid #dcdfe6;
       border-radius: 4px;
       padding: 0 8px;
-      color: #606266;
+      color: var(--main-font-color);
       outline: none;
       
       &:focus {
@@ -294,7 +294,7 @@ const showJumper = () => {
     order: var(--order);
     display: flex;
     align-items: center;
-    color: #606266;
+    color: var(--main-font-color);
     
     span {
       cursor: pointer;

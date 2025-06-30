@@ -67,8 +67,9 @@ const handleClick = () => {
 .zc-select-option {
   position: relative;
   padding: 4px 12px;
+  height: 36px;
   font-size: 14px;
-  color: #606266;
+  color: var(--main-font-color);
   cursor: pointer;
   display: flex;
   align-items: center;

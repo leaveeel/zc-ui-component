@@ -404,7 +404,7 @@ const selectWidth = computed(() => selectRef.value ? selectRef.value.offsetWidth
     align-items: center;
     border-radius: 2px;
     background-color: #f0f2f5;
-    color: #606266;
+    color: var(--main-font-color);
     white-space: nowrap;
     
     &.is-more {

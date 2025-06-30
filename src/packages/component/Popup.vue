@@ -74,6 +74,7 @@ onBeforeUnmount(() => {
 .zc-popup {
   background: #fff;
   border-radius: 4px;
+  padding: 4px 0;
   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
   overflow: hidden;
 }

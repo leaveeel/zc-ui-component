@@ -117,7 +117,7 @@ function toggleExpand(node: zcUI.TreeNode) {
       transition: transform 0.3s ease;
       
       &:hover {
-        color: #409eff;
+        color: var(--main-color);
       }
     }
     
@@ -135,12 +135,12 @@ function toggleExpand(node: zcUI.TreeNode) {
       cursor: pointer;
       
       &:hover {
-        border-color: #409eff;
+        border-color: var(--main-color);
       }
       
       &.is-checked {
-        background-color: #409eff;
-        border-color: #409eff;
+        background-color: var(--main-color);
+        border-color: var(--main-color);
         
         &::after {
           content: '';
@@ -156,8 +156,8 @@ function toggleExpand(node: zcUI.TreeNode) {
       }
       
       &.is-indeterminate {
-        background-color: #409eff;
-        border-color: #409eff;
+        background-color: var(--main-color);
+        border-color: var(--main-color);
         
         &::after {
           content: '';
@@ -186,8 +186,8 @@ function toggleExpand(node: zcUI.TreeNode) {
     
     &.is-selected {
       > .zc-tree-node__content {
-        background-color: #ecf5ff;
-        color: #409eff;
+        background-color: #f5f7fa;
+        color: var(--main-color);
       }
     }
     

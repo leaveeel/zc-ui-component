@@ -7,7 +7,7 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, inject, provide, reactive, ref } from 'vue'
+import { defineProps, inject, provide, reactive, ref, watch } from 'vue'
 import TreeNodeComponent from './treeNode.vue'
 
 const props = withDefaults(defineProps<zcUIProps.Tree & {defaultSelectKeys?: (string | number)[]}>(), {
@@ -36,6 +36,10 @@ const nodeUtil = {
 }
 
 const multiple = inject('multiple', false)
+
+watch(() => props.defaultSelectKeys, (newVal: (string | number)[] | undefined) => {
+  if (newVal) updateSelectedNodes(newVal)
+})
 
 // 初始化树数据
 function initTreeData(data: zcUI.TreeNode[], parent: zcUI.TreeNode[] = []): zcUI.TreeNode[] {

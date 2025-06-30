@@ -232,7 +232,7 @@ onUnmounted(() => {
   }
 
   .dialog-body {
-    color: #606266;
+    color: var(--main-font-color);
     font-size: 16px;
     line-height: 1.5;
     overflow: hidden;
