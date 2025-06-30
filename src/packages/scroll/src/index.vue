@@ -347,6 +347,7 @@ defineExpose({
   opacity: 0;
   transition: opacity 0.2s ease;
   overflow: hidden;
+  z-index: 10;
   &.custom-scrollbar-active {
     opacity: 1;
   }
