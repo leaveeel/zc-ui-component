@@ -324,8 +324,7 @@ const selectWidth = computed(() => selectRef.value ? selectRef.value.offsetWidth
 <style lang="scss" scoped>
 .zc-select {
   width: 100%;
-  min-height: 40px;
-  height: min-content;
+  height: 40px;
   position: relative;
   
   .zc-select__tag {
@@ -336,6 +335,7 @@ const selectWidth = computed(() => selectRef.value ? selectRef.value.offsetWidth
   
   &__input {
     width: 100%;
+    height: 100%;
     position: relative;
     display: flex;
     gap: 4px;
@@ -362,7 +362,7 @@ const selectWidth = computed(() => selectRef.value ? selectRef.value.offsetWidth
     }
 
     .zc-select__input-container {
-      height: 30px;
+      height: 100%;
       flex: 1;
       display: flex;
       input {

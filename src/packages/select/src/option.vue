@@ -49,7 +49,7 @@ const handleClick = () => {
     }"
     @click="handleClick"
   >
-    <slot>{{ label }}</slot>
+    {{ label }}
     <template v-if="select?.multiple">
       <zcIcon 
         class="zc-select-option__check"

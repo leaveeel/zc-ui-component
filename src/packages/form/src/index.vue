@@ -152,14 +152,24 @@ defineExpose({
 
 <style lang="scss" scoped>
 .zc-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  :deep() {
+    .zc-formItem {
+      width: 100%;
+    }
+  }
   &.zc-form-disabled {
     opacity: 0.7;
     cursor: not-allowed;
   }
   &.zc-form-inline {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+    :deep() {
+      .zc-formItem {
+        width: auto;
+      }
+    }
   }
 }
 </style>

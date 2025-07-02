@@ -14,6 +14,8 @@ import IconRightArrow from '@/packages/icon/src/IconRightArrow.vue'
 import zcIcon from '@/packages/icon/index.vue'
 import zcInput from '@/packages/input/src/index.vue'
 import { useDocument } from '@/utils/common'
+import zcSelect from '@/packages/select/src/index.vue'
+import zcOption from '@/packages/select/src/option.vue'
 
 const props = withDefaults(defineProps<zcUIProps.Pagination>(), {
   pageSize: 10,
@@ -143,18 +145,16 @@ const showJumper = () => {
     class="zc-pagination zc-ui-component"
   >
     <span v-if="layout.indexOf('total')" class="zc-pagination-total" :style="{ '--order': layout.indexOf('total') + 1 }">
-      {{ lang === 'en' ? 'Total' : '共' }} {{ total }}
+      {{ lang === 'en' ? 'Total' : '共' }} {{ total }} {{ lang === 'en' ? '' : '条' }}
     </span>
     
     <div v-if="layout.includes('sizes')" class="zc-pagination-sizes" :style="{ '--order': layout.indexOf('sizes') + 1 }">
-      <select 
+      <zc-select 
         v-model="pageSize"
         @change="handlePageSizeChange(Number(pageSize))"
       >
-        <option v-for="size in pageSizes" :key="size" :value="size">
-          {{ size }} {{ lang === 'en' ? 'Size/Page' : '条/页' }}
-        </option>
-      </select>
+        <zc-option v-for="size in pageSizes" :key="size" :value="size" :label="size + ' ' + (lang === 'en' ? 'Size/Page' : '条/页')"></zc-option>
+      </zc-select>
     </div>
 
     <slot v-if="layout.includes('slot')" :style="{ '--order': layout.indexOf('slot') + 1 }"></slot>
@@ -229,7 +229,7 @@ const showJumper = () => {
         <span @click="showJumper">{{ lang === 'en' ? 'Go to' : '跳转' }}</span>
       </template>
       <template v-else>
-        <zcInput 
+        <zcInput
           v-model="inputPage"
           :placeholder="lang === 'en' ? 'No.' : '页'"
           size="small"
@@ -305,18 +305,8 @@ const showJumper = () => {
       }
     }
     
-    input {
+    .zc-input {
       width: 50px;
-      height: 32px;
-      text-align: center;
-      margin: 0 8px;
-      border: 1px solid #dcdfe6;
-      border-radius: 4px;
-      
-      &:focus {
-        border-color: var(--main-color);
-        outline: none;
-      }
     }
   }
 }

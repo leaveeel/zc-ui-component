@@ -204,7 +204,6 @@ defineExpose({
 <style lang="scss" scoped>
 .zc-formItem {
   display: flex;
-  margin-bottom: 20px;
   transition: all 0.3s;
   
   &.column {

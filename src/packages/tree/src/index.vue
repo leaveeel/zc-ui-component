@@ -7,13 +7,13 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, inject, provide, reactive, ref, watch } from 'vue'
+import { defineProps, inject, onBeforeUnmount, provide, reactive, ref, watch } from 'vue'
 import TreeNodeComponent from './treeNode.vue'
 
 const props = withDefaults(defineProps<zcUIProps.Tree & {defaultSelectKeys?: (string | number)[]}>(), {
   defaultExpandAll: false,
   checkable: false,
-  selectable: false,
+  selectable: true,
   accordion: false,
   checkStrictly: false,
   props: () => ({ label: 'label', children: 'children' }),
@@ -73,7 +73,14 @@ function initTreeData(data: zcUI.TreeNode[], parent: zcUI.TreeNode[] = []): zcUI
   })
 }
 
-const treeData = reactive(initTreeData(props.data))
+let treeData = reactive(initTreeData(props.data))
+const treeDataWatch =watch(() => props.data, (newVal) => {
+  treeData = reactive(initTreeData(newVal))
+})
+
+onBeforeUnmount(() => {
+  treeDataWatch()
+})
 
 // 递归工具
 function traverse(nodes: zcUI.TreeNode[], cb: (node: zcUI.TreeNode) => void) {
@@ -214,9 +221,10 @@ function clearOtherSelectedNodes(currentNode: zcUI.TreeNode) {
 }
 
 // 更新节点的选中状态
-function updateSelectedNodes(selectedKeys: (string | number)[]) {
+function updateSelectedNodes(selectedKeys: (string | number)[] | undefined | null | string | number) {
+  let keys = Array.isArray(selectedKeys) ? selectedKeys : typeof selectedKeys === 'string' || typeof selectedKeys === 'number' ? [selectedKeys] : []
   traverse(treeData, node => {
-    node.selected = selectedKeys.includes(nodeUtil.key(node))
+    node.selected = keys.includes(nodeUtil.key(node))
   })
 }
 

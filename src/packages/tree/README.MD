@@ -42,7 +42,7 @@ const treeData = [
 | data | TreeNode[] | [] | 树组件数据 |
 | defaultExpandAll | boolean | false | 是否默认展开所有节点 |
 | checkable | boolean | false | 节点是否可选择 |
-| selectable | boolean | false | 节点是否可点击选中 |
+| selectable | boolean | true | 节点是否可点击选中 |
 | accordion | boolean | false | 是否每次只打开一个同级树节点 |
 | checkStrictly | boolean | false | 是否严格的遵循父子不互相关联 |
 | defaultCheckedKeys | (string \| number)[] | [] | 默认勾选的节点的 nodeKey 数组 |
@@ -70,6 +70,8 @@ const treeData = [
 | getHalfCheckedNodes | 获取当前半选中的节点数组 | - | TreeNode[] |
 | getCheckedKeys | 获取当前选中的节点的 nodeKey 数组 | - | (string \| number)[] |
 | getHalfCheckedKeys | 获取当前半选中的节点的 nodeKey 数组 | - | (string \| number)[] |
+| clearOtherSelectedNodes | 清除其他选择的节点 | - | TreeNode |
+| updateSelectedNodes | 更新选择节点状态 | - | (string \| number)[] \| undefined \| null \| string \| number |
 
 ## TreeNode 属性
 
