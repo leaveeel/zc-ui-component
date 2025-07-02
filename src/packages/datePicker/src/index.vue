@@ -45,7 +45,7 @@ const model = computed({
     if(props.type.includes('range')) {
       return (props.modelValue && Array.isArray(props.modelValue) ? props.modelValue.map(i => new Date(i)) : []) as Date[]
     }else {
-      return props.modelValue ? new Date(props.modelValue as string | Date) : undefined
+      return (props.modelValue && !Array.isArray(props.modelValue)) ? new Date(props.modelValue as string | Date) : undefined
     }
   },
   set: (v) => {

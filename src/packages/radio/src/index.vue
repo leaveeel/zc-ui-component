@@ -150,7 +150,7 @@ const handleBlur = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 12px;
+    margin-right: 6px;
     transition: all 0.2s ease;
     position: relative;
     
