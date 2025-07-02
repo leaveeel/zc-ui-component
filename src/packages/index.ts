@@ -25,6 +25,7 @@ import zcDatePicker from '@/packages/datePicker/src/index.vue'
 import zcTree from '@/packages/tree/src/index.vue'
 import zcSelect from '@/packages/select/src/index.vue'
 import zcTreeSelect from '@/packages/treeSelect/src/index.vue'
+import zcOption from '@/packages/select/src/option.vue'
 import { zcUI, zcUIProps } from '@/types/zcUI'
 import type { App, Component } from 'vue'
 
@@ -53,7 +54,8 @@ const components: Record<string, Component> = {
   zcDatePicker,
   zcTree,
   zcSelect,
-  zcTreeSelect
+  zcTreeSelect,
+  zcOption
 }
 
 // 指令

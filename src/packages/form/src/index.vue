@@ -16,7 +16,8 @@ const props = withDefaults(defineProps<zcUIProps.Form>(), {
   hideRequiredAsterisk: false,
   validateOnRuleChange: true,
   disabled: false,
-  enterSubmit: false
+  enterSubmit: false,
+  inline: false
 })
 
 const emit = defineEmits<{
@@ -143,7 +144,7 @@ defineExpose({
     class="zc-ui-component zc-form" 
     @submit.prevent="submit"
     @keydown="handleEnterSubmit"
-    :class="{ 'zc-form-disabled': disabled }"
+    :class="{ 'zc-form-disabled': disabled, 'zc-form-inline': inline }"
   >
     <slot></slot>
   </form>
@@ -154,6 +155,11 @@ defineExpose({
   &.zc-form-disabled {
     opacity: 0.7;
     cursor: not-allowed;
+  }
+  &.zc-form-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
   }
 }
 </style>

@@ -168,6 +168,7 @@ export namespace zcUIProps {
    * @property {boolean} validateOnRuleChange - 是否在rules属性改变后立即触发一次验证
    * @property {boolean} disabled - 是否禁用该表单内的所有组件
    * @property {boolean} enterSubmit - 是否在按下Enter键时提交表单
+   * @property {boolean} inline - 是否为行内表单
    */
   export interface Form {
     rules?: Record<string, (RuleItem & { trigger: 'change' | 'blur' }) | (RuleItem & { trigger: 'change' | 'blur' })[]>
@@ -180,6 +181,7 @@ export namespace zcUIProps {
     validateOnRuleChange?: boolean
     disabled?: boolean
     enterSubmit?: boolean
+    inline?: boolean
   }
 
   /**
@@ -245,18 +247,18 @@ export namespace zcUIProps {
    * @property {number} pageSize - 每页显示条目个数
    * @property {number} modelValue - 当前页码
    * @property {string} layout - 分页组件布局，可选值: 'sizes', 'prev', 'pager', 'next', 'jumper', 'total'
-   * @property {boolean} showTotal - 是否显示总条目数
    * @property {number[]} pageSizes - 每页显示条目数的选项列表
    * @property {boolean} hideOnSinglePage - 只有一页时是否隐藏分页
+   * @property {string} lang - 语言，可选值: 'en', 'zh'
    */
   export interface Pagination {
     total: number
     pageSize: number
     modelValue: number
     layout?: string
-    showTotal?: boolean
     pageSizes?: number[]
     hideOnSinglePage?: boolean
+    lang?: 'en' | 'zh'
   }
 
   /**

@@ -19,10 +19,10 @@
 | total | number | - | 总条目数 |
 | pageSize | number | 10 | 每页显示条目个数 |
 | modelValue | number | 1 | 当前页码 |
-| layout | string | 'prev, pager, next' | 分页组件布局，可选值: 'sizes', 'prev', 'pager', 'next', 'jumper', 'total' |
-| showTotal | boolean | false | 是否显示总条目数 |
+| layout | string | 'prev, pager, next' | 分页组件布局，可选值: 'sizes', 'prev', 'pager', 'next', 'jumper', 'total', 'slot' |
 | pageSizes | number[] | [10, 20, 30, 50] | 每页显示条目数的选项列表 |
 | hideOnSinglePage | boolean | true | 只有一页时是否隐藏分页 |
+| lang | string | 'en' | 语言，可选值'en'、'zh' |
 
 ## 事件
 

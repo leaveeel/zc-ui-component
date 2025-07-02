@@ -26,6 +26,7 @@
 | validateOnRuleChange | boolean | true | 是否在rules属性改变后立即触发一次验证 |
 | disabled | boolean | false | 是否禁用该表单内的所有组件 |
 | enterSubmit | boolean | false | 是否在按下Enter键时提交表单 |
+| inline | boolean | false | 是否为行内表单 |
 
 ## 事件
 

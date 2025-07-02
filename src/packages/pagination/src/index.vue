@@ -19,9 +19,9 @@ const props = withDefaults(defineProps<zcUIProps.Pagination>(), {
   pageSize: 10,
   modelValue: 1,
   layout: 'prev, pager, next',
-  showTotal: false,
   pageSizes: () => [10, 20, 30, 50],
   hideOnSinglePage: true,
+  lang: 'en'
 })
 
 const emit = defineEmits<{
@@ -142,8 +142,8 @@ const showJumper = () => {
     v-if="showPagination"
     class="zc-pagination zc-ui-component"
   >
-    <span v-if="showTotal" class="zc-pagination-total" :style="{ '--order': layout.indexOf('total') + 1 }">
-      Total {{ total }}
+    <span v-if="layout.indexOf('total')" class="zc-pagination-total" :style="{ '--order': layout.indexOf('total') + 1 }">
+      {{ lang === 'en' ? 'Total' : '共' }} {{ total }}
     </span>
     
     <div v-if="layout.includes('sizes')" class="zc-pagination-sizes" :style="{ '--order': layout.indexOf('sizes') + 1 }">
@@ -152,10 +152,12 @@ const showJumper = () => {
         @change="handlePageSizeChange(Number(pageSize))"
       >
         <option v-for="size in pageSizes" :key="size" :value="size">
-          {{ size }} Size/Page
+          {{ size }} {{ lang === 'en' ? 'Size/Page' : '条/页' }}
         </option>
       </select>
     </div>
+
+    <slot v-if="layout.includes('slot')" :style="{ '--order': layout.indexOf('slot') + 1 }"></slot>
     
     <zc-button
       v-if="layout.includes('prev')"
@@ -224,12 +226,12 @@ const showJumper = () => {
     
     <div v-if="layout.includes('jumper')" class="zc-pagination-jumper" :style="{ '--order': layout.indexOf('jumper') + 1 }">
       <template v-if="!inputVisible">
-        <span @click="showJumper">Go to</span>
+        <span @click="showJumper">{{ lang === 'en' ? 'Go to' : '跳转' }}</span>
       </template>
       <template v-else>
         <zcInput 
           v-model="inputPage"
-          placeholder="No."
+          :placeholder="lang === 'en' ? 'No.' : '页'"
           size="small"
           type="number"
           height="32"
