@@ -37,42 +37,24 @@ const nodeUtil = {
 
 const multiple = inject('multiple', false)
 
-
 // 初始化树数据
 function initTreeData(data: zcUI.TreeNode[], parent: zcUI.TreeNode[] = []): zcUI.TreeNode[] {
   return data.map(node => {
     const children = nodeUtil.children(node)
-    const nodeKey = nodeUtil.key(node)
-    const isChecked = props.defaultCheckedKeys?.includes(nodeKey) || false
-    const isSelect = props.defaultSelectKeys?.includes(nodeKey) || false
     const processedNode: any = {
       ...node,
       expanded: props.defaultExpandAll,
-      selected: isSelect,
-      checked: isChecked,
-      indeterminate: false,
-    }
-    if (isSelect && parent.length) {
-      parent.forEach(p => {
-        p.expanded = true
-      })
     }
     if (children) {
       processedNode[props.props.children] = initTreeData(children, [...parent, processedNode])
-      if (!props.checkStrictly) {
-        const allChecked = processedNode[props.props.children].every((c: any) => c.checked)
-        const someChecked = processedNode[props.props.children].some((c: any) => c.checked)
-        processedNode.checked = allChecked
-        processedNode.indeterminate = !allChecked && someChecked
-      }
     }
     return processedNode
   })
 }
 
-let treeData = reactive(initTreeData(props.data))
+let treeData = reactive(props.data ? initTreeData(props.data) : [])
 const treeDataWatch = watch(() => props.data, (newVal) => {
-  treeData = reactive(initTreeData(newVal))
+  treeData = reactive(newVal ? initTreeData(newVal) : [])
 })
 
 const defaultCheckedKeysWatch = watch(() => props.defaultCheckedKeys, (newVal) => {
@@ -91,6 +73,7 @@ onBeforeUnmount(() => {
 
 // 递归工具
 function traverse(nodes: zcUI.TreeNode[], cb: (node: zcUI.TreeNode) => void) {
+  if(!nodes) return
   nodes.forEach(node => {
     cb(node)
     const children = nodeUtil.children(node)
@@ -253,7 +236,14 @@ function clearOtherSelectedNodes(currentNode: zcUI.TreeNode) {
 function updateSelectedNodes(selectedKeys: (string | number)[] | undefined | null | string | number) {
   let keys = Array.isArray(selectedKeys) ? selectedKeys : typeof selectedKeys === 'string' || typeof selectedKeys === 'number' ? [selectedKeys] : []
   traverse(treeData, node => {
-    node.selected = keys.includes(nodeUtil.key(node))
+    if(keys.includes(nodeUtil.key(node))) {
+      node.selected = true
+      getParentNodes(node).forEach(parent => {
+        parent.expanded = true
+      })
+    }else {
+      node.selected = false
+    }
   })
 }
 
@@ -287,9 +277,9 @@ defineExpose({
 
 <template>
   <div class="zc-tree">
-    <template v-if="allNodeHide">
+    <template v-if="allNodeHide || !treeData || treeData.length === 0">
       <div class="zc-tree__empty">
-        无匹配节点
+        暂无数据
       </div>
     </template>
     <TreeNodeComponent 

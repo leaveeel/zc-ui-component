@@ -7,7 +7,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { zcUIProps,zcUI } from '@/types/zcUI'
-import { ref, inject, provide, computed, onMounted, watch } from 'vue'
+import { ref, inject, provide, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import ZcSelect from '@/packages/select/src/index.vue'
 import ZcTree from '@/packages/tree/src/index.vue'
 
@@ -44,6 +44,13 @@ function setTreeToArray(data?: zcUI.TreeNode[]) {
 
 onMounted(() => {
   setTreeToArray()
+})
+const dataWatch = watch(() => props.data, () => {
+  setTreeToArray()
+})
+
+onBeforeUnmount(() => {
+  dataWatch()
 })
 
 const innerValue = computed({
@@ -110,7 +117,7 @@ function handleClear() {
 <template>
   <zc-select
     :disabled="disabled"
-    :modelValue="innerValue"
+    v-model="innerValue"
     :placeholder="placeholder"
     :multiple="multiple"
     :clearable="clearable"
@@ -127,6 +134,7 @@ function handleClear() {
         selectable
         checkStrictly
         :nodeKey="nodeKey"
+        :props="props.props"
         :expandOnClickNode="false"
         @node-click="(node) => handleNodeClick(node, close)"
       />

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, watch, nextTick, Teleport, onBeforeUnmount, onMounted, type Ref } from 'vue'
+import { ref, watch, nextTick, onBeforeUnmount, onMounted } from 'vue'
 
 const props = defineProps({
   show: Boolean,
@@ -53,10 +53,14 @@ onBeforeUnmount(() => {
   window.removeEventListener('scroll', updatePosition, true)
   window.removeEventListener('resize', updatePosition)
 })
+
+defineExpose({
+  popupRef
+})
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport to="body" ref="popupRef">
     <transition :name="transitionName">
       <div
         v-show="show"

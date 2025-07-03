@@ -152,7 +152,15 @@ const handleInput = (event: Event) => {
 
 // 外部点击
 const handleClickOutside = (event: MouseEvent) => {
-  if (selectRef.value && !selectRef.value.contains(event.target as Node)) closeDropdown()
+  // 断言 dropdownRef.value 为 any 以访问 popupRef
+  const popupDom = (dropdownRef.value as any)?.popupRef
+  if (
+    (selectRef.value && selectRef.value.contains(event.target as Node)) ||
+    (popupDom && popupDom.contains(event.target as Node))
+  ) {
+    return
+  }
+  closeDropdown()
 }
 
 // 切换下拉
@@ -297,7 +305,7 @@ const selectWidth = computed(() => selectRef.value ? selectRef.value.offsetWidth
         </zcIcon>
       </div>
     </div>
-    <Popup :show="visible" :targetRef="selectRef" :width="selectWidth" >
+    <Popup :show="visible" :targetRef="selectRef" :width="selectWidth" ref="dropdownRef">
       <zc-scroll max-height="240px">
         <slot name="tree" :close="closeDropdown" />
         <template v-if="!slots.tree">

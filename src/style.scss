@@ -8,11 +8,6 @@
   --main-success-color: #23c987;
 }
 
-.zc-ui-component,
-.zc-ui-component::before,
-.zc-ui-component::after,
-.zc-ui-component *,
-.zc-ui-component *::before,
-.zc-ui-component *::after {
+* {
   box-sizing: border-box;
 }
