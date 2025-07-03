@@ -64,7 +64,8 @@ const treeData = [
 
 | 方法名 | 说明 | 参数 | 返回值 |
 |-------|------|------|-------|
-| setChecked | 通过 nodeKey 设置节点的选中状态 | (key: string \| number, checked: boolean) | - |
+| setChecked | 通过 nodeKey 设置节点的选中状态 | (key: string \| number \| (string \| number)[], checked: boolean) | - |
+| setCheckedNodes | 通过 node 设置节点的选中状态 | (node: TreeNode \| TreeNode[], checked: boolean) | - |
 | filterNode | 对树节点进行筛选操作 | (value: string) | - |
 | getCheckedNodes | 获取当前选中的节点数组 | - | TreeNode[] |
 | getHalfCheckedNodes | 获取当前半选中的节点数组 | - | TreeNode[] |

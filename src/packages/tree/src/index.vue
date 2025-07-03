@@ -37,9 +37,6 @@ const nodeUtil = {
 
 const multiple = inject('multiple', false)
 
-watch(() => props.defaultSelectKeys, (newVal: (string | number)[] | undefined) => {
-  if (newVal) updateSelectedNodes(newVal)
-})
 
 // 初始化树数据
 function initTreeData(data: zcUI.TreeNode[], parent: zcUI.TreeNode[] = []): zcUI.TreeNode[] {
@@ -74,12 +71,22 @@ function initTreeData(data: zcUI.TreeNode[], parent: zcUI.TreeNode[] = []): zcUI
 }
 
 let treeData = reactive(initTreeData(props.data))
-const treeDataWatch =watch(() => props.data, (newVal) => {
+const treeDataWatch = watch(() => props.data, (newVal) => {
   treeData = reactive(initTreeData(newVal))
+})
+
+const defaultCheckedKeysWatch = watch(() => props.defaultCheckedKeys, (newVal) => {
+  if (newVal) setChecked(newVal, true)
+})
+
+const defaultSelectKeysWatch = watch(() => props.defaultSelectKeys, (newVal: (string | number)[] | undefined) => {
+  if (newVal) updateSelectedNodes(newVal)
 })
 
 onBeforeUnmount(() => {
   treeDataWatch()
+  defaultCheckedKeysWatch()
+  defaultSelectKeysWatch()
 })
 
 // 递归工具
@@ -159,19 +166,41 @@ function handleNodeCheck(node: zcUI.TreeNode) {
 }
 
 // 手动设置节点选中状态
-function setChecked(key: string | number, checked: boolean) {
-  let found: zcUI.TreeNode = {}
-  traverse(treeData, node => {
-    if (nodeUtil.key(node) === key) found = node
-  })
-  if (Object.keys(found).length) {
-    found.checked = checked
-    found.indeterminate = false
-    if (!props.checkStrictly) {
-      updateChildrenState(found, checked)
-      updateParentState(found)
+function setChecked(key: string | number | (string | number)[], checked: boolean) {
+  let keys = Array.isArray(key) ? key : [key]
+  keys.forEach(k => {
+    let found: zcUI.TreeNode = {}
+    traverse(treeData, node => {
+      if (nodeUtil.key(node) === k) found = node
+    })
+    if (Object.keys(found).length) {
+      found.checked = checked
+      if(getChildNodes(found).length && !props.checkStrictly) {
+        found.indeterminate = !getChildNodes(found).every(c => keys.includes(nodeUtil.key(c)))
+      }else {
+        found.indeterminate = false
+      }
     }
-  }
+  })
+}
+
+// 新增：批量设置节点选中状态
+function setCheckedNodes(node: zcUI.TreeNode | zcUI.TreeNode[], checked: boolean) {
+  let nodes = Array.isArray(node) ? node : [node]
+  nodes.forEach(n => {
+    let found: zcUI.TreeNode = {}
+    traverse(treeData, tn => {
+      if (nodeUtil.key(tn) === nodeUtil.key(n)) found = tn
+    })
+    if (Object.keys(found).length) {
+      found.checked = checked
+      found.indeterminate = false
+      if (!props.checkStrictly) {
+        updateChildrenState(found, checked)
+        updateParentState(found)
+      }
+    }
+  })
 }
 
 const allNodeHide = ref(false)
@@ -245,6 +274,7 @@ provide('treeContext', {
 // 对外暴露方法
 defineExpose({
   setChecked,
+  setCheckedNodes,
   filterNode,
   getCheckedNodes,
   getHalfCheckedNodes,
