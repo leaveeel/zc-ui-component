@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<zcUIProps.TreeSelect>(), {
   collapseTags: false,
   maxCollapseTags: 1,
   props: () => ({ label: 'label', children: 'children' }),
-  nodeKey: 'id',
+  nodeKey: 'value',
 })
 
 const change = inject<(() => void) | undefined>('change', undefined)

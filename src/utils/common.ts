@@ -9,7 +9,9 @@ export const setUnit = (n: string | number, unit: string = 'px') => {
 /**
  * 获取数字S
  */
-export const splitString = (n: string) => {
+export const splitString = (n: string | number) => {
+  if (typeof n === 'number') return { num: n, unit: ''}
+
   const num = parseFloat(n)
   const unit = n.replace(num.toString(), '')
   return { num, unit: unit || 'px' }

@@ -394,7 +394,7 @@ export namespace zcUIProps {
   export interface Tooltip {
     maxWidth?: string | number
     maxHeight?: string | number
-    content?: string
+    content: string
     placement?: Placement
     theme?: 'light' | 'dark'
     trigger?: 'hover' | 'click'
@@ -518,7 +518,7 @@ export namespace zcUIProps {
    * @property {number} maxCollapseTags - 折叠标签时最多显示的标签数量
    */
   export interface Select {
-    modelValue: string | number | (string | number)[]
+    modelValue: undefined | string | number | (string | number)[]
     options?: zcUIProps.SelectOption[]
     placeholder?: string
     clearable?: boolean

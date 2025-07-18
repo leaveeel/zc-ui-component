@@ -57,7 +57,8 @@ function toggleExpand(node: zcUI.TreeNode) {
       <zcIcon
         class="zc-tree-node__expand-icon"
         v-if="getChildren(treeNode)?.length"
-        size="24"
+        size="18"
+        color="var(--main-font-color)"
         :rotate="treeNode.expanded ? 90 : 0"
         @click="handleExpandIconClick(treeNode, $event)"
       >

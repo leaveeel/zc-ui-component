@@ -140,7 +140,7 @@ const data = [
 | multiple | 是否多选 | boolean | false |
 | collapseTags | 多选时是否折叠标签 | boolean | false |
 | maxCollapseTags | 折叠标签时最多显示的标签数量 | number | 1 |
-| nodeKey | string | 'id' | 每个树节点用来作为唯一标识的属性名 |
+| nodeKey | string | 'value' | 每个树节点用来作为唯一标识的属性名 |
 | props | object | { label: 'label', children: 'children' } | 配置选项，可配置节点标签和子节点的字段名 |
 
 ## 事件
