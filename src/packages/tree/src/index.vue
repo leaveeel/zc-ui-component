@@ -7,7 +7,7 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, inject, onBeforeUnmount, provide, reactive, ref, watch } from 'vue'
+import { inject, onBeforeUnmount, provide, reactive, ref, watch } from 'vue'
 import TreeNodeComponent from './treeNode.vue'
 
 const props = withDefaults(defineProps<zcUIProps.Tree & {defaultSelectKeys?: (string | number)[]}>(), {

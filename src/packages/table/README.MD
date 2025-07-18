@@ -1,4 +1,3 @@
-
 # ZC Table 表格组件
 
 表格组件用于展示多条结构类似的数据，支持排序、筛选、固定列、自定义样式等功能。
@@ -6,14 +5,15 @@
 ## 基本用法
 
 ```vue
-<zc-table :data="tableData" :option="tableOption">
-</zc-table>
+<zc-table :data="tableData" :option="tableOption" />
 ```
+
+-----
 
 ## 属性
 
 | 属性名 | 类型 | 默认值 | 说明 |
-|-------|------|-------|------|
+|---|---|---|---|
 | data | Array | - | 显示的数据 |
 | option | Array | - | 表格列的配置选项 |
 | height | string/number | 'auto' | 表格高度 |
@@ -25,26 +25,30 @@
 | emptyText | string | 'No Data' | 空数据时显示的文本 |
 | loading | boolean | false | 是否显示加载状态 |
 | defaultSort | { prop: string, order: string } | { prop: '', order: '' } | 默认的排序列和排序方式 |
-| rowClassName | Function | () => '' | 行的 className 的回调方法 |
-| cellClassName | Function | () => '' | 单元格的 className 的回调方法 |
-| headerRowClassName | Function | () => '' | 表头行的 className 的回调方法 |
-| headerCellClassName | Function | () => '' | 表头单元格的 className 的回调方法 |
+| rowClassName | Function | () =\> '' | 行的 className 的回调方法 |
+| cellClassName | Function | () =\> '' | 单元格的 className 的回调方法 |
+| headerRowClassName | Function | () =\> '' | 表头行的 className 的回调方法 |
+| headerCellClassName | Function | () =\> '' | 表头单元格的 className 的回调方法 |
+
+-----
 
 ## 事件
 
 | 事件名 | 说明 | 参数 |
-|-------|------|------|
+|---|---|---|
 | row-click | 当用户点击行时触发 | row, index, event |
 | select | 当用户手动勾选数据行时触发 | selection, row |
 | select-all | 当用户手动勾选全选时触发 | selection |
 | sort-change | 当表格的排序条件发生变化时触发 | { prop, order } |
+
+-----
 
 ## 列配置选项
 
 表格列配置选项是一个对象数组，每个对象表示一列，支持以下属性：
 
 | 属性名 | 类型 | 说明 |
-|-------|------|------|
+|---|---|---|
 | type | 'index'/'selection' | 列类型，index为序号列，selection为选择列 |
 | label | string | 列标题 |
 | prop | string | 对应列内容的字段名 |
@@ -55,6 +59,8 @@
 | formatter | Function | 用来格式化内容的函数 |
 | btns | Array | 操作按钮配置，用于操作列 |
 
+-----
+
 ## 样式定制
 
 表格组件支持多种样式定制，可以通过属性设置表格的外观。
@@ -62,22 +68,19 @@
 ### 带边框表格
 
 ```vue
-<zc-table :data="tableData" :option="tableOption" border>
-</zc-table>
+<zc-table :data="tableData" :option="tableOption" border />
 ```
 
 ### 斑马纹表格
 
 ```vue
-<zc-table :data="tableData" :option="tableOption" stripe>
-</zc-table>
+<zc-table :data="tableData" :option="tableOption" stripe />
 ```
 
 ### 固定列
 
 ```vue
-<zc-table :data="tableData" :option="tableOption">
-</zc-table>
+<zc-table :data="tableData" :option="tableOption" />
 
 <script setup>
 const tableOption = [
@@ -114,6 +117,8 @@ const rowClassName = (row, index) => {
 </script>
 ```
 
+-----
+
 ## 排序
 
 表格支持点击表头进行排序。
@@ -139,6 +144,8 @@ const handleSortChange = ({ prop, order }) => {
 }
 </script>
 ```
+
+-----
 
 ## 选择功能
 
@@ -171,6 +178,8 @@ const handleSelectAll = (selection) => {
 </script>
 ```
 
+-----
+
 ## 操作列
 
 表格支持添加操作按钮列。
@@ -194,6 +203,8 @@ const tableOption = [
 </script>
 ```
 
+-----
+
 ## 空数据提示
 
 当没有数据时，表格会显示空数据提示。
@@ -206,6 +217,8 @@ const tableOption = [
 >
 </zc-table>
 ```
+
+-----
 
 ## 加载状态
 
@@ -220,10 +233,12 @@ const tableOption = [
 </zc-table>
 ```
 
+-----
+
 ## 注意事项
 
-- 表格高度设置为auto时会自适应内容高度
-- 固定列需要设置列宽度才能正常显示
-- 排序功能需要在列配置中设置sortable为true
-- 选择功能需要在列配置中添加type为selection的列
-- 操作列需要在列配置中设置btns数组
+* 表格高度设置为`auto`时会自适应内容高度
+* 固定列需要设置列宽度才能正常显示
+* 排序功能需要在列配置中设置`sortable`为`true`
+* 选择功能需要在列配置中添加`type`为`selection`的列
+* 操作列需要在列配置中设置`btns`数组

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { zcUIProps } from '@/types/zcUI'
-import { defineProps, onMounted, ref, onBeforeUnmount, computed } from 'vue'
+import { onMounted, ref, onBeforeUnmount, computed } from 'vue'
 import zcButton from '@/packages/button/src/index.vue'
 import IconClose from '@/packages/icon/src/IconClose.vue'
 import zcIcon from '@/packages/icon/index.vue'

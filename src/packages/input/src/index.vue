@@ -12,7 +12,7 @@ import IconHide from '@/packages/icon/src/IconHide.vue'
 import IconShow from '@/packages/icon/src/IconShow.vue'
 import { zcUIProps } from '@/types/zcUI'
 import { setUnit } from '@/utils/common'
-import { computed, defineProps, inject, nextTick, ref, useAttrs, watch } from 'vue'
+import { computed, inject, nextTick, ref, useAttrs, watch } from 'vue'
 
 // 定义props
 const props = withDefaults(defineProps<zcUIProps.Input>(), {

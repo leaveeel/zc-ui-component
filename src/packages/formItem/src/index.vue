@@ -10,7 +10,7 @@ import { setUnit } from '@/utils/common'
 import AsyncValidator, { RuleItem, Rules } from 'async-validator'
 import { debounce } from 'lodash-es'
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, ref, provide, reactive, toRefs, inject, computed, onMounted, onBeforeUnmount, StyleValue, nextTick, watch } from 'vue'
+import { ref, provide, reactive, toRefs, inject, computed, onMounted, onBeforeUnmount, StyleValue, nextTick, watch } from 'vue'
 
 const props = withDefaults(defineProps<zcUIProps.FormItem>(), {
   prop: '',

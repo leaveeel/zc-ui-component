@@ -1,20 +1,18 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 export default defineComponent ({
-    name: 'zcScroll'
-  })
+  name: 'zcScroll'
+})
 </script>
 
 <script lang="ts" setup>
 import { setUnit } from '@/utils/common'
 import { zcUIProps } from '@/types/zcUI'
-import { defineProps, ref, nextTick, onMounted, computed } from 'vue'
-import { debounce } from 'lodash-es'
+import { ref, nextTick, onMounted, computed } from 'vue'
 import { useDocument } from '@/utils/common'
-import {    onUnmounted,  StyleValue, watch } from 'vue';
+import { onUnmounted,  StyleValue, watch } from 'vue';
 
-const props = withDefaults(defineProps<zcUIProps.Scroll>(), {
-});
+const props = defineProps<zcUIProps.Scroll>()
 
 const emit = defineEmits(['scroll'])
 

@@ -7,7 +7,7 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { zcUIProps } from '@/types/zcUI'
-import { defineProps, computed, ref } from 'vue'
+import { computed, ref } from 'vue'
 import zcButton from '@/packages/button/src/index.vue'
 import zcButtonGroup from '@/packages/buttonGroup/src/index.vue'
 import IconRightArrow from '@/packages/icon/src/IconRightArrow.vue'

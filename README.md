@@ -133,7 +133,7 @@ app.mount('#app')
 - 1.6.4
   - 整合组组件
   - 添加radio、switch、datepicker、tree、select、treeSelect组件
-  - 重构scroll、tooltip组件
+  - 重构scroll、tooltip、table组件
   - checkbox添加半选状态，兼容tree组件
 
 - 1.6.3

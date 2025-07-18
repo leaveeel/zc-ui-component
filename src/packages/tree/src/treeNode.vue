@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { zcUI } from '@/types/zcUI'
-import { defineProps, inject } from 'vue'
+import { inject } from 'vue'
 import zcCheckbox from '@/packages/checkbox/src/index.vue'
 import zcIcon from '@/packages/icon/index.vue'
 import IconRightArrow from '@/packages/icon/src/IconRightArrow.vue'

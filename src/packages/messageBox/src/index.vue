@@ -4,7 +4,7 @@ import zcButton from '@/packages/button/src/index.vue'
 import zcInput from '@/packages/input/src/index.vue'
 import zcButtonGroup from '@/packages/buttonGroup/src/index.vue'
 import { zcUIProps } from '@/types/zcUI'
-import { defineProps, onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 
 // 类型定义和默认值
 interface MessageBoxProps extends zcUIProps.MessageBox {

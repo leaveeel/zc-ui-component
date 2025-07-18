@@ -287,6 +287,9 @@ export namespace zcUIProps {
    * @property {string} rowKey - 行数据的键值，用于标识每一行
    * @property {string} emptyText - 空数据时显示的文本
    * @property {object} defaultSort - 默认排序方式
+   * @property {object} treeProps - 树形表格配置
+   * @property {boolean} defaultExpandAll - 是否默认展开所有节点
+   * @property {boolean} checkStrictly - 是否严格的遵循父子不互相关联
    * @property {Function} rowClassName - 行的 className 的回调方法
    * @property {Function} cellClassName - 单元格的 className 的回调方法
    * @property {Function} headerRowClassName - 表头行的 className 的回调方法
@@ -294,7 +297,7 @@ export namespace zcUIProps {
    */
   export interface Table {
     data: Record<string, any>[]
-    option: zcUI.TableOptions[]
+    option?: zcUI.TableOptions[]
     border?: boolean
     height?: number | string
     maxHeight?: number | string
@@ -304,10 +307,22 @@ export namespace zcUIProps {
     rowKey?: string
     emptyText?: string
     defaultSort?: { prop: string, order: string }
+    treeProps?: { label: string, children: string }
+    defaultExpandAll?: boolean
+    checkStrictly?: boolean
+    defaultChecked?: (number | string)[]
     rowClassName?: (row: any, rowIndex: number) => string
     cellClassName?: (row: any, column: any, rowIndex: number, columnIndex: number) => string
-    headerRowClassName?: (rowIndex: number) => string
+    headerRowClassName?: () => string
     headerCellClassName?: (column: any, columnIndex: number) => string
+  }
+
+  export interface TableRow {
+    row: any
+    rowIndex: number
+    option: zcUI.TableOptions[]
+    rowKey: string,
+    colWidths: number[]
   }
 
   /**
@@ -609,16 +624,21 @@ export namespace zcUI {
    * @property {boolean} sortable - 是否可排序
    * @property {Function} formatter - 列内容格式化函数
    */
-  export interface TableOptions {
+  export interface TableOptions extends TableCol {
+    btns?: TableOptionsBtns[]
+    formatter?: (row: any, column: any, index: number) => string | number
+  }
+
+  export interface TableCol {
     type?: 'index' | 'selection'
-    label?: string
     prop?: string
+    label?: string
+    width?: number | string
     fixed?: 'left' | 'right'
     align?: 'left' | 'right' | 'center'
-    btns?: TableOptionsBtns[]
-    width?: string | number
-    sortable?: boolean
-    formatter?: (row: any, column: any, index: number) => string | number
+    sortable?: boolean,
+    formatter?: number | string
+    tooltip?: zcUIProps.Tooltip
   }
 
   /**

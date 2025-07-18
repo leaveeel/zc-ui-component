@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<zcUIProps.Tooltip>(), {
 
 <template>
   <div class="zc-tooltip zc-ui-component">
-    <Popup :theme="theme" :maxWidth="maxWidth" :maxHeight="maxHeight" :placement="placement" :trigger="trigger" :offset="offset" :showArrow="showArrow">
+    <Popup :theme="theme" :maxWidth="maxWidth" width="target" :maxHeight="maxHeight" :placement="placement" :trigger="trigger" :offset="offset" :showArrow="showArrow">
       <template #reference>
         <slot></slot>
       </template>

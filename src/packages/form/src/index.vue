@@ -7,7 +7,7 @@ export default defineComponent ({
 
 <script lang="ts" setup>
 import { zcUI, zcUIProps } from '@/types/zcUI'
-import { defineProps, provide, reactive, toRefs, ref } from 'vue'
+import { provide, reactive, toRefs, ref } from 'vue'
 
 const props = withDefaults(defineProps<zcUIProps.Form>(), {
   labelPosition: 'left',

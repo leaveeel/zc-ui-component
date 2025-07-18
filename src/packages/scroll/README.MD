@@ -14,10 +14,10 @@
 
 | 属性名 | 类型 | 默认值 | 说明 |
 |-------|------|-------|------|
-| width | string \| number | 'auto' | 滚动区域宽度 |
-| height | string \| number | 'auto' | 滚动区域高度 |
-| maxWidth | string \| number | '100%' | 滚动区域高度 |
-| maxHeight | string \| number | '100%' | 滚动区域高度 |
+| width | string \| number | - | 滚动区域宽度 |
+| height | string \| number | - | 滚动区域高度 |
+| maxWidth | string \| number | - | 滚动区域高度 |
+| maxHeight | string \| number | - | 滚动区域高度 |
 
 ## 事件
 

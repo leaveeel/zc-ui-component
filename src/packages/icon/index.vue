@@ -7,7 +7,6 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { zcUIProps } from '@/types/zcUI'
-import { defineProps, defineEmits } from 'vue'
 import { setUnit } from '@/utils/common'
 
 const props = withDefaults(defineProps<zcUIProps.Icon>(), {

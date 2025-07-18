@@ -7,7 +7,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { zcUIProps } from '@/types/zcUI'
-import { defineProps, ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import zcInput from '@/packages/input/src/index.vue'
 import DatePickerPanel from './components/DatePickerPanel.vue'
 import { DateFormat } from '@/utils/common'

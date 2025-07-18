@@ -8,7 +8,7 @@ export default defineComponent({
 <script lang="ts" setup>
 import { zcUIProps } from '@/types/zcUI'
 import { setUnit } from '@/utils/common'
-import { defineProps, ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import IconClose from '@/packages/icon/src/IconClose.vue'
 import zcIcon from '@/packages/icon/index.vue'
 import { useDocument } from '@/utils/common'
