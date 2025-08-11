@@ -87,8 +87,6 @@ const getScrollHeight = () => {
   scrollHeight.value = zcTableHeight - (props.border ? 2 : 0)
 }
 
-
-
 onMounted(() => {
   nextTick(() => {
     calculateColWidths()
@@ -174,7 +172,6 @@ const calculateColWidths = () => {
   tableOptions.value.forEach((i, n) => {
     if (i.width) return colWidths.value[n] = splitString(i.width).num
     for (let row of rs) {
-      console.log(row.children[n].children[0])
       if (row && row.children && row.children[n]) {
         colWidths.value[n] = Math.max(colWidths.value[n] || 0, Math.floor(row.children[n].children[0].offsetWidth) + 32) // 32px padding
         initWidths.value[n] = !init ? initWidths.value[n] : Math.max(initWidths.value[n] || 0, Math.floor(row.children[n].children[0].offsetWidth) + 32) // 32px padding
@@ -184,7 +181,6 @@ const calculateColWidths = () => {
     float.push(n)
   })
 
-console.log(colWidths.value)
   const rw = colWidths.value.reduce((a, b) => a + b, 0)
 
   const twFloat = tw - rw

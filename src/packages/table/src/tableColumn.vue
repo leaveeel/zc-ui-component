@@ -55,7 +55,6 @@ const handleSort: (p: string, o: string) => boolean = inject('handleSort', () =>
       '--align': align || 'left',
     }"
   >
-
     <template v-if="thead">
       <!-- 全选框 -->
       <template v-if="props.type === 'selection'">
@@ -68,7 +67,7 @@ const handleSort: (p: string, o: string) => boolean = inject('handleSort', () =>
         </label>
         
         <!-- 排序图标 -->
-        <span 
+        <span
           v-if="sortable && prop"
           class="sort-icon"
         >
@@ -78,7 +77,6 @@ const handleSort: (p: string, o: string) => boolean = inject('handleSort', () =>
       </div>
     </template>
     <template v-else>
-
       <!-- 全选框 -->
       <zc-checkbox v-if="props.type === 'selection'" v-model="rowSelectd" />
 
@@ -87,6 +85,7 @@ const handleSort: (p: string, o: string) => boolean = inject('handleSort', () =>
         {{ rowIndex + 1 }}
       </label>
       
+      <!-- tooltip -->
       <zc-tooltip v-else-if="tooltip?.content" :max-height="tooltip.maxHeight" :max-width="tooltip.maxWidth" class="column" :content="tooltip.content">
         <template v-if="showSlots">
           <slot></slot>
@@ -96,6 +95,7 @@ const handleSort: (p: string, o: string) => boolean = inject('handleSort', () =>
         </template>
       </zc-tooltip>
       
+      <!-- 插槽 -->
       <label class="column" v-else-if="showSlots">
         <slot></slot>
       </label>

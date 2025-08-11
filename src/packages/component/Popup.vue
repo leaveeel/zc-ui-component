@@ -314,7 +314,6 @@ defineExpose({
   // 确保浮动元素不会被内容撑大到超出屏幕
   max-width: calc(100vw - 20px); // 留一点边距
   max-height: calc(100vh - 20px); // 留一点边距
-  height: inherit;
 }
 
 .floating-popup-arrow {

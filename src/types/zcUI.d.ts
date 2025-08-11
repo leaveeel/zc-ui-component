@@ -626,6 +626,7 @@ export namespace zcUI {
    */
   export interface TableOptions extends TableCol {
     btns?: TableOptionsBtns[]
+    children?: zcUI.TableOptions[]
     formatter?: (row: any, column: any, index: number) => string | number
   }
 
