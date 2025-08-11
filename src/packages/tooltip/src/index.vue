@@ -23,12 +23,12 @@ const props = withDefaults(defineProps<zcUIProps.Tooltip>(), {
 
 <template>
   <div class="zc-tooltip zc-ui-component">
-    <Popup :theme="theme" :maxWidth="maxWidth" width="target" :maxHeight="maxHeight" :placement="placement" :trigger="trigger" :offset="offset" :showArrow="showArrow">
+    <Popup :theme="theme" :maxWidth="maxWidth" :maxHeight="maxHeight" :placement="placement" :trigger="trigger" :offset="offset" :showArrow="showArrow">
       <template #reference>
         <slot></slot>
       </template>
       
-      <div class="content" style="padding: 6px 10px; word-wrap: break-word; word-break: break-all; white-space: pre-wrap;">
+      <div class="content" style="padding: 6px 10px; word-wrap: break-word; white-space: pre-wrap;">
         <slot name="content">{{ content }}</slot>
       </div>
     </Popup>
