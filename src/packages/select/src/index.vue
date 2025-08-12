@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { setUnit } from '@/utils/common'
 export default defineComponent({
   name: 'zcSelect'
 })
@@ -22,6 +23,7 @@ const props = withDefaults(defineProps<zcUIProps.Select>(), {
   multiple: false,
   collapseTags: false,
   maxCollapseTags: 1,
+  height: '40px',
 })
 
 const emit = defineEmits<{
@@ -151,7 +153,6 @@ const toggleDropdown = () => {
 
 <template>
   <div 
-    class="zc-select" 
     :class="['zc-select', { 'is-disabled': disabled, 'is-focus': visible }]"
     ref="selectRef"
   >
@@ -161,6 +162,7 @@ const toggleDropdown = () => {
           class="zc-select__input" 
           @click="handleInputClick"
           :class="{ error: errorMsg, 'is-focus': visible }"
+          :style="{'--height': setUnit(height)}"
         >
           <template v-if="multiple && Array.isArray(modelValue) && modelValue.length">
             <template v-if="collapseTags">
@@ -262,7 +264,7 @@ const toggleDropdown = () => {
   &__input {
     width: 100%;
     height: 100%;
-    min-height: 40px;
+    min-height: var(--height);
     position: relative;
     display: flex;
     gap: 4px;

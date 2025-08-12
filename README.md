@@ -130,6 +130,11 @@ app.mount('#app')
 
 ## 更新日志
 
+- 1.6.5
+  - 增加select高度属性
+  - 修复存在tip时input的高度bug
+  - 修复pagination在total为0时的页码bug
+
 - 1.6.4
   - 整合组组件
   - 添加radio、switch、datepicker、tree、select、treeSelect组件

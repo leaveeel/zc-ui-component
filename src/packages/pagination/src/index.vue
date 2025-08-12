@@ -33,7 +33,7 @@ const emit = defineEmits<{
   'size-change': [value: number]
 }>()
 
-const totalPages = computed(() => Math.ceil(props.total / props.pageSize))
+const totalPages = computed(() => Math.ceil(props.total / props.pageSize) || 1)
 const inputPage = ref<string>('')
 const inputVisible = ref(false)
 const pageSize = ref(props.pageSize)
@@ -144,20 +144,23 @@ const showJumper = () => {
     v-if="showPagination"
     class="zc-pagination zc-ui-component"
   >
-    <span v-if="layout.indexOf('total')" class="zc-pagination-total" :style="{ '--order': layout.indexOf('total') + 1 }">
+    <span v-if="layout.includes('total')" class="zc-pagination-total" :style="{ '--order': layout.indexOf('total') + 1 }">
       {{ lang === 'en' ? 'Total' : '共' }} {{ total }} {{ lang === 'en' ? '' : '条' }}
     </span>
     
     <div v-if="layout.includes('sizes')" class="zc-pagination-sizes" :style="{ '--order': layout.indexOf('sizes') + 1 }">
       <zc-select 
         v-model="pageSize"
+        height="32"
         @change="handlePageSizeChange(Number(pageSize))"
       >
         <zc-option v-for="size in pageSizes" :key="size" :value="size" :label="size + ' ' + (lang === 'en' ? 'Size/Page' : '条/页')"></zc-option>
       </zc-select>
     </div>
 
-    <slot v-if="layout.includes('slot')" :style="{ '--order': layout.indexOf('slot') + 1 }"></slot>
+    <div class="zc-pagination-slot" v-if="layout.includes('slot')" :style="{ '--order': layout.indexOf('slot') + 1 }">
+      <slot></slot>
+    </div>
     
     <zc-button
       v-if="layout.includes('prev')"
@@ -259,18 +262,17 @@ const showJumper = () => {
   
   .zc-pagination-sizes {
     order: var(--order);
-    select {
-      height: 32px;
-      border: 1px solid #dcdfe6;
-      border-radius: 4px;
-      padding: 0 8px;
-      color: var(--main-font-color);
-      outline: none;
-      
-      &:focus {
-        border-color: var(--main-color);
+    .zc-select{
+      :deep() {
+        input {
+          field-sizing: content;
+        }
       }
     }
+  }
+
+  .zc-pagination-slot {
+    order: var(--order);
   }
 
   .zc-pagination-prev {

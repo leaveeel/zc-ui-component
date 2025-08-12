@@ -182,7 +182,6 @@ defineExpose({
 <template>
   <div 
     class="zc-input zc-ui-component" 
-    :style="{'--height': setUnit(height)}"
     :class="[
       { 
         'is-disabled': propsDisabled,
@@ -190,7 +189,7 @@ defineExpose({
       }
     ]"
   >
-    <div class="input-container" :class="{ error: errorMsg, focus: focus }">
+    <div class="input-container" :class="{ error: errorMsg, focus: focus }" :style="{'--height': setUnit(height)}">
       <textarea
         v-if="isTextarea"
         ref="textareaRef"
@@ -263,7 +262,6 @@ defineExpose({
 <style lang="scss">
 .zc-input {
   width: 100%;
-  height: var(--height);
   position: relative;
   display: grid;
   grid-template-rows: auto;
@@ -271,11 +269,11 @@ defineExpose({
     position: relative;
     background: #ffffff;
     border: 1px solid #e4e4e4;
+    height: var(--height);
     border-radius: 4px;
     overflow: hidden;
     display: flex;
     cursor: text;
-    height: 100%;
     &:hover:not(:disabled) {
       border-color: var(--main-color);
     }

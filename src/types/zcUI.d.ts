@@ -531,6 +531,7 @@ export namespace zcUIProps {
    * @property {boolean} multiple - 是否多选
    * @property {boolean} collapseTags - 多选时是否折叠标签
    * @property {number} maxCollapseTags - 折叠标签时最多显示的标签数量
+   * @property {string|number} height - 选择器高度
    */
   export interface Select {
     modelValue: undefined | string | number | (string | number)[]
@@ -542,6 +543,7 @@ export namespace zcUIProps {
     multiple?: boolean
     collapseTags?: boolean
     maxCollapseTags?: number
+    height?: string | number
   }
 
   /**
